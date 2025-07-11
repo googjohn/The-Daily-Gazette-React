@@ -1,13 +1,14 @@
+import { NavLink } from "react-router-dom"
 export default function Navigation() {
   const linkList = [
     { name: 'Home', src: '/' },
-    { name: 'Finance', src: '/finance-news' },
-    { name: 'Entertainment', src: '/entertainment-news' },
-    { name: 'Sci&Tech', src: '/sci&tech-news' },
-    { name: 'Sports', src: '/sports-news' }
+    { name: 'Finance', src: '/finance' },
+    { name: 'Entertainment', src: '/entertainment' },
+    { name: 'Sci&Tech', src: '/scienceTechnology' },
+    { name: 'Sports', src: '/sports' }
   ]
 
-  const linkClassess = "p-1 border-b-2 cursor-pointer"
+  const linkClassess = "p-1 border-b-2 border"
   return (
     <>
       <nav
@@ -18,7 +19,7 @@ export default function Navigation() {
           {
             linkList.map((link, i) => (
               <li key={i} className={linkClassess}>
-                <a href={link.src} className="p-2.5">{link.name}</a>
+                <NavLink to={link.src} className="p-2.5 cursor-pointer border">{link.name}</NavLink>
               </li>
             ))
           }

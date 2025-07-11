@@ -1,3 +1,4 @@
+import { Form } from "react-router-dom"
 import MobileMenu from "../mobilemenu/MobileMenu"
 
 export default function UserSearch() {
@@ -16,7 +17,9 @@ function Search() {
   return (
     <>
       <div id="search-container">
+        <Form>
 
+        </Form>
       </div>
     </>
   )
