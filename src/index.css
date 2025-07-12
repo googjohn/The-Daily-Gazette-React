@@ -52,6 +52,11 @@
   --green-tint: rgba(100, 255, 218, 0.1);
   --blue: #57cbff;
 
+  /* box shadow */
+  --bs-lightBlue: 0 0 4px 2px var(--aqua);
+
+  /* transition */
+  --transition: all 350ms ease-in-out;
 }
 
 #root{
@@ -75,6 +80,58 @@
   }
 }
 
+#navigation ul {
+  /* position: relative; */
+}
+.navLink-hover::after, .navLink-hover::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 0;
+  background-color: var(--red);
+  transition: var(--transition);
+}
+
+.navLink-hover::before {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.navLink-hover::after {
+  right: 50%;
+  transform: translateX(50%)
+}
+.navLink-hover:hover::before,
+.navLink-hover:hover::after {
+  width: 100%;
+}
+
+.form-group input {
+
+}
+
+.grid-container {
+  display: grid;
+  gap: 0;
+  /* grid-auto-rows: 60px; */
+  grid-template-areas: 
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'E E E E E E E E E E E E'
+  'E E E E E E E E E E E E'
+  'E E E E E E E E E E E E';
+  
+  .grid-item {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+    &:nth-child(3) { grid-area: C }
+    &:nth-child(4) { grid-area: D }
+    &:nth-child(5) { grid-area: E }
+  }
+}
 
 @keyframes spin {
   0% {

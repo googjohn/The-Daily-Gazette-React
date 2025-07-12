@@ -1,5 +1,5 @@
 import AppLogo from "./AppLogo";
-import Navigation from "./Navigation";
+import Navigation from "../navigation/Navigation";
 import UserSearch from "./UserAndSearch";
 
 export default function Header() {
