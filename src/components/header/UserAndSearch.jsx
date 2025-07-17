@@ -23,7 +23,7 @@ function Search() {
               type="text"
               name="search"
               id="search"
-              className="rounded-full pr-6 px-3.5 py-1 shadow-(--bs-lightBlue) w-9 h-9 focus:w-full focus:transition-(--transition) outline-0"
+              className="rounded-full pr-6 px-3.5 py-1 shadow-(--bs-lightBlue) w-9 h-9 focus:w-full focus:transition-(--transition) transition-(--transition) outline-0"
               placeholder="Search"
             />
             <label htmlFor="search" className="absolute">

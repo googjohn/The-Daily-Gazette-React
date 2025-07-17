@@ -1,1 +1,179 @@
 @import 'tailwindcss';
+
+.section-title {
+  color: black;
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* grid template areas */
+/* grid template for 2 cols 4 rows 2 items */
+.grid-area-1 {
+  grid-template-areas: 
+  'A A A A A A B B B B B B'
+  'A A A A A A B B B B B B'
+  'A A A A A A B B B B B B'
+  'A A A A A A B B B B B B';
+
+  &>div {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+  }
+}
+
+/* grid template for 2 cols 4 rows 4 items */
+.grid-area-2 {
+  grid-template-areas: 
+  'A A A A A A B B B B B B'
+  'A A A A A A B B B B B B'
+  'C C C C C C D D D D D D'
+  'C C C C C C D D D D D D';
+  &>div {
+    &:nth-child(1) { grid-area: A}
+    &:nth-child(2) { grid-area: B}
+    &:nth-child(3) { grid-area: C}
+    &:nth-child(4) { grid-area: D}
+  }
+}
+
+/* grid template for 2 cols 4 rows item a/b 66/33 */
+.grid-area-3 {
+  grid-template-areas: 
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B';
+  &>div {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+  }
+}
+
+/* grid template for 3 cols 4 rows a/b/c 33 */
+.grid-area-4 {
+  grid-template-areas: 
+  'A A A A B B B B C C C C'
+  'A A A A B B B B C C C C'
+  'A A A A B B B B C C C C'
+  'A A A A B B B B C C C C';
+  &>div {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+    &:nth-child(3) { grid-area: C }
+  }
+}
+
+/* grid template for local news */
+.grid-area-5 {
+  grid-template-areas:
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'E E E F F F G G G H H H'
+  'E E E F F F G G G H H H'
+  'E E E F F F G G G H H H';
+  &>div {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+    &:nth-child(3) { grid-area: C }
+    &:nth-child(4) { grid-area: D }
+    &:nth-child(5) { grid-area: E }
+    &:nth-child(6) { grid-area: F }
+    &:nth-child(7) { grid-area: G }
+    &:nth-child(8) { grid-area: H }
+  }
+}
+
+/* grid template for business and finance */
+.grid-area-6 {
+  grid-template-areas: 
+  'A A A A A A B B B C C C'
+  'A A A A A A B B B C C C'
+  'A A A A A A D D D D D D'
+  'E E E E E E D D D D D D'
+  'E E E E E E D D D D D D';
+  &>div {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+    &:nth-child(3) { grid-area: C }
+    &:nth-child(4) { grid-area: D }
+    &:nth-child(5) { grid-area: E }
+  }
+}
+
+/* grid template for more finance */
+.grid-area-7 {
+  grid-template-areas: 
+  'B B B A A A A A A C C C'
+  'B B B A A A A A A C C C'
+  'D D D A A A A A A E E E'
+  'D D D A A A A A A E E E'
+  'F F F F F F G G G G G G'
+  'F F F F F F G G G G G G'
+  'F F F F F F G G G G G G'
+  'H H H H I I I I J J J J'
+  'H H H H I I I I J J J J';
+  &>div{
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+    &:nth-child(3) { grid-area: C }
+    &:nth-child(4) { grid-area: D }
+    &:nth-child(5) { grid-area: E }
+    &:nth-child(6) { grid-area: F }
+    &:nth-child(7) { grid-area: G }
+    &:nth-child(8) { grid-area: H }
+    &:nth-child(9) { grid-area: I }
+    &:nth-child(10) { grid-area: J }
+  }
+}
+
+/* grid template for entertainment and scitech */
+.grid-area-8 {
+  grid-template-areas:
+  'A A A A A A A A A A A A'
+  'A A A A A A A A A A A A'
+  'A A A A A A A A A A A A'
+  'A A A A A A A A A A A A'
+  'B B B B C C C C D D D D'
+  'B B B B C C C C D D D D'
+  'E E E E F F F F G G G G'
+  'E E E E F F F F G G G G';
+  &>div{
+    &:nth-child(1) {grid-area: A }
+    &:nth-child(2) {grid-area: B }
+    &:nth-child(3) {grid-area: C }
+    &:nth-child(4) {grid-area: D }
+    &:nth-child(5) {grid-area: E }
+    &:nth-child(6) {grid-area: F }
+    &:nth-child(7) {grid-area: G }
+  }
+}
+
+.grid-area-9 {
+  grid-template-areas:  
+  'A A A A A A A A A A A A'
+  'A A A A A A A A A A A A'
+  'A A A A A A A A A A A A'
+  'A A A A A A A A A A A A'
+  'B B B B B B B C C C C C'
+  'B B B B B B B C C C C C'
+  'D D D D D E E E E E E E'
+  'D D D D D E E E E E E E'
+  'F F F F F F F G G G G G'
+  'F F F F F F F G G G G G'
+  'H H H H H I I I I I I I'
+  'H H H H H I I I I I I I';
+  &>div{
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+    &:nth-child(3) { grid-area: C }
+    &:nth-child(4) { grid-area: D }
+    &:nth-child(5) { grid-area: E }
+    &:nth-child(6) { grid-area: F }
+    &:nth-child(7) { grid-area: G }
+    &:nth-child(8) { grid-area: H }
+    &:nth-child(9) { grid-area: I }
+  }
+}

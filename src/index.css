@@ -7,7 +7,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: var(--dark-navy);
+  background-color: var(--light-navy);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -51,6 +51,10 @@
   --green: #64ffda;
   --green-tint: rgba(100, 255, 218, 0.1);
   --blue: #57cbff;
+
+  /* text color */
+  --text-lightDark: #cfcccc;
+  --text-lightDark-rgb: 201, 195, 195;
 
   /* box shadow */
   --bs-lightBlue: 0 0 4px 2px var(--aqua);
@@ -131,6 +135,23 @@
     &:nth-child(4) { grid-area: D }
     &:nth-child(5) { grid-area: E }
   }
+}
+
+section {
+  background-color: var(--white-20);
+}
+
+.grid-template {
+  gap: 10px;
+  grid-auto-rows: minmax(75px, 90px);
+  grid-template-columns: repeat(12, 1fr);
+}
+
+#head-news  > div.grid-area {
+ 
+}
+#trending-news {
+
 }
 
 @keyframes spin {
