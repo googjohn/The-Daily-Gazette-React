@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+
+@media only screen and (width <= 500px) {
+  .grid-area-1 {
+    grid-template-areas: 
+    'A A A A A A A A A A A A'
+    'A A A A A A A A A A A A'
+    'A A A A A A A A A A A A'
+    'B B B B B B B B B B B B'
+    'B B B B B B B B B B B B'
+    'B B B B B B B B B B B B';
+  }
+  .grid-area-2 {
+    grid-template-areas: 
+    'A A A A A A A A A A A A'
+    'A A A A A A A A A A A A'
+    'B B B B B B B B B B B B'
+    'B B B B B B B B B B B B'
+    'C C C C C C C C C C C C' 
+    'C C C C C C C C C C C C' 
+    'D D D D D D D D D D D D'
+    'D D D D D D D D D D D D';
+  }
+}

@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+
+section {
+  background-color: var(--white-20);
+}
+
 .section-title {
   color: black;
 
@@ -8,22 +13,28 @@
   }
 }
 
-/* grid template areas */
-/* grid template for 2 cols 4 rows 2 items */
+
+/* grid template and areas */
+.grid-template {
+  gap: 10px;
+  grid-auto-rows: minmax(60px, 90px);
+  grid-template-columns: repeat(12, 1fr);
+}
+
+/* grid template for 2 cols 4 rows 2 items / world-news */
 .grid-area-1 {
   grid-template-areas: 
   'A A A A A A B B B B B B'
   'A A A A A A B B B B B B'
   'A A A A A A B B B B B B'
   'A A A A A A B B B B B B';
-
   &>div {
     &:nth-child(1) { grid-area: A }
     &:nth-child(2) { grid-area: B }
   }
 }
 
-/* grid template for 2 cols 4 rows 4 items */
+/* grid template for 2 cols 4 rows 4 items / box-news */
 .grid-area-2 {
   grid-template-areas: 
   'A A A A A A B B B B B B'
@@ -38,7 +49,7 @@
   }
 }
 
-/* grid template for 2 cols 4 rows item a/b 66/33 */
+/* grid template for 2 cols 4 rows item a/b 66/33 / trend-news */
 .grid-area-3 {
   grid-template-areas: 
   'A A A A A A A A B B B B'
@@ -51,7 +62,7 @@
   }
 }
 
-/* grid template for 3 cols 4 rows a/b/c 33 */
+/* grid template for 3 cols 4 rows a/b/c 33 / trend-news articles */
 .grid-area-4 {
   grid-template-areas: 
   'A A A A B B B B C C C C'
@@ -175,5 +186,29 @@
     &:nth-child(7) { grid-area: G }
     &:nth-child(8) { grid-area: H }
     &:nth-child(9) { grid-area: I }
+  }
+}
+
+/* media for responsiveness */
+@media only screen and (width <= 768px) {
+  .grid-area-1 {
+    grid-template-areas: 
+    'A A A A A A A A A A A A'
+    'A A A A A A A A A A A A'
+    'A A A A A A A A A A A A'
+    'B B B B B B B B B B B B'
+    'B B B B B B B B B B B B'
+    'B B B B B B B B B B B B';
+  }
+  .grid-area-2 {
+    grid-template-areas: 
+    'A A A A A A A A A A A A'
+    'A A A A A A A A A A A A'
+    'B B B B B B B B B B B B'
+    'B B B B B B B B B B B B'
+    'C C C C C C C C C C C C' 
+    'C C C C C C C C C C C C' 
+    'D D D D D D D D D D D D'
+    'D D D D D D D D D D D D';
   }
 }
