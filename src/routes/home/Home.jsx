@@ -5,6 +5,8 @@ import HeadNews from "./HeadNews";
 import Salutation from "./Salutation";
 import Section from "../../components/mainbody/Section";
 import BusinessFinance from "./BusinessFinance";
+import Card from "../../components/card/Card";
+import Entertainment from "../entertainment/Entertainment";
 
 export default function Home() {
   const [timer, setTimer] = useState('')
@@ -41,7 +43,7 @@ export default function Home() {
 
   return (
     <>
-      <Section id={'world-news'}>
+      <section id="world-news" className="h-full w-11/12 p-2.5 mx-auto mt-20 mb-5">
         <div id="weather-container"></div>
         <Salutation
           dateToday={dateToday}
@@ -50,9 +52,10 @@ export default function Home() {
         />
         <HeadNews />
         <TrendingNews />
-      </Section>
+      </section>
       <LocalNews />
       <BusinessFinance />
+      <Entertainment />
     </>
   )
 }

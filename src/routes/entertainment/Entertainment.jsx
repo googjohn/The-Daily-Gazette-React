@@ -1,5 +1,28 @@
+import Card from "../../components/card/Card";
+import Section from "../../components/mainbody/Section";
+
 export default function Entertainment() {
+  const sections = [
+    {
+      title: 'Latest in Show Business',
+      customGrid: 'grid-area-8',
+      content: (
+        <>
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+        </>
+      )
+    }
+  ]
   return (
-    <div className="text-center text-4xl flex justify-center items-center h-screen">Entertainment page under development. Please comeback at a later time.</div>
+    <Section
+      id={'entertainment-news'}
+      sectionData={sections}
+    />
   )
 }

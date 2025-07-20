@@ -1,4 +1,5 @@
 import Card from "../../components/card/Card";
+import Aside from "../../components/mainbody/Aside";
 
 export default function TrendingNews() {
   return (
@@ -12,7 +13,9 @@ export default function TrendingNews() {
           <div className=""><Card /></div>
           <div className=""><Card /></div>
         </div>
-        <div className=""></div>
+        <div className="">
+          <Aside />
+        </div>
       </div>
     </div>
   )
