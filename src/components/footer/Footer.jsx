@@ -106,7 +106,7 @@ function FooterResourcesAndNewsLetter() {
   }
   return (
     <div className="flex-item basis-3/5 ">
-      <div className="grid-container">
+      <div className="grid grid-template-footer">
         <div className="grid-item">
           <div className="grid-item-header py-2.5">
             <h4>Resources</h4>

@@ -1,6 +1,6 @@
 export default function Card({ cardTitle, cardDescription, imgSrc, imgAlt, customStyle }) {
   return (
-    <div className="card h-full w-full flex flex-col [&>*]:basis-1/2 rounded-lg border text-black">
+    <div className="card h-full w-full flex flex-col [&>*]:basis-1/2 rounded-lg text-black shadow-(--bs-cards)">
       <div className="card-image-container">
         <img src={imgSrc} alt={imgAlt} />
       </div>

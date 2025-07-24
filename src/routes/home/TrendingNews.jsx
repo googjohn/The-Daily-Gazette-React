@@ -3,20 +3,15 @@ import Aside from "../../components/mainbody/Aside";
 
 export default function TrendingNews() {
   return (
-    <div id="trending-news" className="text-black w-full h-full">
-      <div className="section-title">
-        <h2>Trending</h2>
+    <>
+      <div id="trend-news" className="grid grid-template grid-area-4">
+        <div className=""><Card /></div>
+        <div className=""><Card /></div>
+        <div className=""><Card /></div>
       </div>
-      <div className="grid grid-template grid-area-3">
-        <div className="grid grid-template grid-area-4 min-h-[390px]">
-          <div className=""><Card /></div>
-          <div className=""><Card /></div>
-          <div className=""><Card /></div>
-        </div>
-        <div className="">
-          <Aside />
-        </div>
+      <div className="aside">
+        <Aside asideTitle={'More Trending News'} />
       </div>
-    </div>
+    </>
   )
 }

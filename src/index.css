@@ -56,8 +56,16 @@
   --text-lightDark: #cfcccc;
   --text-lightDark-rgb: 201, 195, 195;
 
+  /* text shadow */
+  --ts-white-black: 0 0 4px rgba(var(--black-rgb), 0.5);
+  --ts-whiteup-blackdown: 4px -4px 10px rgba(var(--white-rgb), 0.75),
+    -4px 4px 10px rgba(var(--black-rgb), 0.45);
+
   /* box shadow */
   --bs-lightBlue: 0 0 4px 2px var(--aqua);
+  --bs-cards: 0 0 4px 0 rgba(var(--black-rgb), .5);
+  --bs-cards-lup-ddown: 4px -4px 10px 0 rgba(var(--white-rgb), 0.75),
+    -4px 4px 10px 0 rgba(var(--black-rgb), 0.45);
 
   /* transition */
   --transition: all 350ms ease-in-out;

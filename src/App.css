@@ -5,9 +5,9 @@ section {
   background-color: var(--white-20);
 }
 
-.section-title {
+.section-title, .aside-title {
   color: black;
-
+  
   h2 {
     font-size: 1.5rem;
   }
@@ -140,8 +140,25 @@ section {
   }
 }
 
-/* grid template for entertainment and scitech */
+/* grid template for entertainment and scitech container */
 .grid-area-8 {
+  grid-template-areas:
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B';
+  &>div {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+  }
+}
+
+/* grid template for entertainment and scitech */
+.grid-area-9 {
   grid-template-areas:
   'A A A A A A A A A A A A'
   'A A A A A A A A A A A A'
@@ -162,8 +179,25 @@ section {
   }
 }
 
+/* grid template for sports container */
+.grid-area-10 {
+  grid-template-areas:
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B'
+  'A A A A A A A A B B B B';
+  &>div {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+  }
+}
 /* grid template for sports */
-.grid-area-9 {
+.grid-area-11 {
   grid-template-areas:  
   'A A A A A A A A A A A A'
   'A A A A A A A A A A A A'
@@ -187,6 +221,28 @@ section {
     &:nth-child(7) { grid-area: G }
     &:nth-child(8) { grid-area: H }
     &:nth-child(9) { grid-area: I }
+  }
+}
+
+/* footer grid template */
+.grid-template-footer {
+  gap: 0;
+  grid-auto-rows: 60px;
+  grid-template-areas: 
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'A A A B B B C C C D D D'
+  'E E E E E E E E E E E E'
+  'E E E E E E E E E E E E'
+  'E E E E E E E E E E E E';
+  .grid-item {
+    &:nth-child(1) { grid-area: A }
+    &:nth-child(2) { grid-area: B }
+    &:nth-child(3) { grid-area: C }
+    &:nth-child(4) { grid-area: D }
+    &:nth-child(5) { grid-area: E }
   }
 }
 
