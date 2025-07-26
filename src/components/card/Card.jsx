@@ -1,4 +1,4 @@
-export default function Card({ cardTitle, cardDescription, imgSrc, imgAlt, customStyle }) {
+export default function Card({ cardTitle, cardDescription, imgSrc, imgAlt }) {
   return (
     <div className="card h-full w-full flex flex-col [&>*]:basis-1/2 rounded-lg text-black shadow-(--bs-cards)">
       <div className="card-image-container">

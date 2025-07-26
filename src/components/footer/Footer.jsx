@@ -4,13 +4,13 @@ import { Form, Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer id="footer" className="bg-(--light-navy) pt-5">
-      <div className="footer-container max-w-[1280px] m-auto relative">
-        <div id="footer-content" className="flex gap-2.5">
+    <footer id="footer" className="bg-(--light-navy) h-auto w-full pt-5">
+      <div className="footer-container container w-11/12 max-w-[1536px] mx-auto relative">
+        <div id="footer-content" className="flex flex-col [&>div:first-child]:order-last lg:flex-row lg:[&>div:first-child]:order-first gap-2.5">
           <FooterDescriptionAndSocials />
           <FooterResourcesAndNewsLetter />
         </div>
-        <div id="footer-navigation" className="mt-4 border-t-2 flex justify-center items-center h-20 max-w-[1280px] mx-auto">
+        <div id="footer-navigation" className="hidden mt-4 border-t-2 sm:flex justify-center items-center h-20">
           <Navigation />
         </div>
       </div>
@@ -31,17 +31,17 @@ function FooterDescriptionAndSocials() {
     { title: "Discord", link: "https://discord.com", iconClass: 'fab fa-discord fa-2x' },
   ]
   return (
-    <div className="flex-item basis-2/5 flex flex-col justify-between gap-2.5">
-      <div className="app-logo w-[250px]">
-        <img src={appLogo} alt="site logo" className="w-full" />
+    <div className="flex-item basis-2/5 flex flex-col max-w-[400px] xl:w-full mx-auto my-2.5 [&>div]:place-items-center justify-between gap-2.5">
+      <div className="app-logo p-2.5 hidden sm:block">
+        <img src={appLogo} alt="site logo" className="w-[250px]" />
       </div>
-      <div className="site-description pl-5">
+      <div className="site-description p-2.5 text-center">
         <div className="foot-about-header">
           <h4 className="py-2.5">About Us</h4>
         </div>
         <p className="text-(--text-lightDark) text-[.9rem]">{siteDescription}</p>
       </div>
-      <div className="site-socialLinks pl-5">
+      <div className="site-socialLinks p-2.5">
         <div className="site-socialLinks-header">
           <h4 className="py-2.5">Follow Us</h4>
         </div>
@@ -57,7 +57,7 @@ function FooterDescriptionAndSocials() {
           }
         </ul>
       </div>
-      <div className="copyrights pl-5">
+      <div className="copyrights p-2.5 border-t-2 sm:border-none">
         <h3 className="text-[1rem]">Copyright &copy; COGY&trade; | All Rights Reserved.</h3>
       </div>
     </div>
@@ -105,8 +105,8 @@ function FooterResourcesAndNewsLetter() {
     )
   }
   return (
-    <div className="flex-item basis-3/5 ">
-      <div className="grid grid-template-footer">
+    <div className="flex-item basis-3/5">
+      <div className="grid [&>div]:place-items-center grid-template-footer">
         <div className="grid-item">
           <div className="grid-item-header py-2.5">
             <h4>Resources</h4>
@@ -151,7 +151,7 @@ function FooterResourcesAndNewsLetter() {
           <div className="grid-item-header py-2.5">
             <h4 className="text-center">Subscribe to News Letter</h4>
           </div>
-          <div className="grid-item-content">
+          <div className="grid-item-content w-full">
             <Form method="post">
               <input
                 type="text"
@@ -159,7 +159,7 @@ function FooterResourcesAndNewsLetter() {
                 id="fullname"
                 autoComplete="off"
                 placeholder="Your name..."
-                className="w-1/2 py-2.5 px-[15px] block m-auto my-2.5 rounded-full border-0 outline-0 text-[.8rem] text-start bg-white text-black"
+                className="w-10/12 sm:w-2/3 md:w-1/2 py-2.5 px-[15px] block m-auto my-2.5 rounded-full border-0 outline-0 text-[.8rem] text-start bg-white text-black"
               />
               <input
                 type="email"
@@ -167,12 +167,12 @@ function FooterResourcesAndNewsLetter() {
                 id="email"
                 autoComplete="off"
                 placeholder="Your email..."
-                className="w-1/2 py-2.5 px-[15px] block m-auto my-2.5 rounded-full border-0 outline-0 text-[.8rem] text-start bg-white text-black"
+                className="w-10/12 sm:w-2/3 md:w-1/2 py-2.5 px-[15px] block m-auto my-2.5 rounded-full border-0 outline-0 text-[.8rem] text-start bg-white text-black"
               />
               <button
                 type="submit"
                 value="Subscribe"
-                className="w-1/2 py-2.5 px-[15px] block m-auto my-2.5 rounded-full border-0 outline-0 text-[.8rem] text-center bg-white text-black uppercase cursor-pointer"
+                className="w-10/12 sm:w-2/3 md:w-1/2 py-2.5 px-[15px] block m-auto my-2.5 rounded-full border-0 outline-0 text-[.8rem] text-center bg-white text-black uppercase cursor-pointer"
               >
                 Subscribe
               </button>

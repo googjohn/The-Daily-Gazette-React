@@ -6,12 +6,12 @@ export default function ScienceTechnology() {
   const sections = [
     {
       title: 'Latest in Technology',
-      customGrid: 'grid-area-8',
+      customGrid: 'grid-area-entmnt-scitech-container',
       content: <Technology />
     },
     {
       title: 'Latest in Science',
-      customGrid: 'grid-area-8',
+      customGrid: 'grid-area-entmnt-scitech-container',
       content: <Science />
     }
   ]

@@ -6,10 +6,10 @@ export default function Sports() {
   const sections = [
     {
       title: 'Latest in Sports',
-      customGrid: 'grid-area-10',
+      customGrid: 'grid-area-sports-container',
       content: (
         <>
-          <div className="grid grid-template grid-area-11">
+          <div className="grid grid-template grid-area-sports">
             <Card />
             <Card />
             <Card />

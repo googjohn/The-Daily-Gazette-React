@@ -4,7 +4,7 @@ import Aside from "../../components/mainbody/Aside";
 export default function TrendingNews() {
   return (
     <>
-      <div id="trend-news" className="grid grid-template grid-area-4">
+      <div id="trend-news" className="grid grid-template grid-area-trend">
         <div className=""><Card /></div>
         <div className=""><Card /></div>
         <div className=""><Card /></div>

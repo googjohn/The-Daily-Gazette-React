@@ -9,9 +9,10 @@ export default function Navigation() {
   ]
 
   const linkClassess = "p-1 border-b-2"
+  const navLinkBaseClasses = "p-2.5 cursor-pointer"
   return (
     <>
-      <nav id="navigation">
+      <nav id="navigation" className="hidden md:block">
         <ul className="flex gap-2">
           {
             linkList.map((link) => (
@@ -22,7 +23,7 @@ export default function Navigation() {
                       color: 'var(--red)'
                     }
                   }
-                }} className="p-2.5 cursor-pointer">{link.name}</NavLink>
+                }} className={navLinkBaseClasses}>{link.name}</NavLink>
               </li>
             ))
           }

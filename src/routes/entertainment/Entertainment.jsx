@@ -6,10 +6,10 @@ export default function Entertainment() {
   const sections = [
     {
       title: 'Latest in Show Business',
-      customGrid: 'grid-area-8',
+      customGrid: 'grid-area-entmnt-scitech-container',
       content: (
         <>
-          <div className="grid grid-template grid-area-9">
+          <div className="grid grid-template grid-area-entmnt-scitech">
             <Card />
             <Card />
             <Card />

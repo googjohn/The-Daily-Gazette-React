@@ -5,7 +5,7 @@ export default function LocalNews() {
   const sections = [
     {
       title: 'Latest Local News',
-      customGrid: 'grid-area-5',
+      customGrid: 'grid-area-local',
       content: (
         <>
           <Card cardTitle={'title'} cardDescription={'description'} />

@@ -11,7 +11,7 @@ export default function BusinessFinance() {
   let sections = [
     {
       title: 'Business and Finance',
-      customGrid: 'grid-area-6',
+      customGrid: 'grid-area-finance',
       content: (
         <>
           <Card />
@@ -24,7 +24,7 @@ export default function BusinessFinance() {
     },
     {
       title: 'Popular in Business and Finance',
-      customGrid: 'grid-area-7',
+      customGrid: 'grid-area-more-finance',
       content: popularChildren
     }
   ]

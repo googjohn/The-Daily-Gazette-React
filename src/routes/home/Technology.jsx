@@ -4,7 +4,7 @@ import Aside from "../../components/mainbody/Aside"
 export default function Technology() {
   return (
     <>
-      <div className="grid grid-template grid-area-9">
+      <div className="grid grid-template grid-area-entmnt-scitech">
         <Card />
         <Card />
         <Card />

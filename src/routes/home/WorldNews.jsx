@@ -6,16 +6,20 @@ export default function WorldNews() {
   const sections = [
     {
       title: null,
-      customGrid: 'grid-area-1',
+      customGrid: 'grid-area-head',
       content: <HeadNews />
     },
     {
       title: 'Trending',
-      customGrid: 'grid-area-3',
+      customGrid: 'grid-area-trend-container',
       content: <TrendingNews />
     }
   ]
   return (
-    <Section id={'world-news'} sectionData={sections} salutation={true} />
+    <Section
+      id={'world-news'}
+      sectionData={sections}
+      salutation={true}
+    />
   )
 }
