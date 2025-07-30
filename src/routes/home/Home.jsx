@@ -24,8 +24,8 @@ export default function Home() {
     max: 10,
   };
 
-  dataRef.current = useFetch(GNEWS_PARAMS, false);
-  // console.log(dataRef.current)
+  dataRef.current = useFetch(GNEWS_PARAMS);
+  console.log(dataRef.current)
   return (
     <main className="w-full mx-auto">
       <WorldNews />

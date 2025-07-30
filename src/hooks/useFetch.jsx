@@ -12,21 +12,22 @@ const CONFIG = {
   API_KEY_9: import.meta.env.VITE_GNEWS_API_KEY_9,
   API_KEY_10: import.meta.env.VITE_GNEWS_API_KEY_10,
 }
-let configIndex = 0;
+let configIndex = 9;
 const API_KEYS = Object.values(CONFIG);
 
 
-export default function useFetch(options, shouldFetch = true) {
+export default function useFetch(options) {
   const [data, setData] = useState([]);
   const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
 
   const abortControllerRef = useRef();
+  const hasFetched = useRef(false);
 
-  if (error && (error.name === 'unauthorized' || error.statusCode === 401)) {
-    configIndex++;
-  }
+  // if (error && (error.name === 'unauthorized' || error.statusCode === 401)) {
+  //   configIndex++;
+  // }
   const apiKey = API_KEYS[configIndex]
 
   const fetchData = useCallback(async () => {
@@ -46,14 +47,16 @@ export default function useFetch(options, shouldFetch = true) {
     } = options
 
     const API_URL = `https://gnews.io/api/v4/${endpoint}?category=${category}&lang=${language}&country=${country}&max=${max}&apikey=${apiKey}`
-    if (loading) (<div>Loading...</div>)
-    if (error) (<div>Error Loading...</div>)
+    // if (loading) (<div>Loading...</div>)
+    // if (error) (<div>Error Loading...</div>)
 
     try {
 
       const response = await fetch(API_URL, { signal });
       if (!response.ok) {
-        throw new Error(`HTTPS error. ${response.status}`, { statusCode: response.status })
+        const error = new Error(`HTTPS error. ${response.status}`);
+        error.statusCode = response.status;
+        throw error
       }
 
       const result = await response.json();
@@ -64,23 +67,30 @@ export default function useFetch(options, shouldFetch = true) {
         console.log('Fetch aborted (expected behavior cleanup).')
       } else {
         console.error('Fetching failed.', error)
-        setError(error)
+        console.log(error.stack)
+        // setError(error)
       }
     } finally {
       setLoading(false);
     }
   }, [options, apiKey])
+
   useEffect(() => {
 
-    if (shouldFetch) {
-      fetchData();
-      console.log(counter)
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+    } else {
+      return
     }
+
+    fetchData();
+
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
       }
+
     }
-  }, [options, fetchData, shouldFetch])
-  return [data, fetchData, counter]
+  }, [fetchData])
+  return [data, fetchData, counter, loading]
 }

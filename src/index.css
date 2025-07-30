@@ -51,10 +51,18 @@
   --green: #64ffda;
   --green-tint: rgba(100, 255, 218, 0.1);
   --blue: #57cbff;
+  --overlay-dark: rgba(0, 0, 0, 0.5);
+
+  /* backdrop filter */
+  --filter: blur(10px);
 
   /* text color */
   --text-lightDark: #cfcccc;
   --text-lightDark-rgb: 201, 195, 195;
+
+  /* text-sizes */
+  --font-card-title: clamp(18px, 2.5vw, 1.5rem);
+  --font-card-description: clamp(12px, 2vw, 1rem);
 
   /* text shadow */
   --ts-white-black: 0 0 4px rgba(var(--black-rgb), 0.5);

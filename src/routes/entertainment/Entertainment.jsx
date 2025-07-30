@@ -5,7 +5,7 @@ import Section from "../../components/mainbody/Section";
 export default function Entertainment() {
   const sections = [
     {
-      title: 'Latest in Show Business',
+      title: 'Latest in Entertainment',
       customGrid: 'grid-area-entmnt-scitech-container',
       content: (
         <>
@@ -19,7 +19,7 @@ export default function Entertainment() {
             <Card />
           </div>
           <div className="aside">
-            <Aside asideTitle={'More on Show Business'} />
+            <Aside asideTitle={'More on Entertainment'} />
           </div>
         </>
       )
