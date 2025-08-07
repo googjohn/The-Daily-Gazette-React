@@ -92,10 +92,10 @@ const CONFIG = {
 export default function useFetch(options) {
   const [data, setData] = useState([]);
   const [ipGeoData, setIpGeoData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const ipController = useRef(null);
   const gnewsController = useRef(null);
-  const index = useRef(0);
-  const hasFetched = useRef(false);
 
   const ipGeoApiKey = import.meta.env.VITE_IPGEO_API_KEY;
   const IPGEO_URL = `https://api.ipgeolocation.io/ipgeo?apiKey=${ipGeoApiKey}`
@@ -114,6 +114,7 @@ export default function useFetch(options) {
       })
       .then((result) => {
         if (result) {
+          console.log('this is from useFetch', result)
           setIpGeoData(result)
         }
       })
@@ -128,10 +129,10 @@ export default function useFetch(options) {
     }
   }, [])
 
-  const API_KEYS = Object.values(CONFIG)
-  const apiKey = API_KEYS[index.current] // **
-  const { endpoint, category, language, max } = options
-  const URL = `https://gnews.io/api/v4/${endpoint}?category=${category}&lang=${language}&country=${ipGeoData?.country_code2 || 'ph'}&max=${max}&apikey=${apiKey}`
+  // const API_KEYS = Object.values(CONFIG)
+  // const apiKey = API_KEYS[index.current]
+  const { endpoint, category, language, max, country, apiKey } = options
+  const URL = `https://gnews.io/api/v4/${endpoint}?category=${category}&lang=${language}&country=${country || ipGeoData?.country_code2}&max=${max}&apikey=${apiKey}`
 
   const fetchData = useCallback(async () => {
     if (gnewsController.current) {
@@ -145,6 +146,7 @@ export default function useFetch(options) {
     gnewsController.current = new AbortController()
     const signal = gnewsController.current.signal
     try {
+      setLoading(true);
       const response = await fetch(URL, { signal })
       if (!response.ok) {
         const error = new Error();
@@ -163,12 +165,17 @@ export default function useFetch(options) {
       }
     } catch (error) {
       if (error.name === 'AbortError') return
+      setError(error)
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }, [URL])
 
   useEffect(() => {
-
+    if (ipGeoData) {
+      console.log(ipGeoData)
+    }
     fetchData();
 
     return () => {
@@ -178,5 +185,5 @@ export default function useFetch(options) {
     }
   }, [URL])
 
-  return data
+  return { data, error, loading }
 }

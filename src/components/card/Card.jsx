@@ -10,12 +10,14 @@ export default function Card({ cardTitle, cardDescription, cardImageSrc, cardIma
         <span className="news-source-badge absolute top-1.5 z-20 w-max px-2.5 py-[5px] cursor-pointer text-[clamp(10px,_1vw,_14px)] rounded-full bg-[rgba(0,0,0,.15)] blur-(--filter)">
           <a href={source?.url} target="_blank" className="text-white hover:underline">{source?.name}</a>
         </span>
-        <div className="card-content-title w-full font-medium text-[clamp(16px,_2.5vw,_1.1rem)]">
-          <h2 className="hover:underline cursor-pointer">{cardTitle}</h2>
-        </div>
+        {cardTitle && (
+          <div className="card-content-title w-full font-medium text-[clamp(16px,_2.5vw,_1.1rem)]">
+            <h2 className="hover:underline cursor-pointer" title={cardTitle}>{cardTitle.length >= 100 ? cardTitle.slice(0, 100) + '...' : cardTitle}</h2>
+          </div>
+        )}
         {cardDescription && (
           <div className="card-content-description w-full min-h-auto text-[clamp(12px,_1.8vw,_.9rem)]">
-            <p>{cardDescription.length >= 60 ? cardDescription.slice(0, 60) + '...' : cardDescription}</p>
+            <p className="text-[rgba(255,255,255,.6)]">{cardDescription.length >= 100 ? cardDescription.slice(0, 100) + '...' : cardDescription}</p>
           </div>
         )}
       </div>

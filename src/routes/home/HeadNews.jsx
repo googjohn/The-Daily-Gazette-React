@@ -3,19 +3,25 @@ import Card from "../../components/card/Card";
 import useFetch from "../../hooks/useFetch";
 const headnewsOptions = {
   endpoint: 'top-headlines',
-  category: 'general',
+  category: 'world',
   language: 'en',
-  max: 10
+  max: 10,
+  apiKey: import.meta.env.VITE_GNEWS_API_KEY_1
 }
 export default function HeadNews() {
   const newsData = useRef(null)
-  const { articles } = newsData.current = useFetch(headnewsOptions)
+  const { data: { articles }, error, loading } = newsData.current = useFetch(headnewsOptions)
   console.log('this is from head news', articles)
+
+  /*   const errorLoadingClassnames = `absolute top-0 min-h-screen min-w-full flex justify-center items-center bg-(--light-navy)`
+    if (loading) return <div className={errorLoadingClassnames}>Loading...</div>
+    if (error) return <div className={errorLoadingClassnames}>HTTPS error: status {error.statusCode}</div> */
+
   return (
     <>
       <div id="head-news">
         {
-          articles && articles.slice(0, 1).map(article => (
+          articles && articles.slice(0, 1).map((article) => (
             <Card
               key={article.id}
               cardTitle={article.title}
@@ -32,7 +38,6 @@ export default function HeadNews() {
             <Card
               key={article.id}
               cardTitle={article.title}
-              cardDescription={article.description}
               cardImageSrc={article.image}
               source={article.source}
             />
