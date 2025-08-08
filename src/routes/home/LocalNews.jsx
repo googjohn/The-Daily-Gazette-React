@@ -23,6 +23,7 @@ export default function LocalNews() {
             cardDescription={article.description}
             cardImageSrc={article.image}
             source={article.source}
+            link={article.url}
           />
         ))
       )

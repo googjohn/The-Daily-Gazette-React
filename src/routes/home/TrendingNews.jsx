@@ -27,6 +27,7 @@ export default function TrendingNews() {
             cardDescription={article.description}
             cardImageSrc={article.image}
             source={article.source}
+            link={article.url}
           />
         ))
         }
@@ -34,7 +35,7 @@ export default function TrendingNews() {
       <div className="aside">
         <Aside
           asideTitle={'More Trending News'}
-          asideContent={articles.slice(3)}
+          asideContent={articles?.slice(3)}
         />
       </div>
     </>

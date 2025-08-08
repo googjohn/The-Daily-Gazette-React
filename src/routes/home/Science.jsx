@@ -25,13 +25,14 @@ export default function Science() {
             cardDescription={index === 0 ? article.description : null}
             cardImageSrc={article.image}
             source={article.source}
+            link={article.url}
           />
         ))}
       </div>
       <div className="aside">
         <Aside
           asideTitle={'More on Science'}
-          asideContent={articles.slice(7)}
+          asideContent={articles?.slice(7)}
         />
       </div>
     </>

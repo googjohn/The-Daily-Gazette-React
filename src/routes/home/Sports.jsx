@@ -28,6 +28,7 @@ export default function Sports() {
                 cardDescription={index === 0 ? article.description : null}
                 cardImageSrc={article.image}
                 source={article.source}
+                link={article.url}
               />
             ))}
           </div>

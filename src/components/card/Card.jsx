@@ -1,4 +1,4 @@
-export default function Card({ cardTitle, cardDescription, cardImageSrc, cardImageAlt, source, classNames }) {
+export default function Card({ cardTitle, cardDescription, cardImageSrc, cardImageAlt, link, source, classNames }) {
   const baseStyle = `card relative h-full w-full rounded-lg text-black shadow-(--bs-cards) overflow-hidden`
   const cardContainerClassNames = `${baseStyle} ${classNames}`
   return (
@@ -12,7 +12,11 @@ export default function Card({ cardTitle, cardDescription, cardImageSrc, cardIma
         </span>
         {cardTitle && (
           <div className="card-content-title w-full font-medium text-[clamp(16px,_2.5vw,_1.1rem)]">
-            <h2 className="hover:underline cursor-pointer" title={cardTitle}>{cardTitle.length >= 100 ? cardTitle.slice(0, 100) + '...' : cardTitle}</h2>
+            <h2 className="hover:underline cursor-pointer" title={cardTitle}>
+              <a href={link} target="_blank">
+                {cardTitle.length >= 100 ? cardTitle.slice(0, 100) + '...' : cardTitle}
+              </a>
+            </h2>
           </div>
         )}
         {cardDescription && (
