@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../layout/RootLayout";
-import Home from "../routes/home/Home";
-import Finance from "../routes/finance/Finance";
-import Entertainment from "../routes/entertainment/Entertainment";
-import SciAndTech from "../routes/sci&tech/Sci&Tech";
-import Sports from "../routes/sports/Sports";
+import Home from "../pages/home/Home";
+import Finance from "../pages/finance/Finance";
+import Entertainment from "../pages/entertainment/Entertainment";
+import SciAndTech from "../pages/scienceAndTechnology/ScienceAndTechnology";
+import Sports from "../pages/sports/Sports";
 import Login from "../routes/login/Login";
 
 
