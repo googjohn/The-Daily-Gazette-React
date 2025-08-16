@@ -7,8 +7,8 @@ export default function Navigation() {
     width: window.innerWidth,
   });
 
-  const linkClassess = "p-1 border-b-2"
-  const navLinkBaseClasses = "p-2.5 cursor-pointer"
+  const linkClassess = "relative p-1"
+  const navLinkBaseClasses = "navLink-hover cursor-pointer"
 
   useEffect(() => {
     const handleResize = () => {
@@ -38,10 +38,10 @@ export default function Navigation() {
 
   if (windowSize.width <= 890) {
     const listToRemove = [];
-    if (['home', 'finance', 'sports'].includes(activeLink.id)) {
-      listToRemove.push('entertainment', 'scienceAndTechnology')
-    } else if (['entertainment', 'scienceAndTechnology'].includes(activeLink.id)) {
+    if (!['home', 'finance', 'sports'].includes(activeLink.id)) {
       listToRemove.push('sports', ...['entertainment', 'scienceAndTechnology'].filter(list => list !== activeLink.id))
+    } else {
+      listToRemove.push('entertainment', 'scienceAndTechnology')
     }
 
     linkListToUse = linkList.filter(list => !listToRemove.includes(list.id))
@@ -56,25 +56,26 @@ export default function Navigation() {
     linkListToUse = linkList.filter(list => !listToRemove.includes(list.id))
   }
   return (
-    <>
-      <nav id="navigation" className="hidden md:block">
-        <ul className="flex gap-2">
-          {
-            linkListToUse.map((link) => (
-              <li key={link.id} className={linkClassess}>
-                <NavLink
-                  id={link.id}
-                  to={link.src}
-                  style={({ isActive }) => ({ color: isActive ? 'var(--red)' : '' })}
-                  className={navLinkBaseClasses}
-                >
-                  {link.name}
-                </NavLink>
-              </li>
-            ))
-          }
-        </ul>
-      </nav >
-    </>
+    <nav id="navigation" className="hidden md:block">
+      <ul className="flex justify-center gap-2">
+        {
+          linkListToUse.map((link) => (
+            <li key={link.id} className={linkClassess}>
+              <NavLink
+                id={link.id}
+                to={link.src}
+                style={({ isActive }) => ({
+                  color: isActive ? 'var(--red)' : '',
+                  fontWeight: isActive ? '600' : ''
+                })}
+                className={navLinkBaseClasses}
+              >
+                {link.name}
+              </NavLink>
+            </li>
+          ))
+        }
+      </ul>
+    </nav >
   )
 }
