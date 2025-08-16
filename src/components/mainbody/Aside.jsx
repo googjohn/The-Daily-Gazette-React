@@ -1,12 +1,12 @@
 export default function Aside({ asideTitle, asideContent }) {
-  let asideStyle = ` w-full text-black overflow-hidden ${asideTitle.toLowerCase().includes('sports') ? 'h-1/2' : 'h-full'}`
+  let asideStyle = `relative w-full text-black overflow-auto ${asideTitle.toLowerCase().includes('sports') ? 'h-1/2' : 'h-full'}`
 
   return (
     <aside className={`aside-news ${asideStyle}`}>
-      <div className="aside-title bg-(--light-navy) border-b h-12 pl-2.5 p-2.5 leading-none">
+      <div className="aside-title sticky top-0 bg-(--light-navy) border-b h-12 pl-2.5 p-2.5 leading-none">
         <h2 className="text-white">{asideTitle}</h2>
       </div>
-      <div className="aside-content h-full overflow-auto">
+      <div className="aside-content h-auto">
         <ul>
           {asideTitle.toLowerCase().includes('sports') ? asideContent && asideContent.map((article) => (
             <li

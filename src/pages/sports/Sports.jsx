@@ -13,6 +13,7 @@ const sportsOptions = {
   gnewsMlbApikey: import.meta.env.VITE_GNEWS_API_KEY_10,
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY,
 }
+
 export default function Sports() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${sportsOptions.ipinfoApikey}`;
   const { data: { country } } = useFetchForAll(IPINFO_URL)
