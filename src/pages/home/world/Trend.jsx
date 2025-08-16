@@ -15,7 +15,7 @@ export default function TrendingNews() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${trendnewsOptions.ipinfoApikey}`;
   const { data: { country } } = useFetchForAll(IPINFO_URL)
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${trendnewsOptions.endpoint}?category=${trendnewsOptions.category}&lang=${trendnewsOptions.language}&country=${country.toLowerCase() || 'us'}&max=${trendnewsOptions.max}&apikey=${trendnewsOptions.gnewsApikey}`
+  const GNEWS_URL = `https://gnews.io/api/v4/${trendnewsOptions.endpoint}?category=${trendnewsOptions.category}&lang=${trendnewsOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${trendnewsOptions.max}&apikey=${trendnewsOptions.gnewsApikey}`
   const { data: { articles } } = useFetchForAll(GNEWS_URL)
 
   return (

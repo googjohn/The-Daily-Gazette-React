@@ -12,7 +12,7 @@ export default function HeadNews() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${headnewsOptions.ipinfoApikey}`;
   const { data: { country } } = useFetchForAll(IPINFO_URL)
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${headnewsOptions.endpoint}?category=${headnewsOptions.category}&lang=${headnewsOptions.language}&country=${country.toLowerCase() || 'us'}&max=${headnewsOptions.max}&apikey=${headnewsOptions.gnewsApikey}`
+  const GNEWS_URL = `https://gnews.io/api/v4/${headnewsOptions.endpoint}?category=${headnewsOptions.category}&lang=${headnewsOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${headnewsOptions.max}&apikey=${headnewsOptions.gnewsApikey}`
   const { data: { articles } } = useFetchForAll(GNEWS_URL)
 
   return (
@@ -39,6 +39,7 @@ export default function HeadNews() {
               cardTitle={article.title}
               cardImageSrc={article.image}
               source={article.source}
+              link={article.url}
             />
           ))
         }

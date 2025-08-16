@@ -15,7 +15,7 @@ export default function Technology() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${technologyOptions.ipinfoApikey}`;
   const { data: { country } } = useFetchForAll(IPINFO_URL)
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${technologyOptions.endpoint}?category=${technologyOptions.category}&lang=${technologyOptions.language}&country=${country.toLowerCase() || 'us'}&max=${technologyOptions.max}&apikey=${technologyOptions.gnewsApikey}`
+  const GNEWS_URL = `https://gnews.io/api/v4/${technologyOptions.endpoint}?category=${technologyOptions.category}&lang=${technologyOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${technologyOptions.max}&apikey=${technologyOptions.gnewsApikey}`
   const { data: { articles } } = useFetchForAll(GNEWS_URL)
 
   return (

@@ -15,7 +15,7 @@ export default function Science() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${scienceOptions.ipinfoApikey}`;
   const { data: { country } } = useFetchForAll(IPINFO_URL)
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${scienceOptions.endpoint}?category=${scienceOptions.category}&lang=${scienceOptions.language}&country=${country.toLowerCase() || 'us'}&max=${scienceOptions.max}&apikey=${scienceOptions.gnewsApikey}`
+  const GNEWS_URL = `https://gnews.io/api/v4/${scienceOptions.endpoint}?category=${scienceOptions.category}&lang=${scienceOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${scienceOptions.max}&apikey=${scienceOptions.gnewsApikey}`
   const { data: { articles } } = useFetchForAll(GNEWS_URL)
 
   return (

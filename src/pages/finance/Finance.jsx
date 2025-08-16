@@ -23,7 +23,7 @@ export default function Finance() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${ipinfoApikey}`;
   const { data: { country } } = useFetchForAll(IPINFO_URL)
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${businessOptions.endpoint}?category=${businessOptions.category}&lang=${businessOptions.language}&country=${country.toLowerCase() || 'us'}&max=${businessOptions.max}&apikey=${businessOptions.gnewsApikey}`
+  const GNEWS_URL = `https://gnews.io/api/v4/${businessOptions.endpoint}?category=${businessOptions.category}&lang=${businessOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${businessOptions.max}&apikey=${businessOptions.gnewsApikey}`
   const { data: { articles: financeArticles } } = useFetchForAll(GNEWS_URL)
 
   const GNEWS_URL_2 = `https://gnews.io/api/v4/${moreBusinessOptions.endpoint}?category=${moreBusinessOptions.category}&lang=${moreBusinessOptions.language}&country=${moreBusinessOptions.country}&max=${moreBusinessOptions.max}&apikey=${moreBusinessOptions.gnewsApikey}`

@@ -16,7 +16,7 @@ export default function LocalNews() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${localOptions.ipinfoApikey}`;
   const { data: { country } } = useFetchForAll(IPINFO_URL)
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${localOptions.endpoint}?category=${localOptions.category}&lang=${localOptions.language}&country=${country.toLowerCase()}&max=${localOptions.max}&apikey=${localOptions.gnewsApikey}`
+  const GNEWS_URL = `https://gnews.io/api/v4/${localOptions.endpoint}?category=${localOptions.category}&lang=${localOptions.language}&country=${country?.toLowerCase()}&max=${localOptions.max}&apikey=${localOptions.gnewsApikey}`
   const { data: { articles } } = useFetchForAll(GNEWS_URL)
 
   const sections = [

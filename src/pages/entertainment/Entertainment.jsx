@@ -15,7 +15,7 @@ export default function Entertainment() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${entertainmentOptions.ipinfoApikey}`;
   const { data: { country } } = useFetchForAll(IPINFO_URL)
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${entertainmentOptions.endpoint}?category=${entertainmentOptions.category}&lang=${entertainmentOptions.language}&country=${country.toLowerCase() || 'us'}&max=${entertainmentOptions.max}&apikey=${entertainmentOptions.gnewsApikey}`
+  const GNEWS_URL = `https://gnews.io/api/v4/${entertainmentOptions.endpoint}?category=${entertainmentOptions.category}&lang=${entertainmentOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${entertainmentOptions.max}&apikey=${entertainmentOptions.gnewsApikey}`
   const { data: { articles } } = useFetchForAll(GNEWS_URL)
   const sections = [
     {
