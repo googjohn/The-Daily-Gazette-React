@@ -3,8 +3,8 @@ import MobileMenu from "../mobilemenu/MobileMenu"
 
 export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobileActive }) {
   return (
-    <div id="user-search-container" className="flex items-center w-full justify-end relative">
-      <div className="user-search absolute top-20 w-[80vw] sm:w-11/12 md:relative md:top-0 flex">
+    <div id="user-search-container" className={`flex items-center w-full justify-end ${mobileActive && mobileMenuIsOpen ? 'relative' : ''}`}>
+      <div className={`user-search flex ${mobileActive && mobileMenuIsOpen ? 'absolute top-20 w-[80vw] sm:w-11/12' : 'w-11/12'}`}>
         <Search
           mobileActive={mobileActive}
           mobileMenuIsOpen={mobileMenuIsOpen}
@@ -17,6 +17,7 @@ export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobi
       <MobileMenu
         mobileMenuIsOpen={mobileMenuIsOpen}
         setMobileMenuIsOpen={setMobileMenuIsOpen}
+        mobileActive={mobileActive}
       />
     </div>
   )
@@ -31,7 +32,7 @@ function Search({ mobileActive, mobileMenuIsOpen }) {
             type="text"
             name="search"
             id="search"
-            className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9  ${mobileMenuIsOpen ? 'hover:w-full focus:w-full' : 'hover:w-11/12 focus:w-11/12'}  focus:transition-(--transition) transition-(--transition) outline-0`}
+            className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9  ${mobileMenuIsOpen ? 'hover:w-full  focus:w-full' : 'hover:w-11/12 focus:w-11/12'}  focus:transition-(--transition) transition-(--transition) outline-0`}
             placeholder="Search"
           />
           <label htmlFor="search" className="absolute bg-(--light-navy) rounded-full">

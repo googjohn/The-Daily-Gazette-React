@@ -35,15 +35,16 @@ export default function Navigation({ mobileMenuIsOpen, setMobileMenuIsOpen, mobi
   let linkListToUse = linkList;
 
   const activeLink = linkList.find(list => list.src === location.pathname) || linkList[0]
-  if (windowSize.width <= 768) {
-    setMobileActive(true)
-  } else if (windowSize.width > 768) {
+  if (windowSize.width > 768) {
     setMobileActive(false)
+  } else {
+    setMobileActive(true)
   }
 
   if (windowSize.width <= 890) {
     const listToRemove = [];
     if (!mobileActive) {
+      setMobileMenuIsOpen(false)
       if (!['home', 'finance', 'sports'].includes(activeLink.id)) {
         listToRemove.push('sports', ...['entertainment', 'scienceAndTechnology'].filter(list => list !== activeLink.id))
       } else {
@@ -63,10 +64,11 @@ export default function Navigation({ mobileMenuIsOpen, setMobileMenuIsOpen, mobi
     linkListToUse = linkList.filter(list => !listToRemove.includes(list.id))
   }
 
-
+  const menuActiveCloseClasses = `relative hidden`
+  const menuActiveOpenClasses = `absolute top-0 right-0 h-screen flex items-start justify-center`
   return (
-    <nav id="navigation" className={`absolute top-0 right-0 bg-(--light-navy) w-full h-screen opacity-95 sm:w-1/2 md:relative md:h-full md:w-full md:top-none md:right-none md:opacity-100 md:flex md:justify-center md:items-center ${mobileMenuIsOpen ? 'block' : 'hidden'}`}>
-      <ul className="flex flex-col justify-center items-center pt-40 gap-4 md:flex-row md:pt-0 md:gap-2">
+    <nav id="navigation" className={`${mobileActive && !mobileMenuIsOpen ? menuActiveCloseClasses : mobileActive && mobileMenuIsOpen ? menuActiveOpenClasses : 'flex items-center justify-center'} bg-(--light-navy) w-full opacity-95 sm:w-1/2`}>
+      <ul className={`flex ${mobileMenuIsOpen && mobileActive ? 'flex-col mt-40' : ''} justify-between items-center gap-4 md:pt-0 md:gap-2`}>
         {
           linkListToUse.map((link) => (
             <li key={link.id} className={linkClassess}>

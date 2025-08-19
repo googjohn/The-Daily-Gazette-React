@@ -1,11 +1,11 @@
-export default function MobileMenu({ mobileMenuIsOpen, setMobileMenuIsOpen }) {
+export default function MobileMenu({ mobileMenuIsOpen, setMobileMenuIsOpen, mobileActive }) {
   const handleClick = () => {
     setMobileMenuIsOpen(!mobileMenuIsOpen)
   }
   const spanClass = `block w-[30px] h-1 my-[5px] bg-(--red) shadow-(--bs-lightBlue) transition-(--transition) `
 
   return (
-    <div id="mobile-menu" className={`relative md:hidden z-40 ${mobileMenuIsOpen ? 'isOpen' : ''}`}>
+    <div id="mobile-menu" className={`relative ${mobileActive ? 'block' : 'hidden'} z-40 ${mobileMenuIsOpen ? 'isOpen' : ''}`}>
       <button
         type="button"
         id="mobile-nav-btn"
