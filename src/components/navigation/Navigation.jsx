@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 
-export default function Navigation() {
+export default function Navigation({ mobileMenuIsOpen, setMobileMenuIsOpen, mobileActive, setMobileActive }) {
   const location = useLocation();
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -35,13 +35,20 @@ export default function Navigation() {
   let linkListToUse = linkList;
 
   const activeLink = linkList.find(list => list.src === location.pathname) || linkList[0]
+  if (windowSize.width <= 768) {
+    setMobileActive(true)
+  } else if (windowSize.width > 768) {
+    setMobileActive(false)
+  }
 
   if (windowSize.width <= 890) {
     const listToRemove = [];
-    if (!['home', 'finance', 'sports'].includes(activeLink.id)) {
-      listToRemove.push('sports', ...['entertainment', 'scienceAndTechnology'].filter(list => list !== activeLink.id))
-    } else {
-      listToRemove.push('entertainment', 'scienceAndTechnology')
+    if (!mobileActive) {
+      if (!['home', 'finance', 'sports'].includes(activeLink.id)) {
+        listToRemove.push('sports', ...['entertainment', 'scienceAndTechnology'].filter(list => list !== activeLink.id))
+      } else {
+        listToRemove.push('entertainment', 'scienceAndTechnology')
+      }
     }
 
     linkListToUse = linkList.filter(list => !listToRemove.includes(list.id))
@@ -55,9 +62,11 @@ export default function Navigation() {
 
     linkListToUse = linkList.filter(list => !listToRemove.includes(list.id))
   }
+
+
   return (
-    <nav id="navigation" className="hidden md:block">
-      <ul className="flex justify-center gap-2">
+    <nav id="navigation" className={`absolute top-0 right-0 bg-(--light-navy) w-full h-screen opacity-95 sm:w-1/2 md:relative md:h-full md:w-full md:top-none md:right-none md:opacity-100 md:flex md:justify-center md:items-center ${mobileMenuIsOpen ? 'block' : 'hidden'}`}>
+      <ul className="flex flex-col justify-center items-center pt-40 gap-4 md:flex-row md:pt-0 md:gap-2">
         {
           linkListToUse.map((link) => (
             <li key={link.id} className={linkClassess}>

@@ -1,4 +1,4 @@
-import Navigation from "../navigation/Navigation";
+// import Navigation from "../navigation/Navigation";
 import appLogo from '../../assets/images/tdg-logo.png'
 import { Form, Link } from "react-router-dom";
 
@@ -10,8 +10,10 @@ export default function Footer() {
           <FooterDescriptionAndSocials />
           <FooterResourcesAndNewsLetter />
         </div>
-        <div id="footer-navigation" className="hidden mt-4 border-t-2 sm:flex justify-center items-center h-20">
-          <Navigation />
+        <div id="footer-navigation" className="mt-4 border-t-2 flex justify-center items-center h-20">
+          <div className="copyrights p-2.5 sm:border-none">
+            <h3 className="text-[1rem]">Copyright &copy; COGY&trade; | All Rights Reserved.</h3>
+          </div>
         </div>
       </div>
     </footer>
@@ -56,9 +58,6 @@ function FooterDescriptionAndSocials() {
             ))
           }
         </ul>
-      </div>
-      <div className="copyrights p-2.5 border-t-2 sm:border-none">
-        <h3 className="text-[1rem]">Copyright &copy; COGY&trade; | All Rights Reserved.</h3>
       </div>
     </div>
   )
