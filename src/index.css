@@ -80,6 +80,11 @@
 
   /* gap */
   --gap: 10px;
+
+  /* banner shadow */
+  --bs-banner-1: -4px 4px 10px 0 rgba(0, 0, 0, .35) , 4px -4px 10px 0 rgba(255, 255, 255, .2) ;
+  --bs-banner-2: 4px -4px 10px 0 rgba(0, 0, 0, .35) , -4px 4px 10px 0 rgba(255, 255, 255, .2) ;
+  --bs-banner-1-inset: -4px 4px 10px 0 rgba(0, 0, 0, .35) inset, 4px -4px 10px 0 rgba(255, 255, 255, .2)inset;
 }
 
 #root{

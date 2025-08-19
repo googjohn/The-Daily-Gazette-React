@@ -1,28 +1,6 @@
 import useClock from "../../hooks/useClock";
 import Salutation from "../../routes/home/Salutation";
-// export default function Section({ id, sectionData, asideData, salutationData }) {
-//   const sectionStyle = "h-full w-11/12 p-2.5 mx-auto mt-20 mb-5"
-//   const sectionContentStyle = 'grid grid-template';
-//   // const allClass = `${sectionContentStyle} ${customGrid}`
-//   return (
-//     <section id={id} className={sectionStyle}>
-//       {sectionData && sectionData.map((data, index) => (
-//         <div key={index} className="container mx-auto">
-//           {data.title && (
-//             <div className="section-title">
-//               <h2>{data.title}</h2>
-//             </div>
-//           )}
-//           {data.content && (
-//             <div className={`${data.customGrid} ${sectionContentStyle}`}>
-//               {data.content}
-//             </div>
-//           )}
-//         </div>
-//       ))}
-//     </section>
-//   )
-// }
+import WeatherApp from "../weatherapp/WeatherApp";
 
 export default function Section({ id, sectionData, salutation, weatherData }) {
   const sectionStyle = "h-full w-11/12 max-w-[1536px] p-2.5 mx-auto mt-20 mb-5"
@@ -32,9 +10,7 @@ export default function Section({ id, sectionData, salutation, weatherData }) {
     <section id={id} className={sectionStyle}>
       <div className="container mx-auto">
         {weatherData && (
-          <div id="weather-data">
-            weather data here
-          </div>
+          <WeatherApp />
         )
         }
         {id === 'world-news' &&

@@ -20,6 +20,7 @@ export default function WorldNews() {
       id={'world-news'}
       sectionData={sections}
       salutation={true}
+      weatherData={true}
     />
   )
 }
