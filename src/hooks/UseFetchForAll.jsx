@@ -41,7 +41,7 @@ export function useFetchForAll(URL) {
         abortController.current.abort()
       }
     }
-  }, [URL])
+  }, [fetchData])
 
   return { data }
 }

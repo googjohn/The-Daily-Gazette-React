@@ -1,11 +1,30 @@
 import AppLogo from "./AppLogo";
 import Navigation from "../navigation/Navigation";
 import UserSearch from "./UserAndSearch";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import useWindowSize from "../../hooks/UseWindowSize";
+
+const BREAKPOINTS = {
+  MINI: 640,
+  MOBILE: 768,
+  TABLET: 890,
+  DESKTOP: 980
+}
 
 export default function Header() {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
   const [mobileActive, setMobileActive] = useState(false);
+  const windowSize = useWindowSize();
+
+  useEffect(() => {
+    const isMobile = windowSize.width <= BREAKPOINTS.MOBILE
+    setMobileActive(isMobile)
+
+    if (!mobileActive && mobileMenuIsOpen) {
+      setMobileMenuIsOpen(false)
+    }
+
+  }, [windowSize.width])
 
   return (
     <header className={`fixed max-w-full top-0 left-0 z-100 w-full bg-(--light-navy)`}>
@@ -13,9 +32,8 @@ export default function Header() {
         <AppLogo />
         <Navigation
           mobileMenuIsOpen={mobileMenuIsOpen}
-          setMobileMenuIsOpen={setMobileMenuIsOpen}
           mobileActive={mobileActive}
-          setMobileActive={setMobileActive}
+          windowSize={windowSize}
         />
         <UserSearch
           mobileMenuIsOpen={mobileMenuIsOpen}

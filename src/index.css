@@ -84,7 +84,7 @@
   /* banner shadow */
   --bs-banner-1: -4px 4px 10px 0 rgba(0, 0, 0, .35) , 4px -4px 10px 0 rgba(255, 255, 255, .2) ;
   --bs-banner-2: 4px -4px 10px 0 rgba(0, 0, 0, .35) , -4px 4px 10px 0 rgba(255, 255, 255, .2) ;
-  --bs-banner-1-inset: -4px 4px 10px 0 rgba(0, 0, 0, .35) inset, 4px -4px 10px 0 rgba(255, 255, 255, .2)inset;
+  --bs-banner-1-inset: -4px 4px 10px 0 rgba(0, 0, 0, .35) inset, 4px -4px 10px 0 rgba(255, 255, 255, .2) inset;
 }
 
 #root{
@@ -100,11 +100,16 @@
     top: 5px;
     left: 10px;
     z-index: -1;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: var(--aqua);
     box-shadow: var(--bs-lightBlue);
+
+    @media (width >= 640px) {
+      width: 60px;
+      height: 60px;
+    }
   }
 }
 

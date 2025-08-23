@@ -10,7 +10,7 @@ export default function AppLogo() {
             <img
               src={appLogo}
               alt="app-logo"
-              className='h-[70px] align-middle'
+              className='sm:h-[70px] h-[60px] align-middle'
             />
           </Link>
         </div>

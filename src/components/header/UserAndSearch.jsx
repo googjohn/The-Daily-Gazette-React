@@ -32,7 +32,7 @@ function Search({ mobileActive, mobileMenuIsOpen }) {
             type="text"
             name="search"
             id="search"
-            className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9  ${mobileMenuIsOpen ? 'hover:w-full  focus:w-full' : 'hover:w-11/12 focus:w-11/12'}  focus:transition-(--transition) transition-(--transition) outline-0`}
+            className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9 transition-(--transition) ${mobileMenuIsOpen ? 'hover:w-full  focus:w-full' : 'hover:w-11/12 focus:w-11/12'}  focus:transition-(--transition) transition-(--transition) outline-0`}
             placeholder="Search"
           />
           <label htmlFor="search" className="absolute bg-(--light-navy) rounded-full">
@@ -46,7 +46,7 @@ function Search({ mobileActive, mobileMenuIsOpen }) {
 
 function User({ mobileActive, mobileMenuIsOpen }) {
   return (
-    <div id="user-container" className={`${mobileActive && !mobileMenuIsOpen ? 'hidden' : mobileActive && mobileMenuIsOpen ? 'block' : ''}`}>
+    <div id="user-container" className={`${mobileActive && !mobileMenuIsOpen ? 'hidden' : 'block'}`}>
       <i className="fa-sharp fa-solid fa-user w-9 h-9 bg-(--red) shadow-(--bs-lightBlue) cursor-pointer rounded-full text-(--aqua) p-2.5"></i>
     </div>
   )
