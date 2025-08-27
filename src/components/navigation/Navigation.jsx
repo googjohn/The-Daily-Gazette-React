@@ -53,7 +53,7 @@ export default function Navigation({ mobileMenuIsOpen, mobileActive, windowSize 
   const menuActiveCloseClasses = `relative hidden`
   const menuActiveOpenClasses = `absolute top-0 right-0 h-screen flex items-start justify-center`
   return (
-    <nav id="navigation" className={`${mobileActive && !mobileMenuIsOpen ? menuActiveCloseClasses : mobileActive && mobileMenuIsOpen ? menuActiveOpenClasses : 'flex items-center justify-center'} transition-(--transition) bg-(--light-navy) w-full opacity-95 sm:w-1/2`}>
+    <nav id="navigation" className={`${mobileActive && !mobileMenuIsOpen ? menuActiveCloseClasses : mobileActive && mobileMenuIsOpen ? menuActiveOpenClasses : 'flex items-center justify-center'} transition-[var(--transition)] bg-(--light-navy) w-full opacity-95 sm:w-1/2`}>
       <ul className={`flex ${mobileMenuIsOpen && mobileActive ? 'flex-col mt-40' : ''} transition-(--transition) justify-between items-center gap-4 md:pt-0 md:gap-2`}>
         {
           filteredLinkList.map((link) => (

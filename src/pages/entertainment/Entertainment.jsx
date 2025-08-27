@@ -13,10 +13,19 @@ const entertainmentOptions = {
 }
 export default function Entertainment() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${entertainmentOptions.ipinfoApikey}`;
-  const { data: { country } } = useFetchForAll(IPINFO_URL)
+  const { data: ipData } = useFetchForAll(IPINFO_URL)
+  const { country } = ipData || {};
 
   const GNEWS_URL = `https://gnews.io/api/v4/${entertainmentOptions.endpoint}?category=${entertainmentOptions.category}&lang=${entertainmentOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${entertainmentOptions.max}&apikey=${entertainmentOptions.gnewsApikey}`
-  const { data: { articles } } = useFetchForAll(GNEWS_URL)
+  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
+  const { articles } = gnewsData || {}
+
+  const isIpdataLoading = !ipData;
+  const isGnewsDataLoading = ipData && !gnewsData;
+  const isLoading = isGnewsDataLoading || isIpdataLoading
+
+  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading</div>
+
   const sections = [
     {
       title: 'Latest in Entertainment',

@@ -27,21 +27,3 @@ export default function WeatherAppCard({ dailyWeatherData, handleConditionsIcon,
     </div>
   )
 }
-{/* <div className="daily-forecast">
-        <div className="daily-item">
-        <span className="day">Today</span>
-        <span className="icon">
-        <img src="https://googjohn.github.io/hosted-assets/weather-icons/png/PartlyCloudyNight.png" alt="" />
-        </span>
-        <span className="daily-temp">24&deg;C</span>
-        <span className="precipitate">9%</span>
-        </div>
-        <div className="daily-item">
-        <span className="day">Tue</span>
-        <span className="icon">
-        <img src="https://googjohn.github.io/hosted-assets/weather-icons/png/PartlyCloudyNight.png" alt="" />
-        </span>
-        <span className="daily-temp">24&deg;C</span>
-        <span className="precipitate">9%</span>
-        </div>
-        </div> */}

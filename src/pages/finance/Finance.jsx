@@ -21,13 +21,23 @@ const ipinfoApikey = import.meta.env.VITE_IPINFO_API_KEY;
 
 export default function Finance() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${ipinfoApikey}`;
-  const { data: { country } } = useFetchForAll(IPINFO_URL)
+  const { data: ipData } = useFetchForAll(IPINFO_URL)
+  const { country } = ipData || {};
 
   const GNEWS_URL = `https://gnews.io/api/v4/${businessOptions.endpoint}?category=${businessOptions.category}&lang=${businessOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${businessOptions.max}&apikey=${businessOptions.gnewsApikey}`
-  const { data: { articles: financeArticles } } = useFetchForAll(GNEWS_URL)
+  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
+  const { articles: financeArticles } = gnewsData || {}
 
   const GNEWS_URL_2 = `https://gnews.io/api/v4/${moreBusinessOptions.endpoint}?category=${moreBusinessOptions.category}&lang=${moreBusinessOptions.language}&country=${moreBusinessOptions.country}&max=${moreBusinessOptions.max}&apikey=${moreBusinessOptions.gnewsApikey}`
-  const { data: { articles: popularFinanceArticles } } = useFetchForAll(GNEWS_URL_2)
+  const { data: gnewsData_2 } = useFetchForAll(GNEWS_URL_2)
+  const { articles: popularFinanceArticles } = gnewsData_2 || {}
+
+  const isIpdataLoading = !ipData;
+  const isGnewsDataLoading = ipData && !gnewsData;
+  const isGnewsData2Loading = ipData && gnewsData && !gnewsData_2;
+  const isLoading = isGnewsDataLoading || isIpdataLoading || isGnewsData2Loading;
+
+  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
 
   let sections = [
     {

@@ -1,6 +1,6 @@
 import useClock from "../../hooks/useClock";
 import Salutation from "../../routes/home/Salutation";
-import WeatherApp from "../weatherapp/WeatherApp";
+import WeatherApp from "../weatherapp/WeatherForecastApp";
 
 export default function Section({ id, sectionData, salutation, weatherData }) {
   const sectionStyle = "h-full w-11/12 max-w-[1536px] p-2.5 mx-auto mt-20 mb-5"

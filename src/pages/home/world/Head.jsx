@@ -10,11 +10,18 @@ const headnewsOptions = {
 }
 export default function HeadNews() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${headnewsOptions.ipinfoApikey}`;
-  const { data: { country } } = useFetchForAll(IPINFO_URL)
+  const { data: ipData } = useFetchForAll(IPINFO_URL)
+  const { country } = ipData || {}
 
   const GNEWS_URL = `https://gnews.io/api/v4/${headnewsOptions.endpoint}?category=${headnewsOptions.category}&lang=${headnewsOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${headnewsOptions.max}&apikey=${headnewsOptions.gnewsApikey}`
-  const { data: { articles } } = useFetchForAll(GNEWS_URL)
+  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
+  const { articles } = gnewsData || {}
 
+  const isIpdataLoading = !ipData;
+  const isGnewsDataLoading = ipData && !gnewsData;
+  const isLoading = isGnewsDataLoading || isIpdataLoading;
+
+  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
   return (
     <>
       <div id="head-news">

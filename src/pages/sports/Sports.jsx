@@ -27,7 +27,6 @@ export default function Sports() {
   const GNEWS_MLB_URL = `https://gnews.io/api/v4/search?q=mlb&apikey=${sportsOptions.gnewsMlbApikey}`;
   const { data: { articles: mlbArticles } } = useFetchForAll(GNEWS_MLB_URL)
 
-  console.log(nbaArticles)
   const sections = [
     {
       title: 'Latest in Sports',
