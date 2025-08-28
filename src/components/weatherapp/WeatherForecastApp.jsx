@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import { tempConverter, handleConditionsIcon } from "./WeatherForecastUtility";
+import Spinner from "../spinner/Spinner";
 
 const WAPP = {
   endpoint: 'timeline',
@@ -48,11 +49,11 @@ export default function WeatherApp() {
   const isLoading = isWeatherDataLoading || isIpdataLoading;
 
 
-  if (isLoading) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Loading data...</div>)
+  // if (isLoading) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Loading data...</div>)
+  if (isLoading) return <Spinner />
   if (weatherDataError) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>)
   if (ipdataError) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>)
-  console.log(weatherData)
-  console.log(ipdata)
+
   return (
     <div id="weather-app" className="flex justify-end sticky top-20 w-full z-30">
       <WeatherBanner weatherBg={weatherBackground}>

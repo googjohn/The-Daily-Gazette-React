@@ -1,5 +1,6 @@
 import Card from "../../../components/card/Card";
 import Section from "../../../components/mainbody/Section";
+import Spinner from "../../../components/spinner/Spinner";
 import { useFetchForAll } from "../../../hooks/UseFetchForAll";
 
 const localOptions = {
@@ -25,7 +26,7 @@ export default function LocalNews() {
   const isGnewsDataLoading = ipData && !gnewsData;
   const isLoading = isGnewsDataLoading || isIpdataLoading;
 
-  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
+  if (isLoading) return <Spinner />
   const sections = [
     {
       title: 'Latest Local News',

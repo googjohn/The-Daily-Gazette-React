@@ -1,5 +1,6 @@
 import Card from "../../components/card/Card";
 import Section from "../../components/mainbody/Section";
+import Spinner from "../../components/spinner/Spinner";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 
 const businessOptions = {
@@ -37,7 +38,7 @@ export default function Finance() {
   const isGnewsData2Loading = ipData && gnewsData && !gnewsData_2;
   const isLoading = isGnewsDataLoading || isIpdataLoading || isGnewsData2Loading;
 
-  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
+  if (isLoading) return <Spinner />
 
   let sections = [
     {

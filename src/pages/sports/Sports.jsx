@@ -1,6 +1,7 @@
 import Card from "../../components/card/Card";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
+import Spinner from "../../components/spinner/Spinner";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 
 const sportsOptions = {
@@ -37,7 +38,7 @@ export default function Sports() {
   const isGnewsData3Loading = ipData && gnewsData && gnewsData_2 && !gnewsData_3;
   const isLoading = isGnewsDataLoading || isIpdataLoading || isGnewsData2Loading || isGnewsData3Loading;
 
-  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
+  if (isLoading) return <Spinner />
 
   const sections = [
     {

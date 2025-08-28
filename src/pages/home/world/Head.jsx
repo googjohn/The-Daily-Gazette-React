@@ -1,4 +1,5 @@
 import Card from "../../../components/card/Card";
+import Spinner from "../../../components/spinner/Spinner";
 import { useFetchForAll } from "../../../hooks/UseFetchForAll";
 const headnewsOptions = {
   endpoint: 'top-headlines',
@@ -21,7 +22,7 @@ export default function HeadNews() {
   const isGnewsDataLoading = ipData && !gnewsData;
   const isLoading = isGnewsDataLoading || isIpdataLoading;
 
-  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
+  if (isLoading) return <Spinner />
 
   return (
     <>

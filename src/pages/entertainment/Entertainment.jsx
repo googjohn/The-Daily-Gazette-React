@@ -1,6 +1,7 @@
 import Card from "../../components/card/Card";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
+import Spinner from "../../components/spinner/Spinner";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 
 const entertainmentOptions = {
@@ -24,7 +25,7 @@ export default function Entertainment() {
   const isGnewsDataLoading = ipData && !gnewsData;
   const isLoading = isGnewsDataLoading || isIpdataLoading
 
-  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading</div>
+  if (isLoading) return <Spinner />
 
   const sections = [
     {

@@ -1,5 +1,6 @@
 import Card from "../../../components/card/Card"
 import Aside from "../../../components/mainbody/Aside"
+import Spinner from "../../../components/spinner/Spinner";
 import { useFetchForAll } from "../../../hooks/UseFetchForAll";
 
 const scienceOptions = {
@@ -24,7 +25,7 @@ export default function Science() {
   const isGnewsDataLoading = ipData && !gnewsData;
   const isLoading = isIpdataLoading || isGnewsDataLoading;
 
-  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
+  if (isLoading) return <Spinner />
 
   return (
     <>
