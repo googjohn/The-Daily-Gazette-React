@@ -13,8 +13,8 @@ export default function Home() {
       <Local />
       <Finance />
       <Entertainment />
-      {/* <ScienceTechnology /> */}
-      {/* <Sports /> */}
+      <ScienceTechnology />
+      <Sports />
     </main>
   )
 }

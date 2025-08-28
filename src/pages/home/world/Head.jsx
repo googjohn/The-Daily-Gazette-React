@@ -22,6 +22,7 @@ export default function HeadNews() {
   const isLoading = isGnewsDataLoading || isIpdataLoading;
 
   if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
+
   return (
     <>
       <div id="head-news">

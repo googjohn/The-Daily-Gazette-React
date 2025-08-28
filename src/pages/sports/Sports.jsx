@@ -16,16 +16,28 @@ const sportsOptions = {
 
 export default function Sports() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${sportsOptions.ipinfoApikey}`;
-  const { data: { country } } = useFetchForAll(IPINFO_URL)
+  const { data: ipData } = useFetchForAll(IPINFO_URL)
+  const { country } = ipData || {};
 
   const GNEWS_URL = `https://gnews.io/api/v4/${sportsOptions.endpoint}?category=${sportsOptions.category}&lang=${sportsOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${sportsOptions.max}&apikey=${sportsOptions.gnewsApikey}`
-  const { data: { articles } } = useFetchForAll(GNEWS_URL)
+  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
+  const { articles } = gnewsData || {}
 
   const GNEWS_NBA_URL = `https://gnews.io/api/v4/search?q=nba&apikey=${sportsOptions.gnewsNbaApikey}`;
-  const { data: { articles: nbaArticles } } = useFetchForAll(GNEWS_NBA_URL)
+  const { data: gnewsData_2 } = useFetchForAll(GNEWS_NBA_URL)
+  const { articles: nbaArticles } = gnewsData_2 || {}
 
   const GNEWS_MLB_URL = `https://gnews.io/api/v4/search?q=mlb&apikey=${sportsOptions.gnewsMlbApikey}`;
-  const { data: { articles: mlbArticles } } = useFetchForAll(GNEWS_MLB_URL)
+  const { data: gnewsData_3 } = useFetchForAll(GNEWS_MLB_URL)
+  const { articles: mlbArticles } = gnewsData_3 || {}
+
+  const isIpdataLoading = !ipData;
+  const isGnewsDataLoading = ipData && !gnewsData;
+  const isGnewsData2Loading = ipData && gnewsData && !gnewsData_2;
+  const isGnewsData3Loading = ipData && gnewsData && gnewsData_2 && !gnewsData_3;
+  const isLoading = isGnewsDataLoading || isIpdataLoading || isGnewsData2Loading || isGnewsData3Loading;
+
+  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
 
   const sections = [
     {

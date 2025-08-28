@@ -1,4 +1,4 @@
-import { useState, useEffect, } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import { tempConverter, handleConditionsIcon } from "./WeatherForecastUtility";
 
@@ -51,7 +51,8 @@ export default function WeatherApp() {
   if (isLoading) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Loading data...</div>)
   if (weatherDataError) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>)
   if (ipdataError) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>)
-
+  console.log(weatherData)
+  console.log(ipdata)
   return (
     <div id="weather-app" className="flex justify-end sticky top-20 w-full z-30">
       <WeatherBanner weatherBg={weatherBackground}>
@@ -113,7 +114,7 @@ function WeatherAppDropdown({
   ipData,
   isLoading
 }) {
-  const forecastContainerClasses = `w-full sm:min-w-max h-auto sm:min-w-[390px] flex flex-col
+  const forecastContainerClasses = `w-full h-auto sm:min-w-[420px] flex flex-col
     gap-2.5 py-2.5 px-5 rounded-lg absolute top-0 right-0 shadow-[var(--bs-banner-1)] -z-10`
   return (
     <div id="forecast-container"
@@ -209,46 +210,50 @@ function WeatherAppCurrentConditions({ hour, tempUnit, weatherData }) {
   const { currentConditions, description } = weatherData;
 
   return (
-    <>
-      {
-        weatherData && (<div className="forecast-item">
-          <div id="current-conditions-container"
-            className="w-full f-full flex gap-2.5 justify-between items-center [&>*]:basis-1/3">
-            <div id="current-condition-icon"
-              className="max-w-20 aspect-square">
-              <img src={handleConditionsIcon(currentConditions?.icon, hour)}
-                alt={currentConditions?.conditions}
-                title={currentConditions?.conditions} />
-            </div>
-            <div className="current-temp">
-              <span className="text-[clamp(2rem,_5vw,_2.5rem)] text-center block">
-                {tempConverter(currentConditions?.temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}
-              </span>
-            </div>
-            <div className="forecast-description text-[.8rem]">
-              <p>{description}</p>
-            </div>
-          </div>
-        </div>)
-      }
-    </>
+    <div className="forecast-item w-full">
+      <div id="current-conditions-container"
+        className="w-full f-full flex gap-2.5 justify-between items-center [&>*]:basis-1/3">
+        <div id="current-condition-icon"
+          className="max-w-20 aspect-square">
+          <img src={handleConditionsIcon(currentConditions?.icon, hour)}
+            alt={currentConditions?.conditions}
+            title={currentConditions?.conditions} />
+        </div>
+        <div className="current-temp">
+          <span className="text-[clamp(2rem,_5vw,_2.5rem)] text-center block" title="Temperature">
+            {tempConverter(currentConditions?.temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}
+          </span>
+        </div>
+        <div className="forecast-description text-[.8rem]" title="Forecast">
+          <p>{description}</p>
+        </div>
+      </div>
+    </div>
   )
 }
 
 function WeatherAppHourlyAndDailyCards({ hour, tempUnit, weatherData }) {
   const { days } = weatherData
   const [selectedMode, setSelectedMode] = useState('hourly') // hourly and daily
-  // const [nextDayForecast, setNextDayForecast] = useState(null);
+  const [hourlyForecast, setHourlyForecast] = useState([]);
 
   const forecast = selectedMode === 'hourly' ?
-    days[0].hours.slice(hour, hour + 5) :
+    hourlyForecast :
     days.slice(0, 5)
 
-  /* useEffect(()=> {
-    if(selectedMode === 'hourly' && forecast.length < 5){
-      days[1].hours.slice(hour, hour + 5)
+  useEffect(() => {
+    const todayHours = days[0].hours.slice(hour, hour + 5)
+    if (selectedMode === 'hourly') {
+      if (todayHours.length < 5) {
+        const addedHours = days[1].hours.slice(hour, hour + 5)
+        setHourlyForecast(() => {
+          return [...todayHours, ...addedHours]
+        })
+      } else {
+        return setHourlyForecast(todayHours)
+      }
     }
-  }, [forecast, ]) */
+  }, [selectedMode, hour, days])
   return (
     <div className="forecast-item w-full">
       <div className="hour-day-forecast w-full min-h-50 flex flex-col gap-2.5">
@@ -277,7 +282,7 @@ function WeatherAppHourlyAndDailyCards({ hour, tempUnit, weatherData }) {
             <span>Daily</span>
           </div>
         </div>
-        <div className="hour-day-cards-container flex w-full gap-2.5">
+        <div className="hour-day-cards-container flex flex-wrap sm:flex-nowrap w-full gap-2.5">
 
           {
             forecast.map(forecast => (
@@ -298,6 +303,7 @@ function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) {
   const { conditions, icon, temp, datetime, precipprob } = forecastData
   const hour = datetime.split(':')[0];
   const [day, setDay] = useState(today)
+  const days = useMemo(() => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], [])
 
   useEffect(() => {
     if (selectedMode === 'daily') {
@@ -311,10 +317,11 @@ function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) {
   }, [selectedMode, datetime])
 
   return (
-    <div className="hourly-daily-forecast flex flex-col basis-[20%] items-center gap-2.5
+    <div className="hourly-daily-forecast flex flex-col w-max grow sm:w-full items-center gap-1 sm:gap-2.5
       p-2.5 rounded-lg shadow-[var(--bs-banner-1)] backdrop-blur-sm">
       <span className="time whitespace-nowrap">
-        {selectedMode === 'hourly' ? (hour < 12 ? `${hour} AM` : `${hour > 12 ? String(hour - 12).padStart(2, '0') : hour} PM`) : day}
+        {selectedMode === 'hourly' ? (hour < 12 ? `${hour} AM` : `${hour > 12 ? (hour - 12) : hour} PM`) :
+          day === days[new Date().getDay()] ? 'Today' : day}
       </span>
       <span className="icon w-10 aspect-square">
         <img className="w-full h-full"
@@ -322,8 +329,10 @@ function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) {
           alt={conditions}
           title={conditions} />
       </span>
-      <span className="temp">{tempConverter(temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}</span>
-      <span className="precipitate flex flex-nowrap gap-[5px] items-center">{precipprob}%</span>
+      <span className="temp" title="Temperature">{tempConverter(temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}</span>
+      <span className="precipitate flex flex-nowrap gap-[2px] items-center" title="Rain probability">
+        <i className="fa-solid fa-droplet text-[.5rem]"></i>{precipprob}%
+      </span>
     </div>
   )
 }

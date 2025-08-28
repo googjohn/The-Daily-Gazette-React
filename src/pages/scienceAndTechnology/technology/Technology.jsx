@@ -13,10 +13,18 @@ const technologyOptions = {
 
 export default function Technology() {
   const IPINFO_URL = `https://ipinfo.io/json?token=${technologyOptions.ipinfoApikey}`;
-  const { data: { country } } = useFetchForAll(IPINFO_URL)
+  const { data: ipData } = useFetchForAll(IPINFO_URL)
+  const { country } = ipData || {}
 
   const GNEWS_URL = `https://gnews.io/api/v4/${technologyOptions.endpoint}?category=${technologyOptions.category}&lang=${technologyOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${technologyOptions.max}&apikey=${technologyOptions.gnewsApikey}`
-  const { data: { articles } } = useFetchForAll(GNEWS_URL)
+  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
+  const { articles } = gnewsData || {}
+
+  const isIpdataLoading = !ipData;
+  const isGnewsDataLoading = ipData && !gnewsData;
+  const isLoading = isIpdataLoading || isGnewsDataLoading;
+
+  if (isLoading) return <div className="w-full h-full flex justify-center items-center">Loading...</div>
 
   return (
     <>
