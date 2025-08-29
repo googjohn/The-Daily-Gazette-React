@@ -246,7 +246,7 @@ function WeatherAppHourlyAndDailyCards({ hour, tempUnit, weatherData }) {
     const todayHours = days[0].hours.slice(hour, hour + 5)
     if (selectedMode === 'hourly') {
       if (todayHours.length < 5) {
-        const addedHours = days[1].hours.slice(hour, hour + 5)
+        const addedHours = days[1].hours.slice(0, 5 - todayHours.length)
         setHourlyForecast(() => {
           return [...todayHours, ...addedHours]
         })
@@ -321,7 +321,10 @@ function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) {
     <div className="hourly-daily-forecast flex flex-col w-max grow sm:w-full items-center gap-1 sm:gap-2.5
       p-2.5 rounded-lg shadow-[var(--bs-banner-1)] backdrop-blur-sm">
       <span className="time whitespace-nowrap">
-        {selectedMode === 'hourly' ? (hour < 12 ? `${hour} AM` : `${hour > 12 ? (hour - 12) : hour} PM`) :
+        {selectedMode === 'hourly' ? (
+          hour === '00' || hour === '0' ?
+            `12 AM` :
+            hour < 12 ? `${hour} AM` : `${hour > 12 ? (hour - 12) : hour} PM`) :
           day === days[new Date().getDay()] ? 'Today' : day}
       </span>
       <span className="icon w-10 aspect-square">
