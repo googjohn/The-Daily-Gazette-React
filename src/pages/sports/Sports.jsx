@@ -1,10 +1,8 @@
 import Card from "../../components/card/Card";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
-import Spinner from "../../components/spinner/Spinner";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
 
-const sportsOptions = {
+export const sportsOptions = {
   endpoint: 'top-headlines',
   category: 'sports',
   language: 'en',
@@ -15,30 +13,7 @@ const sportsOptions = {
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY,
 }
 
-export default function Sports() {
-  const IPINFO_URL = `https://ipinfo.io/json?token=${sportsOptions.ipinfoApikey}`;
-  const { data: ipData } = useFetchForAll(IPINFO_URL)
-  const { country } = ipData || {};
-
-  const GNEWS_URL = `https://gnews.io/api/v4/${sportsOptions.endpoint}?category=${sportsOptions.category}&lang=${sportsOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${sportsOptions.max}&apikey=${sportsOptions.gnewsApikey}`
-  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
-  const { articles } = gnewsData || {}
-
-  const GNEWS_NBA_URL = `https://gnews.io/api/v4/search?q=nba&apikey=${sportsOptions.gnewsNbaApikey}`;
-  const { data: gnewsData_2 } = useFetchForAll(GNEWS_NBA_URL)
-  const { articles: nbaArticles } = gnewsData_2 || {}
-
-  const GNEWS_MLB_URL = `https://gnews.io/api/v4/search?q=mlb&apikey=${sportsOptions.gnewsMlbApikey}`;
-  const { data: gnewsData_3 } = useFetchForAll(GNEWS_MLB_URL)
-  const { articles: mlbArticles } = gnewsData_3 || {}
-
-  const isIpdataLoading = !ipData;
-  const isGnewsDataLoading = ipData && !gnewsData;
-  const isGnewsData2Loading = ipData && gnewsData && !gnewsData_2;
-  const isGnewsData3Loading = ipData && gnewsData && gnewsData_2 && !gnewsData_3;
-  const isLoading = isGnewsDataLoading || isIpdataLoading || isGnewsData2Loading || isGnewsData3Loading;
-
-  if (isLoading) return <Spinner />
+export default function Sports({ sportsNewsData, nbaNewsDAta, mlbNewsData }) {
 
   const sections = [
     {
@@ -47,7 +22,7 @@ export default function Sports() {
       content: (
         <>
           <div className="grid grid-template grid-area-sports">
-            {articles && articles.slice(0, 9).map((article, index) => (
+            {sportsNewsData && sportsNewsData.slice(0, 9).map((article, index) => (
               <Card
                 key={article.id}
                 cardTitle={article.title}
@@ -61,11 +36,11 @@ export default function Sports() {
           <div className="aside">
             <Aside
               asideTitle={'NBA Sports Updates'}
-              asideContent={nbaArticles}
+              asideContent={nbaNewsDAta}
             />
             <Aside
               asideTitle={'MLB Sports Updates'}
-              asideContent={mlbArticles}
+              asideContent={mlbNewsData}
             />
           </div>
         </>

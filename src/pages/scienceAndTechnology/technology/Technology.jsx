@@ -1,9 +1,7 @@
 import Card from "../../../components/card/Card"
 import Aside from "../../../components/mainbody/Aside"
-import Spinner from "../../../components/spinner/Spinner";
-import { useFetchForAll } from "../../../hooks/UseFetchForAll"
 
-const technologyOptions = {
+export const technologyOptions = {
   endpoint: 'top-headlines',
   category: 'technology',
   language: 'en',
@@ -12,25 +10,12 @@ const technologyOptions = {
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
 
-export default function Technology() {
-  const IPINFO_URL = `https://ipinfo.io/json?token=${technologyOptions.ipinfoApikey}`;
-  const { data: ipData } = useFetchForAll(IPINFO_URL)
-  const { country } = ipData || {}
-
-  const GNEWS_URL = `https://gnews.io/api/v4/${technologyOptions.endpoint}?category=${technologyOptions.category}&lang=${technologyOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${technologyOptions.max}&apikey=${technologyOptions.gnewsApikey}`
-  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
-  const { articles } = gnewsData || {}
-
-  const isIpdataLoading = !ipData;
-  const isGnewsDataLoading = ipData && !gnewsData;
-  const isLoading = isIpdataLoading || isGnewsDataLoading;
-
-  if (isLoading) return <Spinner />
+export default function Technology({ technologyNewsData }) {
 
   return (
     <>
       <div className="grid grid-template grid-area-entmnt-scitech">
-        {articles && articles.slice(0, 7).map((article, index) => (
+        {technologyNewsData && technologyNewsData.slice(0, 7).map((article, index) => (
           <Card
             key={article.id}
             cardTitle={article.title}
@@ -44,7 +29,7 @@ export default function Technology() {
       <div className="aside">
         <Aside
           asideTitle={'More on Technology'}
-          asideContent={articles?.slice(7)}
+          asideContent={technologyNewsData?.slice(7)}
         />
       </div>
     </>

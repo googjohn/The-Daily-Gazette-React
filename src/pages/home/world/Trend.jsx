@@ -1,9 +1,7 @@
 import Card from "../../../components/card/Card";
 import Aside from "../../../components/mainbody/Aside";
-import Spinner from "../../../components/spinner/Spinner";
-import { useFetchForAll } from "../../../hooks/UseFetchForAll";
 
-const trendnewsOptions = {
+export const trendnewsOptions = {
   endpoint: 'top-headlines',
   category: 'general',
   language: 'en',
@@ -12,24 +10,12 @@ const trendnewsOptions = {
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
 
-export default function TrendingNews() {
-  const IPINFO_URL = `https://ipinfo.io/json?token=${trendnewsOptions.ipinfoApikey}`;
-  const { data: ipData } = useFetchForAll(IPINFO_URL)
-  const { country } = ipData || {}
+export default function TrendingNews({ trendNewsData }) {
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${trendnewsOptions.endpoint}?category=${trendnewsOptions.category}&lang=${trendnewsOptions.language}&country=${country?.toLowerCase() || 'us'}&max=${trendnewsOptions.max}&apikey=${trendnewsOptions.gnewsApikey}`
-  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
-  const { articles } = gnewsData || {};
-
-  const isIpdataLoading = !ipData;
-  const isGnewsDataLoading = ipData && !gnewsData;
-  const isLoading = isGnewsDataLoading || isIpdataLoading;
-
-  if (isLoading) return <Spinner />
   return (
     <>
       <div id="trend-news" className="grid grid-template grid-area-trend">
-        {articles && articles.slice(0, 3).map(article => (
+        {trendNewsData && trendNewsData?.slice(0, 3).map(article => (
           <Card
             key={article.id}
             cardTitle={article.title}
@@ -44,7 +30,7 @@ export default function TrendingNews() {
       <div className="aside">
         <Aside
           asideTitle={'More Trending News'}
-          asideContent={articles?.slice(3)}
+          asideContent={trendNewsData?.slice(3)}
         />
       </div>
     </>

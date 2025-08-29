@@ -1,9 +1,7 @@
 import Card from "../../../components/card/Card";
 import Section from "../../../components/mainbody/Section";
-import Spinner from "../../../components/spinner/Spinner";
-import { useFetchForAll } from "../../../hooks/UseFetchForAll";
 
-const localOptions = {
+export const localOptions = {
   endpoint: 'top-headlines',
   category: 'nation',
   language: 'en',
@@ -13,26 +11,14 @@ const localOptions = {
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
 
-export default function LocalNews() {
-  const IPINFO_URL = `https://ipinfo.io/json?token=${localOptions.ipinfoApikey}`;
-  const { data: ipData } = useFetchForAll(IPINFO_URL)
-  const { country } = ipData || {};
+export default function LocalNews({ localNewsData }) {
 
-  const GNEWS_URL = `https://gnews.io/api/v4/${localOptions.endpoint}?category=${localOptions.category}&lang=${localOptions.language}&country=${country?.toLowerCase()}&max=${localOptions.max}&apikey=${localOptions.gnewsApikey}`
-  const { data: gnewsData } = useFetchForAll(GNEWS_URL)
-  const { articles } = gnewsData || {}
-
-  const isIpdataLoading = !ipData;
-  const isGnewsDataLoading = ipData && !gnewsData;
-  const isLoading = isGnewsDataLoading || isIpdataLoading;
-
-  if (isLoading) return <Spinner />
   const sections = [
     {
       title: 'Latest Local News',
       customGrid: 'grid-area-local',
       content: (
-        articles && articles.slice(0, 8).map(article => (
+        localNewsData && localNewsData.slice(0, 8).map(article => (
           <Card
             key={article.id}
             cardTitle={article.title}
