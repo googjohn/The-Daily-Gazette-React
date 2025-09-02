@@ -4,6 +4,7 @@ import Section from "../../components/mainbody/Section";
 
 export const sportsOptions = {
   endpoint: 'top-headlines',
+  searchEndpoint: 'search',
   category: 'sports',
   language: 'en',
   max: 10,

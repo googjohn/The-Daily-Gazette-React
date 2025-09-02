@@ -6,6 +6,7 @@ import Entertainment from "../pages/entertainment/Entertainment";
 import SciAndTech from "../pages/scienceAndTechnology/ScienceAndTechnology";
 import Sports from "../pages/sports/Sports";
 import Login from "../routes/login/Login";
+import Search, { SearchLoader } from "../pages/search/Search";
 
 
 export const router = createBrowserRouter([
@@ -18,11 +19,16 @@ export const router = createBrowserRouter([
       { path: 'finance', element: <Finance /> },
       { path: 'entertainment', element: <Entertainment /> },
       { path: 'scienceTechnology', element: <SciAndTech /> },
-      { path: 'Sports', element: <Sports /> },
+      { path: 'sports', element: <Sports /> },
     ]
   },
   {
     path: 'login',
     element: <Login />
+  },
+  {
+    path: 'search',
+    element: <Search />,
+    loader: SearchLoader,
   }
 ])

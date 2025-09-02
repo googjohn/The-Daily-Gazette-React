@@ -1,5 +1,16 @@
-import { Form } from "react-router-dom"
+import { Form, useLocation, useNavigate } from "react-router-dom"
 import MobileMenu from "../mobilemenu/MobileMenu"
+import { useEffect, useState } from "react"
+import { useFetchForAll } from "../../hooks/UseFetchForAll"
+import Spinner from "../spinner/Spinner"
+
+const SEARCH_CONFIG = {
+  endpoint: 'search',
+  apiKey: import.meta.env.VITE_GNEWS_API_KEY_11
+}
+
+const SEARCH_URL = (config, searchTerm) =>
+  `https://gnews.io/api/v4/${config.endpoint}?q=${searchTerm}&apikey=${config.apiKey}}`
 
 export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobileActive }) {
   return (
@@ -24,16 +35,30 @@ export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobi
 }
 
 function Search({ mobileActive, mobileMenuIsOpen }) {
+  const [queryResult, setQueryResult] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const location = useLocation()
+  const query = new URLSearchParams(location.search).get('q')
+  const url = location.pathname
+  console.log(url)
+
   return (
-    <div id="search-container" className={`w-full ${mobileActive && !mobileMenuIsOpen ? 'hidden' : mobileActive && mobileMenuIsOpen ? 'block' : ''}`}>
+    <div id="search-container" className={`w-full ${mobileActive && !mobileMenuIsOpen ?
+      'hidden' :
+      mobileActive && mobileMenuIsOpen ?
+        'block' : ''}`}>
       <Form method="get">
         <div className="form-group relative mr-2 flex justify-end items-center flex-nowrap ">
           <input
+            onChange={(e) => setSearchTerm(e.target.value)}
             type="text"
             name="search"
             id="search"
-            className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9 transition-(--transition) ${mobileMenuIsOpen ? 'hover:w-full  focus:w-full' : 'hover:w-11/12 focus:w-11/12'}  focus:transition-(--transition) transition-(--transition) outline-0`}
             placeholder="Search"
+            className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9 transition-(--transition)
+              ${mobileMenuIsOpen ? 'hover:w-full  focus:w-full' : 'hover:w-11/12 focus:w-11/12'} 
+              focus:transition-(--transition) transition-(--transition) outline-0`}
           />
           <label htmlFor="search" className="absolute bg-(--light-navy) rounded-full">
             <i className="fa-sharp fa-solid fa-magnifying-glass p-2.5 cursor-pointer  w-9 h-9"></i>
@@ -47,7 +72,8 @@ function Search({ mobileActive, mobileMenuIsOpen }) {
 function User({ mobileActive, mobileMenuIsOpen }) {
   return (
     <div id="user-container" className={`${mobileActive && !mobileMenuIsOpen ? 'hidden' : 'block'}`}>
-      <i className="fa-sharp fa-solid fa-user w-9 h-9 bg-(--red) shadow-(--bs-lightBlue) cursor-pointer rounded-full text-(--aqua) p-2.5"></i>
+      <i className="fa-sharp fa-solid fa-user w-9 h-9 bg-(--red) shadow-(--bs-lightBlue) cursor-pointer
+       rounded-full text-(--aqua) p-2.5"></i>
     </div>
   )
 }

@@ -6,7 +6,8 @@ import Spinner from "../spinner/Spinner";
 const WAPP = {
   endpoint: 'timeline',
   visualCrossingApikey: import.meta.env.VITE_VISUALCROSSING_API_KEY,
-  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
+  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY,
+  openWeatherApikey: import.meta.env.VITE_OPENWEATHER_API_KEY,
 }
 
 const tempUnits = {
@@ -33,13 +34,13 @@ export default function WeatherApp() {
   }, [hour])
 
   const IPINFO_URL = `https://ipinfo.io/json?token=${WAPP.ipinfoApikey}`;
-  const { data: ipdata, loading: ipdataLoading, error: ipdataError } = useFetchForAll(IPINFO_URL);
+  const { data: ipdata, error: ipdataError } = useFetchForAll(IPINFO_URL);
   const { loc, city, region } = ipdata || {};
   const lat = loc?.split(',')[0]
   const lon = loc?.split(',')[1]
 
   const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${lat},${lon}?&key=${WAPP.visualCrossingApikey}&iconSet=icons1`
-  const { data: weatherData, loading: weatherDataLoading, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
+  const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
   const { currentConditions } = weatherData || {};
 
   // very important check to make sure both ipdata and weatherdata 
@@ -48,14 +49,13 @@ export default function WeatherApp() {
   const isWeatherDataLoading = ipdata && !weatherData;
   const isLoading = isWeatherDataLoading || isIpdataLoading;
 
-
-  // if (isLoading) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Loading data...</div>)
-  if (isLoading) return <Spinner />
+  // if (isLoading) return <Spinner />
   if (weatherDataError) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>)
   if (ipdataError) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>)
 
   return (
     <div id="weather-app" className="flex justify-end sticky top-20 w-full z-30">
+      {isLoading && <div>Loading...</div>}
       <WeatherBanner weatherBg={weatherBackground}>
         {weatherData && isHovered ?
           "Weather Forecast Today" : (
@@ -75,7 +75,8 @@ export default function WeatherApp() {
                 {tempConverter(currentConditions?.temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}</span>}
               </div>
             </>)
-        }{weatherData && (
+        }
+        {weatherData && (
           <div id="dropdown"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -97,9 +98,7 @@ export default function WeatherApp() {
               weatherData={weatherData}
               ipData={ipdata}
               isLoading={isLoading} />
-          </div>
-        )
-
+          </div>)
         }
       </WeatherBanner>
     </div>
@@ -316,7 +315,6 @@ function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) {
     }
 
   }, [selectedMode, datetime])
-
   return (
     <div className="hourly-daily-forecast flex flex-col w-max grow sm:w-full items-center gap-1 sm:gap-2.5
       p-2.5 rounded-lg shadow-[var(--bs-banner-1)] backdrop-blur-sm">

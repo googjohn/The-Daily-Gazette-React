@@ -6,7 +6,6 @@ export function useFetchForAll(URL) {
   const [loading, setLoading] = useState(true);
   const abortController = useRef(null)
 
-
   const fetchData = useCallback(async () => {
     if (abortController.current) {
       abortController.current.abort()
@@ -45,6 +44,9 @@ export function useFetchForAll(URL) {
   }, [URL])
 
   useEffect(() => {
+
+    if (!URL) return;
+
     fetchData();
 
     return () => {

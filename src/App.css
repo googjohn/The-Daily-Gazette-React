@@ -2,7 +2,7 @@
 
 
 section {
-  background-color: var(--white-20);
+  /* background-color: var(--white-20); */
 }
 
 .section-title, .aside-title {
@@ -13,6 +13,9 @@ section {
   }
 }
 
+.grid-span-2 {
+  grid-column: span 2
+}
 
 /* grid template and areas */
 .grid-template {

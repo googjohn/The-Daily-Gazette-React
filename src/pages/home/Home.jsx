@@ -11,79 +11,52 @@ import { trendnewsOptions } from "./world/Trend";
 import { technologyOptions } from "../scienceAndTechnology/technology/Technology";
 import { scienceOptions } from "../scienceAndTechnology/science/Science";
 
-const GENERATE_CATEGORY_URL = (newsOptions, country) => {
-  return `https://gnews.io/api/v4/${newsOptions.endpoint}?category=${newsOptions.category}&lang=${newsOptions.language}&country=${newsOptions.country || country?.toLowerCase() || 'us'}&max=${newsOptions.max}&apikey=${newsOptions.gnewsApikey}`
-}
-
 const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
+
+const generateGnewsUrl = (newsOptions, country, searchTerm) => searchTerm ?
+  `https://gnews.io/api/v4/${newsOptions.searchEndpoint}?q=${searchTerm}&apikey=${searchTerm === 'nba' ? newsOptions.gnewsNbaApikey : newsOptions.gnewsMlbApikey}` :
+  `https://gnews.io/api/v4/${newsOptions.endpoint}?category=${newsOptions.category}&lang=${newsOptions.language}&country=${newsOptions.country || country?.toLowerCase() || 'us'}&max=${newsOptions.max}&apikey=${newsOptions.gnewsApikey}`
+
+const useFetchNews = (options, country, searchTerm) => {
+  const { data } = useFetchForAll(generateGnewsUrl(options, country, searchTerm));
+  return data?.articles
+}
 
 export default function Home() {
 
-  const { data: ipData } = useFetchForAll(`https://ipinfo.io/json?token=${IPINFO_API_KEY}`)
+  const { data: ipData, error: ipFetchError } = useFetchForAll(`https://ipinfo.io/json?token=${IPINFO_API_KEY}`)
   const { country } = ipData || {}
 
-  const headNewsUrl = GENERATE_CATEGORY_URL(headnewsOptions, country);
-  const { data: headNewsData } = useFetchForAll(headNewsUrl)
-  const { articles: headNewsArticles } = headNewsData || {}
-
-  const trendNewsUrl = GENERATE_CATEGORY_URL(trendnewsOptions, country)
-  const { data: trendNewsData } = useFetchForAll(trendNewsUrl)
-  const { articles: trendNewsArticles } = trendNewsData || {}
-
-  const localNewsUrl = GENERATE_CATEGORY_URL(localOptions, country)
-  const { data: localNewsData } = useFetchForAll(localNewsUrl)
-  const { articles: localNewsArticles } = localNewsData || {}
-
-  const financeNewsUrl = GENERATE_CATEGORY_URL(businessOptions, country)
-  const { data: financeNewsData } = useFetchForAll(financeNewsUrl)
-  const { articles: financeNewsArticles } = financeNewsData || {}
-
-  const moreFinanceNewsUrl = GENERATE_CATEGORY_URL(moreBusinessOptions, country)
-  const { data: moreFinanceNewsData } = useFetchForAll(moreFinanceNewsUrl)
-  const { articles: moreFinanceNewsArticles } = moreFinanceNewsData || {}
-
-  const entertainmentNewsUrl = GENERATE_CATEGORY_URL(entertainmentOptions, country)
-  const { data: entertainmentNewsData } = useFetchForAll(entertainmentNewsUrl)
-  const { articles: entertainmentNewsArticles } = entertainmentNewsData || {}
-
-  const technologyNewsUrl = GENERATE_CATEGORY_URL(technologyOptions, country)
-  const { data: technologyNewsData } = useFetchForAll(technologyNewsUrl)
-  const { articles: technologyNewsArticles } = technologyNewsData || {}
-
-  const scienceNewsUrl = GENERATE_CATEGORY_URL(scienceOptions, country)
-  const { data: scienceNewsData } = useFetchForAll(scienceNewsUrl)
-  const { articles: scienceNewsArticles } = scienceNewsData || {}
-
-  const sportsNewsUrl = GENERATE_CATEGORY_URL(sportsOptions, country)
-  const { data: sportsNewsData } = useFetchForAll(sportsNewsUrl)
-  const { articles: sportsNewsArticles } = sportsNewsData || {}
-
-  const GNEWS_NBA_URL = `https://gnews.io/api/v4/search?q=nba&apikey=${sportsOptions.gnewsNbaApikey}`;
-  const { data: nbaNewsData } = useFetchForAll(GNEWS_NBA_URL)
-  const { articles: nbaArticles } = nbaNewsData || {}
-
-  const GNEWS_MLB_URL = `https://gnews.io/api/v4/search?q=mlb&apikey=${sportsOptions.gnewsMlbApikey}`;
-  const { data: mlbNewsData } = useFetchForAll(GNEWS_MLB_URL)
-  const { articles: mlbArticles } = mlbNewsData || {}
+  const headNewsArticles = useFetchNews(headnewsOptions, country)
+  const trendNewsArticles = useFetchNews(trendnewsOptions, country)
+  const localNewsArticles = useFetchNews(localOptions, country)
+  const financeNewsArticles = useFetchNews(businessOptions, country)
+  const moreFinanceNewsArticles = useFetchNews(moreBusinessOptions, country)
+  const entertainmentNewsArticles = useFetchNews(entertainmentOptions, country)
+  const technologyNewsArticles = useFetchNews(technologyOptions, country)
+  const scienceNewsArticles = useFetchNews(scienceOptions, country)
+  const sportsNewsArticles = useFetchNews(sportsOptions, country)
+  const nbaNewsArticles = useFetchNews(sportsOptions, country, 'nba')
+  const mlbNewsArticles = useFetchNews(sportsOptions, country, 'mlb')
 
   const ipdataLoading = !ipData;
   const TOPICS_DATA = [
-    headNewsData,
-    trendNewsData,
-    localNewsData,
-    financeNewsData,
-    moreFinanceNewsData,
-    entertainmentNewsData,
-    technologyNewsData,
-    scienceNewsData,
-    sportsNewsData,
-    nbaNewsData,
-    mlbNewsData,
+    headNewsArticles,
+    trendNewsArticles,
+    localNewsArticles,
+    financeNewsArticles,
+    moreFinanceNewsArticles,
+    entertainmentNewsArticles,
+    technologyNewsArticles,
+    scienceNewsArticles,
+    sportsNewsArticles,
+    nbaNewsArticles,
+    mlbNewsArticles,
   ]
 
-  const isLoaded = TOPICS_DATA.some(topic => !topic)
+  const isLoading = TOPICS_DATA.some(topic => !topic)
 
-  if (ipdataLoading || isLoaded) return <Spinner />
+  if (ipdataLoading || isLoading) return <Spinner />
 
   return (
     <main className="w-full mx-auto">
@@ -104,8 +77,8 @@ export default function Home() {
         technologyNewsData={technologyNewsArticles} />
 
       <Sports
-        nbaNewsDAta={nbaArticles}
-        mlbNewsData={mlbArticles}
+        nbaNewsDAta={nbaNewsArticles}
+        mlbNewsData={mlbNewsArticles}
         sportsNewsData={sportsNewsArticles} />
     </main>
   )

@@ -3,7 +3,7 @@ import Salutation from "../../routes/home/Salutation";
 import WeatherApp from "../weatherapp/WeatherForecastApp";
 
 export default function Section({ id, sectionData, salutation, weatherData }) {
-  const sectionStyle = "h-full w-11/12 max-w-[1536px] p-2.5 mx-auto mt-20 mb-5"
+  const sectionStyle = "h-full w-11/12 max-w-[1536px] bg-[var(--gray-10)] p-2.5 mx-auto mt-20 mb-5"
   const sectionContentStyle = 'grid grid-template';
   const { dateToday, timer, formatter } = useClock();
   return (

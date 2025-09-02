@@ -1,5 +1,5 @@
 export default function Card({ cardTitle, cardDescription, cardImageSrc, cardImageAlt, link, source, classNames }) {
-  const baseStyle = `card relative h-full w-full rounded-lg text-black shadow-(--bs-cards) overflow-hidden`
+  const baseStyle = `card relative h-full w-full rounded-lg text-black shadow-(--bs-cards-lup-ddown) overflow-hidden`
   const cardContainerClassNames = `${baseStyle} ${classNames}`
   return (
     <div className={cardContainerClassNames}>
