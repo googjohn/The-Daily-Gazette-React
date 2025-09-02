@@ -37,23 +37,30 @@ export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobi
 function Search({ mobileActive, mobileMenuIsOpen }) {
   const [queryResult, setQueryResult] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const navigate = useNavigate();
   const location = useLocation()
-  const query = new URLSearchParams(location.search).get('q')
-  const url = location.pathname
-  console.log(url)
+  console.log(location.search)
+  // const query = new URLSearchParams(location.search).get('q')
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (searchTerm) {
+      navigate(`/search/?q=${searchTerm}`)
+    }
+  }
 
   return (
     <div id="search-container" className={`w-full ${mobileActive && !mobileMenuIsOpen ?
       'hidden' :
       mobileActive && mobileMenuIsOpen ?
         'block' : ''}`}>
-      <Form method="get">
+      <Form method="get" onSubmit={handleSubmit}>
         <div className="form-group relative mr-2 flex justify-end items-center flex-nowrap ">
           <input
             onChange={(e) => setSearchTerm(e.target.value)}
             type="text"
-            name="search"
+            name="q"
             id="search"
             placeholder="Search"
             className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9 transition-(--transition)
