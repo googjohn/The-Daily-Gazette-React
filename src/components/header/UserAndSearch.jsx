@@ -1,16 +1,7 @@
-import { Form, useLocation, useNavigate } from "react-router-dom"
+import { Form, useNavigation, useSearchParams } from "react-router-dom"
 import MobileMenu from "../mobilemenu/MobileMenu"
-import { useEffect, useState } from "react"
-import { useFetchForAll } from "../../hooks/UseFetchForAll"
+import { useState } from "react"
 import Spinner from "../spinner/Spinner"
-
-const SEARCH_CONFIG = {
-  endpoint: 'search',
-  apiKey: import.meta.env.VITE_GNEWS_API_KEY_11
-}
-
-const SEARCH_URL = (config, searchTerm) =>
-  `https://gnews.io/api/v4/${config.endpoint}?q=${searchTerm}&apikey=${config.apiKey}}`
 
 export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobileActive }) {
   return (
@@ -35,33 +26,27 @@ export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobi
 }
 
 function Search({ mobileActive, mobileMenuIsOpen }) {
-  const [queryResult, setQueryResult] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
-  const location = useLocation()
-  console.log(location.search)
-  // const query = new URLSearchParams(location.search).get('q')
+  const [searchParams] = useSearchParams();
+  const navigation = useNavigation();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const query = searchParams.get('q') || ''
 
-    if (searchTerm) {
-      navigate(`/search/?q=${searchTerm}`)
-    }
-  }
+  if (navigation.state === 'loading') return <Spinner />
 
   return (
     <div id="search-container" className={`w-full ${mobileActive && !mobileMenuIsOpen ?
       'hidden' :
       mobileActive && mobileMenuIsOpen ?
         'block' : ''}`}>
-      <Form method="get" onSubmit={handleSubmit}>
+      <Form action="/search" method="get" role="search">
         <div className="form-group relative mr-2 flex justify-end items-center flex-nowrap ">
           <input
             onChange={(e) => setSearchTerm(e.target.value)}
             type="text"
             name="q"
             id="search"
+            value={searchTerm}
             placeholder="Search"
             className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9 transition-(--transition)
               ${mobileMenuIsOpen ? 'hover:w-full  focus:w-full' : 'hover:w-11/12 focus:w-11/12'} 

@@ -17,6 +17,13 @@ section {
   grid-column: span 2
 }
 
+/* grid template for search */
+.grid-template-search {
+  gap: 10px;
+  grid-auto-rows: minmax(150px, 180px);
+  grid-template-columns: repeat(12, 1fr);
+}
+
 /* grid template and areas */
 .grid-template {
   gap: 10px;
