@@ -10,7 +10,12 @@ export const technologyOptions = {
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
 
-export default function Technology({ technologyNewsData }) {
+export default function Technology() {
+  return (
+    <div>Techonology</div>
+  )
+}
+export function TechnologyForHome({ technologyNewsData }) {
 
   return (
     <>

@@ -1,7 +1,9 @@
-import { Form, useNavigation, useSearchParams } from "react-router-dom"
+import { Form, useLocation, useNavigation, useSearchParams } from "react-router-dom"
 import MobileMenu from "../mobilemenu/MobileMenu"
 import { useState } from "react"
 import Spinner from "../spinner/Spinner"
+import { useAppContext } from "../../hooks/UseContextProvider"
+import { useEffect } from "react"
 
 export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobileActive }) {
   return (
@@ -27,37 +29,42 @@ export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobi
 
 function Search({ mobileActive, mobileMenuIsOpen }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchParams] = useSearchParams();
   const navigation = useNavigation();
+  const location = useLocation();
 
-  const query = searchParams.get('q') || ''
-
-  if (navigation.state === 'loading') return <Spinner />
+  const { savePrevPath } = useAppContext();
+  useEffect(() => {
+    navigation.state === 'idle' ? savePrevPath(location.pathname) : null
+  }, [location.pathname])
 
   return (
-    <div id="search-container" className={`w-full ${mobileActive && !mobileMenuIsOpen ?
-      'hidden' :
-      mobileActive && mobileMenuIsOpen ?
-        'block' : ''}`}>
-      <Form action="/search" method="get" role="search">
-        <div className="form-group relative mr-2 flex justify-end items-center flex-nowrap ">
-          <input
-            onChange={(e) => setSearchTerm(e.target.value)}
-            type="text"
-            name="q"
-            id="search"
-            value={searchTerm}
-            placeholder="Search"
-            className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9 transition-(--transition)
+    <>
+      {navigation.state === 'loading' && <Spinner />}
+      <div id="search-container" className={`w-full ${mobileActive && !mobileMenuIsOpen ?
+        'hidden' :
+        mobileActive && mobileMenuIsOpen ?
+          'block' : ''}`
+      }>
+        <Form action="/search" method="get" role="search">
+          <div className="form-group relative mr-2 flex justify-end items-center flex-nowrap ">
+            <input
+              onChange={(e) => setSearchTerm(e.target.value)}
+              type="text"
+              name="q"
+              id="search"
+              placeholder="Search"
+              value={searchTerm}
+              className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9 transition-(--transition)
               ${mobileMenuIsOpen ? 'hover:w-full  focus:w-full' : 'hover:w-11/12 focus:w-11/12'} 
               focus:transition-(--transition) transition-(--transition) outline-0`}
-          />
-          <label htmlFor="search" className="absolute bg-(--light-navy) rounded-full">
-            <i className="fa-sharp fa-solid fa-magnifying-glass p-2.5 cursor-pointer  w-9 h-9"></i>
-          </label>
-        </div>
-      </Form>
-    </div>
+            />
+            <label htmlFor="search" className="absolute bg-(--light-navy) rounded-full">
+              <i className="fa-sharp fa-solid fa-magnifying-glass p-2.5 cursor-pointer  w-9 h-9"></i>
+            </label>
+          </div>
+        </Form>
+      </div >
+    </>
   )
 }
 

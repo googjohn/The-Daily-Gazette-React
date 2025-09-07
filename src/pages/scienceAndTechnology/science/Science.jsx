@@ -10,7 +10,14 @@ export const scienceOptions = {
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
 
-export default function Science({ scienceNewsData }) {
+export default function Science() {
+  return (
+    <>
+      <div>Science</div>
+    </>
+  )
+}
+export function ScienceForHome({ scienceNewsData }) {
 
   return (
     <>

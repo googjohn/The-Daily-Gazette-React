@@ -1,6 +1,6 @@
-import Finance, { businessOptions, moreBusinessOptions } from "../finance/Finance";
-import Entertainment, { entertainmentOptions } from "../entertainment/Entertainment";
-import Sports, { sportsOptions } from "../sports/Sports";
+import { businessOptions, FinanceForHome, moreBusinessOptions } from "../finance/Finance";
+import { EntertainmentForHome, entertainmentOptions } from "../entertainment/Entertainment";
+import { SportsForHome, sportsOptions } from "../sports/Sports";
 import ScienceTechnology from "../scienceAndTechnology/ScienceAndTechnology";
 import Local, { localOptions } from "./local/Local";
 import World from "./world/World";
@@ -59,24 +59,24 @@ export default function Home() {
   if (ipdataLoading || isLoading) return <Spinner />
 
   return (
-    <main className="w-full mx-auto">
+    <main className="w-full min-h-screen mx-auto">
       <World
         headNewsData={headNewsArticles}
         trendNewsData={trendNewsArticles} />
 
       <Local localNewsData={localNewsArticles} />
 
-      <Finance
+      <FinanceForHome
         financeNewsData={financeNewsArticles}
         moreFinanceNewsData={moreFinanceNewsArticles} />
 
-      <Entertainment entertainementNewsDAta={entertainmentNewsArticles} />
+      <EntertainmentForHome entertainementNewsDAta={entertainmentNewsArticles} />
 
       <ScienceTechnology
         scienceNewsData={scienceNewsArticles}
         technologyNewsData={technologyNewsArticles} />
 
-      <Sports
+      <SportsForHome
         nbaNewsDAta={nbaNewsArticles}
         mlbNewsData={mlbNewsArticles}
         sportsNewsData={sportsNewsArticles} />

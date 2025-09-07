@@ -7,7 +7,7 @@ export default function Card({ cardTitle, cardDescription, cardImageSrc, cardIma
         <img onError={
           (e) => e.target.src = "/images/no-image/no-image-available.png"
         }
-          src={cardImageSrc}
+          src={cardImageSrc || null}
           alt={cardImageAlt}
           className="object-cover w-full h-full"
         />

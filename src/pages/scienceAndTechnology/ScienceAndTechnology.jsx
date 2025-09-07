@@ -1,18 +1,18 @@
 import Section from "../../components/mainbody/Section";
-import Science from "./science/Science";
-import Technology from "./technology/Technology";
+import { ScienceForHome } from "./science/Science";
+import { TechnologyForHome } from "./technology/Technology";
 
 export default function ScienceTechnology({ technologyNewsData, scienceNewsData }) {
   const sections = [
     {
       title: 'Latest in Technology',
       customGrid: 'grid-area-entmnt-scitech-container',
-      content: <Technology technologyNewsData={technologyNewsData} />
+      content: <TechnologyForHome technologyNewsData={technologyNewsData} />
     },
     {
       title: 'Latest in Science',
       customGrid: 'grid-area-entmnt-scitech-container',
-      content: <Science scienceNewsData={scienceNewsData} />
+      content: <ScienceForHome scienceNewsData={scienceNewsData} />
     }
   ]
   return (

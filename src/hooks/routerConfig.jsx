@@ -7,7 +7,8 @@ import SciAndTech from "../pages/scienceAndTechnology/ScienceAndTechnology";
 import Sports from "../pages/sports/Sports";
 import Login from "../routes/login/Login";
 import Search, { SearchLoader } from "../pages/search/Search";
-
+import { Suspense } from "react";
+import Spinner from "../components/spinner/Spinner";
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +29,10 @@ export const router = createBrowserRouter([
   },
   {
     path: 'search',
-    element: <Search />,
+    element:
+      <Suspense fallback={<Spinner />}>
+        <Search />
+      </Suspense>,
     loader: SearchLoader,
   }
 ])

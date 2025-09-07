@@ -14,7 +14,12 @@ export const sportsOptions = {
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY,
 }
 
-export default function Sports({ sportsNewsData, nbaNewsDAta, mlbNewsData }) {
+export default function Sports() {
+  return (
+    <div className="min-h-screen bg-[var(--gray-10)]">Sports</div>
+  )
+}
+export function SportsForHome({ sportsNewsData, nbaNewsDAta, mlbNewsData }) {
 
   const sections = [
     {

@@ -10,7 +10,14 @@ export const entertainmentOptions = {
   gnewsApikey: import.meta.env.VITE_GNEWS_API_KEY_5,
   ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
-export default function Entertainment({ entertainementNewsDAta }) {
+
+export default function Entertainment() {
+  return (
+    <div className="min-h-screen bg-[var(--gray-10)]">Entertainment</div>
+  )
+}
+
+export function EntertainmentForHome({ entertainementNewsDAta }) {
 
   const sections = [
     {
