@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react"
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import { tempConverter, handleConditionsIcon } from "./WeatherForecastUtility";
 import Spinner from "../spinner/Spinner";
+import { useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 
 const WAPP = {
   endpoint: 'timeline',
@@ -43,19 +44,17 @@ export default function WeatherApp() {
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
   const { currentConditions } = weatherData || {};
 
-  // very important check to make sure both ipdata and weatherdata 
-  // are fetched and has value before return jsx is rendered
+  // // very important check to make sure both ipdata and weatherdata 
+  // // are fetched and has value before return jsx is rendered
   const isIpdataLoading = !ipdata;
   const isWeatherDataLoading = ipdata && !weatherData;
   const isLoading = isWeatherDataLoading || isIpdataLoading;
 
-  // if (isLoading) return <Spinner />
-  if (weatherDataError) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>)
-  if (ipdataError) return (<div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>)
-
   return (
     <div id="weather-app" className="flex justify-end sticky top-20 w-full z-30">
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Spinner />}
+      {weatherDataError && <div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>}
+      {ipdataError && <div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>}
       <WeatherBanner weatherBg={weatherBackground}>
         {weatherData && isHovered ?
           "Weather Forecast Today" : (
@@ -116,6 +115,9 @@ function WeatherAppDropdown({
 }) {
   const forecastContainerClasses = `w-full h-auto sm:min-w-[425px] flex flex-col
     gap-2.5 py-2.5 px-5 rounded-lg absolute top-0 right-0 shadow-[var(--bs-banner-1)] -z-10`
+  const navigate = useNavigate();
+  const handleClick = () => navigate('/weatherForecast')
+
   return (
     <div id="forecast-container"
       style={{
@@ -144,7 +146,8 @@ function WeatherAppDropdown({
         isLoading={isLoading} />
 
       <div className="forecast-item p-2.5">
-        <div className="more-forecast text-center">
+        <div onClick={handleClick}
+          className="more-forecast text-center">
           <h3 className="backdrop-blur-sm shadow-(--bs-banner-1) inline
            py-1 px-3 rounded-full text-[1rem] hover:underline cursor-pointer">
             See full forecast
@@ -299,7 +302,7 @@ function WeatherAppHourlyAndDailyCards({ hour, tempUnit, weatherData }) {
   )
 }
 
-function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) {
+export function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) {
   const { conditions, icon, temp, datetime, precipprob } = forecastData
   const hour = datetime.split(':')[0];
   const [day, setDay] = useState(today)

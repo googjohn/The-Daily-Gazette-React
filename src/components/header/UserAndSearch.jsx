@@ -1,9 +1,8 @@
-import { Form, useLocation, useNavigation, useSearchParams } from "react-router-dom"
-import MobileMenu from "../mobilemenu/MobileMenu"
-import { useState } from "react"
-import Spinner from "../spinner/Spinner"
+import { useState, useEffect, useRef } from "react"
+import { Form, useLocation, useNavigation } from "react-router-dom"
 import { useAppContext } from "../../hooks/UseContextProvider"
-import { useEffect } from "react"
+import MobileMenu from "../mobilemenu/MobileMenu"
+import Spinner from "../spinner/Spinner"
 
 export default function UserSearch({ mobileMenuIsOpen, setMobileMenuIsOpen, mobileActive }) {
   return (
@@ -31,11 +30,16 @@ function Search({ mobileActive, mobileMenuIsOpen }) {
   const [searchTerm, setSearchTerm] = useState('');
   const navigation = useNavigation();
   const location = useLocation();
+  const previousPathRef = useRef(location.pathname)
 
-  const { savePrevPath } = useAppContext();
+  const { previousPath, savePrevPath } = useAppContext();
+
   useEffect(() => {
-    navigation.state === 'idle' ? savePrevPath(location.pathname) : null
-  }, [location.pathname])
+    if (navigation.state === 'idle' && previousPathRef.current !== previousPath) {
+      savePrevPath(previousPathRef.current)
+      previousPathRef.current = location.pathname
+    }
+  }, [location.pathname, previousPathRef.current])
 
   return (
     <>

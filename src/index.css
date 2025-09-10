@@ -2,7 +2,7 @@
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  /* line-height: 1.5; */
   font-weight: 400;
 
   color-scheme: light dark;
@@ -52,6 +52,7 @@
   --green-tint: rgba(100, 255, 218, 0.1);
   --blue: #57cbff;
   --overlay-dark: rgba(0, 0, 0, 0.5);
+  --search-main-bg: rgba(246, 246, 248, .618);
 
   /* backdrop filter */
   --filter: blur(10px);
@@ -205,6 +206,24 @@
     z-index: 300;
   }
 }
+
+#weather-forecast-page {
+  --primary-color: #0575e6;
+  min-height: 100vh;
+  min-width: 100%;
+  /* padding: 0 20px; */
+  background: var(--primary-color);
+  background-image: url('/images/icons/weather_backgrounds/bright-sun-in-blue-sky.jpg');
+  /* background-image: linear-gradient(to right, #2193b0, #2f80ed); */
+  /* background: -webkit-linear-gradient(to right, #0575e6, #021b79); */
+  /* background: linear-gradient(to right, #0575e6, #021b79); */
+  object-fit: cover;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.3s ease;
+}
+
 
 @keyframes load {
   0% {
