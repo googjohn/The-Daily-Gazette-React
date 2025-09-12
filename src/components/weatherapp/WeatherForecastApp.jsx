@@ -39,7 +39,7 @@ export default function WeatherApp() {
   const { loc, city, region } = ipdata || {};
   const lat = loc?.split(',')[0]
   const lon = loc?.split(',')[1]
-
+  console.log(lat, lon)
   const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${lat},${lon}?&key=${WAPP.visualCrossingApikey}&iconSet=icons1`
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
   const { currentConditions } = weatherData || {};
@@ -307,7 +307,7 @@ export function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) 
   const hour = datetime.split(':')[0];
   const [day, setDay] = useState(today)
   const days = useMemo(() => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], [])
-
+  console.log(conditions)
   useEffect(() => {
     if (selectedMode === 'daily') {
       const formatter = new Intl.DateTimeFormat('default', {

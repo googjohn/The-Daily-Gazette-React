@@ -2,14 +2,25 @@ import { useState, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import useWindowSize from "../../hooks/UseWindowSize";
+import { ResponsivePie } from "@nivo/pie";
 
 const navLinks = [
   { id: 1, name: 'The Daily Weather', to: 'weatherForecast' },
   { id: 2, name: 'Home', to: '/' },
 ]
-
+const data = [
+  { id: 'Rainy/Snowy Days', name: 'Rainy/Snowy Days', label: 'Rainy', value: 5, color: '#0575e6' },
+  { id: 'Sunny/Cloudy Days', name: 'Sunny/Cloudy Days', label: 'Sunny', value: 20, color: 'hsl(39, 100%, 50%)' },
+]
 export default function WeatherForecastPage() {
   const windowSize = useWindowSize();
+  const formatter = new Intl.DateTimeFormat('default', {
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })
+  const month = formatter.format(new Date())
+  console.log(month.split(' ')[0])
   return (
 
     <div id="weather-forecast-page"
@@ -89,35 +100,31 @@ export default function WeatherForecastPage() {
                     </div>
                   </div>
                 </div>
-                <div className="">
-                  <div className="min-w-70 backdrop-blur-lg shadow-[var(--bs-banner-1)] rounded-xl h-auto px-2.5 p-5 flex flex-col gap-1.5">
-                    <div className="location flex items-center gap-2">
-                      <div className="location-icon">
-                        <i className="fas fa-map-marker-alt"></i>
-                      </div>
-                      <div className="location-text">
-                        <p id="location">location</p>
-                      </div>
+                <div id="weather-overview" className="relative min-w-70 backdrop-blur-lg shadow-[var(--bs-banner-1)] rounded-xl h-auto px-2.5 p-5 flex flex-col gap-1.5">
+                  <div className="location flex items-center gap-2">
+                    <div className="">
+                      <p id="header-overview">15 Day Weather Overview</p>
                     </div>
-                    <div className="weather-icon max-w-[150px] self-center">
-                      <img id="icon" className="w-full h-full object-cover" src="/images/icons/sun/sunny.png" alt="" />
+                  </div>
+                  <div className="weather-icon h-full w-full">
+                    <div className="month-year flex flex-col items-center absolute w-full top-[32%] right-0">
+                      <span className="text-[1rem]">{month.split(' ')[1]}</span>
+                      <span className="text-[1.5rem] font-semibold">{month.split(' ')[0]}</span>
                     </div>
-                    <div className="temperature relative">
-                      <h1 id="temp" className="text-5xl">30<span className="temp-unit text-xl absolute top-0">°C</span></h1>
+
+                    <MyPie data={data} />
+
+                  </div>
+                  <div id="overview-details" className="flex items-center w-full flex-col gap-2.5">
+                    <div id="sunny-rainy" className="w-full flex gap-7 sm:gap-2.5 justify-center">
+
+                      <div className="text-[.9rem] flex w-[130px]" id="sunny-cloudy">{data[1].name} <br />{data[1].value}</div>
+                      <div className="text-[.9rem] flex w-[130px]" id="rainy-snowy">{data[0].name} <br />{data[0].value}</div>
                     </div>
-                    <div className="date-time">
-                      <p id="date-time">Monday, 12:00</p>
-                    </div>
-                    <div className="divider border-b border-white/30 my-4"></div>
-                    <div className="condition-rain-container flex flex-col gap-2.5">
-                      <div className="condition flex items-center gap-2">
-                        <i className="fas fa-cloud"></i>
-                        <p id="condition">condition</p>
-                      </div>
-                      <div className="precepetation flex items-center gap-2">
-                        <i className="fas fa-tint"></i>
-                        <p id="rain">perc - 0%</p>
-                      </div>
+                    <div id="high-low" className="flex w-full gap-7 sm:gap-2.5 justify-center">
+
+                      <div className="text-[.9rem] w-[130px] flex" id="average-hightemp">Average High <br />30°C</div>
+                      <div className="text-[.9rem] w-[130px] flex" id="average-lowtemp">Average Low <br />25°C</div>
                     </div>
                   </div>
                 </div>
@@ -130,8 +137,8 @@ export default function WeatherForecastPage() {
                     <button className="week active">Week</button>
                   </div>
                   <div className="options units flex gap-2.5 text-xl">
-                    <button className="celcius active w-10 aspect-square bg-[#0575e6] shadow-[var(--bs-banner-1)] rounded-full">°C</button>
-                    <button className="fahrenheit w-10 aspect-square bg-white text-[#0575e6] shadow-[var(--bs-banner-1)] rounded-full">°F</button>
+                    <button className="celcius active w-10 aspect-square bg-[#0575e6] shadow-[var(--bs-banner-1-inset)] rounded-full">°C</button>
+                    <button className="fahrenheit w-10 aspect-square bg-white text-[#0575e6] shadow-[var(--bs-banner-1-inset)] rounded-full">°F</button>
                   </div>
                 </div>
                 <div id="weather-cards"
@@ -146,7 +153,7 @@ export default function WeatherForecastPage() {
 
                 </div>
                 <div className="highlights">
-                  <div className="header py-2.5 border-b border-white/20">
+                  <div className="header pt-2.5 pb-4 border-b border-white/20">
                     <h2 className="heading text-xl">Today's Highlights</h2>
                   </div>
                   <div className="cards mt-5 flex flex-wrap justify-evenly gap-2.5 [&>*]:min-h-30 [&>*]:min-w-60 [&>*]:shadow-[var(--bs-banner-1)] [&>*]:rounded-xl">
@@ -254,7 +261,7 @@ function WeatherPageCard({ conditions, handleConditionsIcon, icon, tempConverter
       </span>
       <span className="icon w-10 aspect-square">
         <img className="w-full h-full"
-          src={'https://googjohn.github.io/hosted-assets/weather-icons/svg/PartlyCloudyDay.svg'}
+          src={'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/N210LightRainShowersV2.svg'}
         // alt={conditions}
         // title={conditions} 
         />
@@ -263,6 +270,34 @@ function WeatherPageCard({ conditions, handleConditionsIcon, icon, tempConverter
       <span className="precipitate flex flex-nowrap gap-[2px] items-center" title="Rain probability">
         <i className="fa-solid fa-droplet text-[.5rem]"></i>{'precipprob'}'%
       </span>
+    </div>
+  )
+}
+const MyPie = ({ data }) => {
+
+  return (
+    <div className="w-full h-50">
+      <ResponsivePie
+        data={data}
+        innerRadius={0.6}
+        padAngle={0.6}
+        cornerRadius={2}
+        sortByValue={true}
+        enableArcLinkLabels={false}
+        activeOuterRadiusOffset={8}
+        colors={{ datum: 'data.color' }}
+        margin={{ top: 10, right: 0, bottom: 10, left: 0 }}
+        theme={{
+          tooltip: {
+            container: {
+              background: '#222222d7',
+              backdropFilter: 'blur(10px)',
+              color: '#fff',
+              fontSize: 14,
+            },
+          },
+        }}
+      />
     </div>
   )
 }

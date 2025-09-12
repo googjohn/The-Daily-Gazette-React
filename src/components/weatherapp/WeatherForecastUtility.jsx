@@ -46,3 +46,24 @@ export function tempConverter(temp = 0, baseUnit, resultUnit) {
     return temp
   }
 }
+
+export function ConditionsIcon(condition, time) {
+  const conditions = [
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/Icons/taskbar_v10/Condition_Card/HeavyDrizzle.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/ModerateRainV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/RainShowersDayV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D310LightRainShowersV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/MostlyCloudyDayV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D200PartlySunnyV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D210LightRainShowersV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D240TstormsV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/CloudyV3.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/PartlyCloudyNightV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/MostlySunnyDay.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/MostlyCloudyNightV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/N310LightRainShowersV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/RainShowersNightV2.svg',
+    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/N210LightRainShowersV2.svg'
+
+  ]
+}
