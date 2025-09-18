@@ -214,7 +214,7 @@
   min-width: 100%;
   /* padding: 0 20px; */
   background: var(--primary-color);
-  background-image: url('/images/icons/weather_backgrounds/sky-clear-night.jpg');
+  /* background-image: url('/images/icons/weather_backgrounds/sky-clear-night.jpg'); */
   /* background-image: linear-gradient(to right, #2193b0, #2f80ed); */
   /* background: -webkit-linear-gradient(to right, #0575e6, #021b79); */
   /* background: linear-gradient(to right, #0575e6, #021b79); */

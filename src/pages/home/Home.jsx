@@ -10,6 +10,7 @@ import { headnewsOptions } from "./world/Head";
 import { trendnewsOptions } from "./world/Trend";
 import { technologyOptions } from "../scienceAndTechnology/technology/Technology";
 import { scienceOptions } from "../scienceAndTechnology/science/Science";
+import Error from "../../components/error/Error";
 
 const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
 
@@ -56,10 +57,9 @@ export default function Home() {
 
   const isLoading = TOPICS_DATA.some(topic => !topic)
 
-  if (ipdataLoading || isLoading) return <Spinner />
-
   return (
     <main className="w-full min-h-screen mx-auto">
+      {(ipdataLoading || isLoading) && (ipFetchError ? <Error /> : <Spinner />)}
       <World
         headNewsData={headNewsArticles}
         trendNewsData={trendNewsArticles} />

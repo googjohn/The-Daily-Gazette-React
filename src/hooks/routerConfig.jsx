@@ -10,6 +10,7 @@ import Search, { SearchLoader } from "../pages/search/Search";
 import { Suspense } from "react";
 import Spinner from "../components/spinner/Spinner";
 import WeatherForecastPage from "../components/weatherapp/WeatherForecastPage";
+import WeatherPage from "../pages/weatherForecast/WeatherPage";
 
 export const router = createBrowserRouter([
   {
@@ -36,8 +37,12 @@ export const router = createBrowserRouter([
       </Suspense>,
     loader: SearchLoader,
   },
+  // {
+  //   path: 'weatherForecast',
+  //   element: <WeatherForecastPage />,
+  // },
   {
-    path: 'weatherForecast',
-    element: <WeatherForecastPage />,
+    path: 'weather',
+    element: <WeatherPage />,
   }
 ])

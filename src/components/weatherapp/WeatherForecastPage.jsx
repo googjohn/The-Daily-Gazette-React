@@ -1,8 +1,26 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
-import useWindowSize from "../../hooks/UseWindowSize";
+import { FaTemperatureHalf } from "react-icons/fa6";
 import { ResponsivePie } from "@nivo/pie";
+import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import { handleConditionsIcon, tempConverter } from "./WeatherForecastUtility";
+import useWindowSize from "../../hooks/UseWindowSize";
+import Spinner from "../spinner/Spinner";
+import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
+
+const WAPP = {
+  endpoint: 'timeline',
+  visualCrossingApikey: import.meta.env.VITE_VISUALCROSSING_API_KEY,
+  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY,
+  openWeatherApikey: import.meta.env.VITE_OPENWEATHER_API_KEY,
+}
+
+const tempUnits = {
+  Celcius: 'c',
+  Fahrenheit: 'f',
+  Kelvin: 'k',
+}
 
 const navLinks = [
   { id: 1, name: 'The Daily Weather', to: 'weatherForecast' },
@@ -13,18 +31,40 @@ const data = [
   { id: 'Sunny/Cloudy Days', name: 'Sunny/Cloudy Days', label: 'Sunny', value: 20, color: 'hsl(39, 100%, 50%)' },
 ]
 export default function WeatherForecastPage() {
+  const [tempUnit, setTempUnit] = useState('c')
+  const { weatherBackground } = useUpdateWeatherBackground();
+
   const windowSize = useWindowSize();
+  const IPINFO_URL = `https://ipinfo.io/json?token=${WAPP.ipinfoApikey}`;
+  const { data: ipdata, error: ipdataError } = useFetchForAll(IPINFO_URL);
+  const { loc, city, region } = ipdata || {};
+  const lat = loc?.split(',')[0]
+  const lon = loc?.split(',')[1]
+
+  const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${lat},${lon}?&key=${WAPP.visualCrossingApikey}&iconSet=icons1`
+  const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
+  const { currentConditions } = weatherData || {};
+
+  const isIpdataLoading = !ipdata;
+  const isWeatherDataLoading = ipdata && !weatherData;
+  const isLoading = isWeatherDataLoading || isIpdataLoading;
+
   const formatter = new Intl.DateTimeFormat('default', {
+    hour: '2-digit',
+    day: 'numeric',
     month: 'short',
     year: 'numeric',
     timeZone: 'UTC',
   })
   const month = formatter.format(new Date())
-  console.log(month.split(' ')[0])
+  console.log(formatter.format(new Date()))
   return (
-
     <div id="weather-forecast-page"
+      style={{
+        background: weatherBackground
+      }}
       className="w-full min-h-screen p-0">
+      {isLoading && <Spinner />}
       <div className="w-full p-0">
         <header className="w-full">
           <nav className="container w-full sm:w-11/12 max-w-[1280px] mx-auto h-auto text-white bg-transparent px-2.5 sm:px-0">
@@ -76,14 +116,21 @@ export default function WeatherForecastPage() {
                       <i className="fas fa-map-marker-alt"></i>
                     </div>
                     <div className="location-text">
-                      <p id="location">location</p>
+                      <p id="location">{city}, {region}</p>
                     </div>
                   </div>
                   <div className="weather-icon max-w-[150px] self-center">
-                    <img id="icon" className="w-full h-full object-cover" src="/images/icons/sun/sunny.png" alt="" />
+                    <img id="icon"
+                      src={handleConditionsIcon(currentConditions?.icon, hour)}
+                      alt={currentConditions?.conditions}
+                      title={currentConditions?.conditions}
+                      className="w-full h-full object-cover" />
                   </div>
                   <div className="temperature relative">
-                    <h1 id="temp" className="text-5xl">30<span className="temp-unit text-xl absolute top-0">°C</span></h1>
+                    <h1 id="temp" className="text-5xl">
+                      <span className="temp-unit text-5xl" title="Temperature">
+                        {tempConverter(currentConditions?.temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}</span>
+                    </h1>
                   </div>
                   <div className="date-time">
                     <p id="date-time">Monday, 12:00</p>
@@ -266,14 +313,15 @@ function WeatherPageCard({ conditions, handleConditionsIcon, icon, tempConverter
         // title={conditions} 
         />
       </span>
-      <span className="temp" title="Temperature">30&deg;C</span>
-      <span className="precipitate flex flex-nowrap gap-[2px] items-center" title="Rain probability">
-        <i className="fa-solid fa-droplet text-[.5rem]"></i>{'precipprob'}'%
+      <span className="temp flex items-center gap-1" title="Temperature">
+        <FaTemperatureHalf className="text-[.8rem]" />30&deg;C</span>
+      <span className="precipitate flex flex-nowrap gap-1 items-center" title="Rain probability">
+        <i className="fa-solid fa-droplet text-[.8rem]"></i>{'precipprob'}'%
       </span>
     </div>
   )
 }
-const MyPie = ({ data }) => {
+function MyPie({ data }) {
 
   return (
     <div className="w-full h-50">
@@ -301,3 +349,4 @@ const MyPie = ({ data }) => {
     </div>
   )
 }
+

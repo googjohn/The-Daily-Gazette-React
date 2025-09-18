@@ -1,8 +1,11 @@
 import { useState, useEffect, useMemo } from "react"
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import { tempConverter, handleConditionsIcon } from "./WeatherForecastUtility";
+import { FaTemperatureHalf } from "react-icons/fa6";
 import Spinner from "../spinner/Spinner";
 import { useLoaderData, useNavigate, useNavigation } from "react-router-dom";
+import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
+import Error from "../error/Error";
 
 const WAPP = {
   endpoint: 'timeline',
@@ -21,18 +24,7 @@ export default function WeatherApp() {
   const [tempUnit, setTempUnit] = useState('c')
   const [isHovered, setIsHovered] = useState(false);
   const [hour, setHour] = useState(new Date().getHours());
-  const [weatherBackground, setWeatherBackground] = useState("url('/images/icons/weather_backgrounds/bright-sun-in-blue-sky.jpg') no-repeat center / cover");
-
-  useEffect(() => {
-    const currentHour = new Date().getHours()
-    setHour(currentHour);
-    hour <= 6 ?
-      setWeatherBackground("url('/images/icons/weather_backgrounds/starry-night-sky.png') no-repeat center / cover") :
-      hour >= 18 ?
-        setWeatherBackground("url('/images/icons/weather_backgrounds/sky-clear-night.jpg') no-repeat center / cover") :
-        setWeatherBackground("url('/images/icons/weather_backgrounds/bright-sun-in-blue-sky.jpg') no-repeat center / cover")
-
-  }, [hour])
+  const { weatherBackground } = useUpdateWeatherBackground();
 
   const IPINFO_URL = `https://ipinfo.io/json?token=${WAPP.ipinfoApikey}`;
   const { data: ipdata, error: ipdataError } = useFetchForAll(IPINFO_URL);
@@ -52,7 +44,7 @@ export default function WeatherApp() {
 
   return (
     <div id="weather-app" className="flex justify-end sticky top-20 w-full z-30">
-      {isLoading && <Spinner />}
+      {isLoading && (ipdataError || weatherDataError ? <Error /> : <Spinner />)}
       {weatherDataError && <div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>}
       {ipdataError && <div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>}
       <WeatherBanner weatherBg={weatherBackground}>
@@ -113,10 +105,10 @@ function WeatherAppDropdown({
   ipData,
   isLoading
 }) {
-  const forecastContainerClasses = `w-full h-auto sm:min-w-[425px] flex flex-col
+  const forecastContainerClasses = `w-full h-auto sm:min-w-[450px] flex flex-col
     gap-2.5 py-2.5 px-5 rounded-lg absolute top-0 right-0 shadow-[var(--bs-banner-1)] -z-10`
   const navigate = useNavigate();
-  const handleClick = () => navigate('/weatherForecast')
+  const handleClick = () => navigate('/weather')
 
   return (
     <div id="forecast-container"
@@ -147,9 +139,9 @@ function WeatherAppDropdown({
 
       <div className="forecast-item p-2.5">
         <div onClick={handleClick}
-          className="more-forecast text-center">
-          <h3 className="backdrop-blur-sm shadow-(--bs-banner-1) inline
-           py-1 px-3 rounded-full text-[1rem] hover:underline cursor-pointer">
+          className="more-forecast text-center flex justify-center">
+          <h3 className="backdrop-blur-lg shadow-(--bs-banner-1) py-1 px-3 
+            rounded-full text-[1rem] hover:underline cursor-pointer">
             See full forecast
           </h3>
         </div>
@@ -167,7 +159,7 @@ function WeatherAppInnerDropdown({ setTempUnit, ipData }) {
         {city}, {region} {country}
       </div>
       <div id="inner-dropdown"
-        onClick={() => setIsClickedToOpen(true)}
+        onClick={() => setIsClickedToOpen(!isClickedToOpen)}
         onBlur={() => setIsClickedToOpen(false)}
         tabIndex={0}
         className="cursor-pointer absolute top-[13px] right-5">
@@ -292,7 +284,6 @@ function WeatherAppHourlyAndDailyCards({ hour, tempUnit, weatherData }) {
               <WeatherAppCard
                 key={forecast.datetimeEpoch}
                 tempUnit={tempUnit}
-                today={new Date().getDay()}
                 forecastData={forecast}
                 selectedMode={selectedMode} />))
           }
@@ -302,12 +293,11 @@ function WeatherAppHourlyAndDailyCards({ hour, tempUnit, weatherData }) {
   )
 }
 
-export function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) {
+export function WeatherAppCard({ tempUnit, forecastData, selectedMode }) {
   const { conditions, icon, temp, datetime, precipprob } = forecastData
   const hour = datetime.split(':')[0];
-  const [day, setDay] = useState(today)
+  const [day, setDay] = useState('today')
   const days = useMemo(() => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], [])
-  console.log(conditions)
   useEffect(() => {
     if (selectedMode === 'daily') {
       const formatter = new Intl.DateTimeFormat('default', {
@@ -334,9 +324,9 @@ export function WeatherAppCard({ tempUnit, today, forecastData, selectedMode }) 
           alt={conditions}
           title={conditions} />
       </span>
-      <span className="temp" title="Temperature">{tempConverter(temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}</span>
-      <span className="precipitate flex flex-nowrap gap-[2px] items-center" title="Rain probability">
-        <i className="fa-solid fa-droplet text-[.5rem]"></i>{precipprob}%
+      <span className="temp flex items-center gap-1" title="Temperature"><FaTemperatureHalf className="text-[.7rem]" />{tempConverter(temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}</span>
+      <span className="precipitate flex flex-nowrap gap-1 items-center" title="Rain probability">
+        <i className="fa-solid fa-droplet text-[.7rem]"></i>{precipprob}%
       </span>
     </div>
   )

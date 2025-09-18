@@ -19,5 +19,5 @@ export default function useWindowSize() {
       }
     }
   }, [])
-  return windowSize
+  return { windowSize }
 }
