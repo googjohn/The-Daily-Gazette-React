@@ -63,32 +63,12 @@ export function handleConditionsIcon(iconName) {
       return WEATHER_CONDITION_ICONS["partly-sunny"]
   }
 }
-/* 
-  needs to be added
 
-  snow-showers-day
-  snow-showers-night
-  snow
-  thunder-showers-day
-  thunder-showers-night
-  thunder-rain
-  showers-day
-  showers-night
-  rain/light/drizzle/moderate
-  clear-day >> <20% clouds
-  clear-night >> <20% clouds
-  partly-cloudy-day >> >20% clouds
-  partly-cloudy-night >> >20% clouds
-  cloudy >> 90% clouds
-  mostly-sunny
-  partly-sunny/partly-couldy
-  sunny
-*/
 export function tempConverter(temp = 0, baseUnit, resultUnit) {
   const kelvinBase = 274.15;
-  const toFahrenheitHandle = (temp) => Math.floor((temp * (1.8)) + 32); // base unit of fahrenheit
-  const toCelciusHandle = (temp) => Math.floor((temp - 32) * (5 / 9)); // if base unit is celcius
-  const toKelvinHandle = (temp) => Math.floor(toCelciusHandle(temp) + kelvinBase); // base unit of fahrenheit
+  const toFahrenheitHandle = (temp) => Math.round(((temp * (1.8)) + 32) * 10) / 10
+  const toCelciusHandle = (temp) => Math.round(((temp - 32) * (5 / 9)) * 10) / 10;
+  const toKelvinHandle = (temp) => Math.round((toCelciusHandle(temp) + kelvinBase) * 10) / 10;
 
   if (baseUnit === 'f' && resultUnit === 'c') {
     return toCelciusHandle(temp)
@@ -136,3 +116,24 @@ export function ConditionsIcon(condition, time) {
     'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/LightSnowV2.svg', // light-snow
   ]
 }
+/* 
+  needs to be added
+
+  snow-showers-day
+  snow-showers-night
+  snow
+  thunder-showers-day
+  thunder-showers-night
+  thunder-rain
+  showers-day
+  showers-night
+  rain/light/drizzle/moderate
+  clear-day >> <20% clouds
+  clear-night >> <20% clouds
+  partly-cloudy-day >> >20% clouds
+  partly-cloudy-night >> >20% clouds
+  cloudy >> 90% clouds
+  mostly-sunny
+  partly-sunny/partly-couldy
+  sunny
+*/

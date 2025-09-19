@@ -105,7 +105,7 @@ function WeatherAppDropdown({
   ipData,
   isLoading
 }) {
-  const forecastContainerClasses = `w-full h-auto sm:min-w-[450px] flex flex-col
+  const forecastContainerClasses = `w-full h-auto sm:min-w-min flex flex-col
     gap-2.5 py-2.5 px-5 rounded-lg absolute top-0 right-0 shadow-[var(--bs-banner-1)] -z-10`
   const navigate = useNavigate();
   const handleClick = () => navigate('/weather')

@@ -4,13 +4,12 @@ export default function useFormatter(date, options = { dateStyle: 'full' }) {
   const [formattedDate, setFormattedDate] = useState(date)
 
   useEffect(() => {
-    const datenow = new Date(date)
-    if (!isNaN(datenow)) {
+    if (!isNaN(date)) {
       const formatter = new Intl.DateTimeFormat('default', options)
 
-      setFormattedDate(formatter.format(datenow).toString())
+      setFormattedDate(formatter.format(date).toString())
     }
   }, [date, options])
 
-  return formattedDate
+  return formattedDate.toString()
 }

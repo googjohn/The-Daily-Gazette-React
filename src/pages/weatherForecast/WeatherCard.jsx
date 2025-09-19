@@ -8,6 +8,7 @@ export function WeatherCard({ tempUnit, forecast, selectedMode, }) {
   const hour = +datetime.split(':')[0];
 
   useEffect(() => {
+    if (typeof formattedDatetime !== 'string') return;
     if (selectedMode === 'daily') {
       const dateToday = new Date(datetime);
       if (dateToday instanceof Date && !isNaN(dateToday.getTime())) {
@@ -53,4 +54,8 @@ export function WeatherCard({ tempUnit, forecast, selectedMode, }) {
       </div>
     </div>
   )
+}
+
+export function formatDateTime(datetime) {
+
 }

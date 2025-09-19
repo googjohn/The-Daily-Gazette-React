@@ -11,8 +11,12 @@ import Spinner from "../../components/spinner/Spinner";
 import { WeatherCard } from "./WeatherCard";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import { handleConditionsIcon, tempConverter } from "../../components/weatherapp/WeatherForecastUtility";
-import { FaCloudSunRain } from "react-icons/fa6";
-import { FaHome } from "react-icons/fa";
+import { FaCloudSunRain, FaWind, FaTemperatureHalf, FaTemperatureArrowDown, FaTemperatureArrowUp } from "react-icons/fa6";
+import { FaHome, FaCloud, FaTint } from "react-icons/fa";
+import { GiSunrise, GiSunset } from "react-icons/gi";
+import { WiBarometer, WiHumidity } from "react-icons/wi";
+import { MdVisibility } from "react-icons/md";
+
 
 const WAPP = {
   endpoint: 'timeline',
@@ -47,7 +51,7 @@ export default function WeatherPage() {
   const isIpdataLoading = !ipdata;
   const isWeatherDataLoading = ipdata && !weatherData;
   const isLoading = isWeatherDataLoading || isIpdataLoading;
-
+  console.log(weatherData)
   return (
     <div id="weather-forecast-page"
       style={{ background: weatherBackground }}>
@@ -224,15 +228,33 @@ function WeatherCurrentConditions({ ipData, tempUnit, forecastData }) {
       <div className="divider border-b border-white/30 my-4"></div>
       <div className="condition-rain-container flex flex-col gap-2.5">
         <div className="description flex items-center gap-2">
-          <FaCloudSunRain className="w-10" />
-          {description}
+          <div className="icon w-5">
+            <FaCloudSunRain />
+          </div>
+          <div className="description w-full">
+            {description}
+          </div>
+        </div>
+        <div id="feels-like" className="flex items-center gap-2">
+          <div className="icon w-5">
+            <FaTemperatureHalf />
+          </div>
+          <div>
+            <span className="">Feels like: </span>
+            <span>{tempConverter(currentConditions?.feelslike, 'f', tempUnit)}</span>
+            <span className="text-[.6rem] align-super">&deg;{tempUnit.toUpperCase()}</span>
+          </div>
         </div>
         <div className="condition flex items-center gap-2">
-          <i className="fas fa-cloud w-6"></i>
+          <div className="icon w-5">
+            <FaCloud />
+          </div>
           <p id="condition">{currentConditions?.conditions}</p>
         </div>
         <div className="precepetation flex items-center gap-2">
-          <i className="fas fa-tint w-6"></i>
+          <div className="icon w-5">
+            <FaTint />
+          </div>
           <p id="rain">{currentConditions?.precipprob} %</p>
         </div>
       </div>
@@ -241,7 +263,7 @@ function WeatherCurrentConditions({ ipData, tempUnit, forecastData }) {
 }
 
 function WeatherOverview({ tempUnit, forecastData }) {
-  const { currentConditions, days, description } = forecastData || {}
+  const { days, description } = forecastData || {}
   const rainySnowyDays = days.filter(day => day.icon === 'rain' ||
     day.icon === 'thunder-rain' ||
     day.icon === 'thunder-showers-day' ||
@@ -302,14 +324,24 @@ function WeatherOverview({ tempUnit, forecastData }) {
         </div>
         <div id="high-low" className="flex w-full gap-7 sm:gap-2.5 justify-center">
           <div id="average-hightemp"
-            className="text-[.9rem] w-[130px] flex" >
-            Average High <br />
-            {tempConverter(averageTempHigh, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}
+            className="text-[.9rem] w-[130px]" >
+            <span className="icon flex items-center gap-2">
+              <FaTemperatureArrowUp />
+              Average High <br />
+            </span>
+            <span className="content">
+              {tempConverter(averageTempHigh, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}
+            </span>
           </div>
           <div id="average-lowtemp"
-            className="text-[.9rem] w-[130px] flex" >
-            Average Low <br />
-            {tempConverter(averageTempLow, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}
+            className="text-[.9rem] w-[130px]" >
+            <span className="icon flex items-center gap-2">
+              <FaTemperatureArrowDown />
+              Average Low
+            </span>
+            <span className="content">
+              {tempConverter(averageTempLow, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}
+            </span>
           </div>
         </div>
       </div>
@@ -375,54 +407,49 @@ function WeatherForecastContent({ windowSize, tempUnit, setTempUnit, forecastDat
 
 function WeatherHighlights({ currentConditions }) {
   console.log(currentConditions)
+  const { windspeed, visibility, sunset, sunrise, humidity, pressure, cloudcover } = currentConditions;
+  const windStatus = toKm(windspeed) >= 118 ? 'Hurricane-Force' : updateWindspeedStatus(toKm(windspeed));
+  const pressureStatus = updatePressureStatus(pressure);
+  const humidityStatus = updateHumidityStatus(humidity);
+  const visibilityStatus = toM(visibility) > 10000 ? 'Good' : updateVisibilityStatus(toM(visibility));
+  const cloudcoverStatus = cloudcover > 90 ? 'Overcast' : updateCloudcoverStatus(cloudcover);
+
+  const highlights = [
+    { title: 'Wind Status', value: [toKm(windspeed)], unit: 'Km/h', status: windStatus, icon: [<FaWind />] },
+    { title: 'Pressure', value: [pressure], unit: 'hPa', status: pressureStatus, icon: [<WiBarometer />] },
+    { title: 'Humidity', value: [humidity], unit: '%', status: humidityStatus, icon: [<WiHumidity />] },
+    { title: 'Visibility', value: [toKm(visibility)], unit: 'Km', status: visibilityStatus, icon: [<MdVisibility />] },
+    { title: 'Sunrise & Sunset', value: [sunrise, sunset], unit: 'AM', status: 'Normal', icon: [<GiSunrise />, <GiSunset />] },
+    { title: 'Cloudcover', value: [cloudcover], unit: '%', status: cloudcoverStatus, icon: [<FaCloud />] }
+  ]
+
   return (
     <div className="highlights">
       <div className="header pt-2.5 pb-4 border-b border-white/20">
         <h2 className="heading text-xl">Today's Highlights</h2>
       </div>
       <div className="cards mt-5 flex flex-wrap justify-evenly gap-2.5 [&>*]:min-h-30 [&>*]:min-w-60 [&>*]:shadow-[var(--bs-banner-1)] [&>*]:rounded-xl">
-        <div className="card2 flex flex-col justify-center items-center">
-          <h4 className="card-heading">Wind Status</h4>
-          <div className="content">
-            <p className="wind-speed">0</p>
-            <p>km/h</p>
+        {currentConditions && highlights.map(highlight => (
+          <div key={highlight.title} className="card p-2.5 flex flex-col justify-between items-center">
+            <h4 className="card-heading">{highlight.title}</h4>
+            <div className="content flex flex-col justify-center items-center gap-2">
+              <p className="flex gap-2.5 items-center justify-center text-[1.5rem]">
+                <span>{highlight.icon[0]}</span>
+                <span>{highlight.value[0]} {highlight.unit}</span>
+              </p>
+              {highlight.title === 'Sunrise & Sunset' ? (
+                <p className="flex items-center justify-center gap-2.5">
+                  <span>{highlight.icon[1]}</span>
+                  <span>{highlight.value[1]}</span>
+                </p>
+              ) : (
+                <p className="">
+                  <span>{highlight.status}</span>
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="card2 flex flex-col justify-center items-center">
-          <h4 className="card-heading">Sunrise & Sunset</h4>
-          <div className="content">
-            <p className="sun-rise">0</p>
-            <p className="sun-set">0</p>
-          </div>
-        </div>
-        <div className="card2 flex flex-col justify-center items-center">
-          <h4 className="card-heading">Humidity</h4>
-          <div className="content">
-            <p className="humidity">0</p>
-            <p className="humidity-status">Normal</p>
-          </div>
-        </div>
-        <div className="card2 flex flex-col justify-center items-center">
-          <h4 className="card-heading">Visibility</h4>
-          <div className="content">
-            <p className="visibilty">0</p>
-            <p className="visibilty-status"> Normal</p>
-          </div>
-        </div>
-        <div className="card2 flex flex-col justify-center items-center">
-          <h4 className="card-heading">Pressure</h4>
-          <div className="content">
-            <p className="pressure">0</p>
-            <p className="pressure-status">Normal</p>
-          </div>
-        </div>
-        <div className="card2 flex flex-col justify-center items-center">
-          <h4 className="card-heading">Air Quality</h4>
-          <div className="content">
-            <p className="air-quality">0</p>
-            <p className="air-quality-status">Normal</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   )
@@ -443,4 +470,71 @@ function WeatherNews() {
       </div>
     </div>
   )
+}
+
+function toKm(distance) {
+  return Math.round((distance / 0.6213712) * 100) / 100;
+}
+
+function toM(distance) {
+  return toKm(distance) * 1000
+}
+
+function updateWindspeedStatus(windspeed) {
+  const windspeedStatus = [
+    { speed: 2, status: 'Calm' },
+    { speed: 5, status: 'Light Air' },
+    { speed: 11, status: 'Light Breeze' },
+    { speed: 19, status: 'Gentle Breeze' },
+    { speed: 28, status: 'Moderate Breeze' },
+    { speed: 38, status: 'Fresh Breeze' },
+    { speed: 49, status: 'Strong Breeze' },
+    { speed: 61, status: 'Neare/Moderate Gale' },
+    { speed: 74, status: 'Gale/Fresh Gale' },
+    { speed: 88, status: 'Strong/Severe Gale' },
+    { speed: 102, status: 'Storm/Whole Gale' },
+    { speed: 117, status: 'Violent Storm' },
+  ]
+  return windspeedStatus.filter(wind => windspeed < wind.speed)[0].status
+}
+
+function updatePressureStatus(pressure) {
+  if (pressure < 1000) {
+    return "Low";
+  } else if (pressure <= 1013) {
+    return "Moderate";
+  } else {
+    return "High";
+  }
+}
+
+function updateHumidityStatus(humidity) {
+  if (humidity <= 30) {
+    return "Low";
+  } else if (humidity <= 60) {
+    return "Moderate";
+  } else {
+    return "High";
+  }
+}
+
+function updateVisibilityStatus(distance) {
+  const visibilityStatus = [
+    { range: 200, status: 'Dense Fog' },
+    { range: 500, status: 'Thick Fog' },
+    { range: 1000, status: 'Fog' },
+    { range: 5000, status: 'Mist/Haze' },
+    { range: 10000, status: 'Moderate' },
+  ]
+  return visibilityStatus.filter(visibility => distance <= visibility.range)[0].status
+}
+
+function updateCloudcoverStatus(cloudcover) {
+  const cloudcoverStatus = [
+    { value: 12.5, status: 'Sky Clear' },
+    { value: 25, status: 'Few Clouds' },
+    { value: 50, status: 'Scattered' },
+    { value: 90, status: 'Broken' },
+  ]
+  return cloudcoverStatus.filter(cloud => cloudcover <= cloud.value)[0].status
 }
