@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { Form, NavLink, useActionData } from "react-router-dom";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
 import useWindowSize from "../../hooks/UseWindowSize";
 import OverviewChart from "./PieChart";
@@ -38,6 +38,7 @@ const navLinks = [
 
 export default function WeatherPage() {
   const [tempUnit, setTempUnit] = useState('c');
+  const [weather, setWeather] = useState(null);
 
   const { windowSize } = useWindowSize();
   const { weatherBackground } = useUpdateWeatherBackground();
@@ -48,10 +49,22 @@ export default function WeatherPage() {
   const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${latitude},${longitude}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2`
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
 
+  const actionData = useActionData() || {};
+  const { result: weatherSearchData, location } = actionData;
+
+  useEffect(() => {
+    if (weatherSearchData) {
+      setWeather(weatherSearchData)
+    }
+  }, [weatherSearchData])
+  console.log(weather)
+
   const isIpdataLoading = !ipdata;
   const isWeatherDataLoading = ipdata && !weatherData;
   const isLoading = isWeatherDataLoading || isIpdataLoading;
-  console.log(weatherData)
+
+  const forecastData = weather || weatherData;
+
   return (
     <div id="weather-forecast-page"
       style={{ background: weatherBackground }}>
@@ -69,7 +82,8 @@ export default function WeatherPage() {
               ipData={ipdata}
               tempUnit={tempUnit}
               setTempUnit={setTempUnit}
-              forecastData={weatherData} />
+              location={location}
+              forecastData={forecastData} />
           </WeatherPageMainContainer>
           <WeatherNews />
         </div>
@@ -113,20 +127,24 @@ function WeatherPageMainContainer({ children }) {
 }
 
 function WeatherPageSearchLocation() {
+
   return (
     <div id="weather-page-search-location"
       className="w-full px-2.5 py-5 backdrop-blur-lg bg-black/10 sm:px-0 border-b border-t mb-10 border-white/15">
       <div className="container w-11/12 max-w-[1280px] mx-auto flex flex-wrap flex-col sm:flex-row md:justify-start justify-center items-center gap-2.5">
-        <div id="search-input-container" className="flex flex-nowrap">
-          <input id="weather-page-query"
-            name="q"
-            type="search"
-            placeholder="Search location"
-            className="border bg-white/10 border-white/30 border-r-0 outline-none rounded-l-full px-3 py-2 w-full min-w-[280px] max-w-[350px]" />
-          <label htmlFor="weather-page-query" className="border border-white/30 px-3 py-2 rounded-r-full cursor-pointer bg-[var(--primary-color)]">
-            <i className="fas fa-search text-white/60"></i>
-          </label>
-        </div>
+        <Form method="post">
+          <div id="search-input-container" className="flex flex-nowrap">
+            <input id="weather-page-query"
+              required
+              type="search"
+              name="location"
+              placeholder="Search location"
+              className="border bg-white/10 border-white/30 border-r-0 outline-none rounded-l-full px-3 py-2 w-full min-w-[280px] max-w-[350px]" />
+            <button type="submit" htmlFor="weather-page-query" className="border border-white/30 px-3 py-2 rounded-r-full cursor-pointer bg-[var(--primary-color)]">
+              <i className="fas fa-search text-white/60"></i>
+            </button>
+          </div>
+        </Form>
         <div id="search-result-banner-container" className="flex justify-center flex-wrap text-white/40 gap-2.5">
           <div className="border bg-white/10 border-white/30 inline-block px-3 py-2 rounded-lg cursor-pointer">
             <span> location</span>
@@ -149,7 +167,7 @@ function WeatherPageSearchLocation() {
   )
 }
 
-function WeatherPageContent({ windowSize, ipData, tempUnit, setTempUnit, forecastData }) {
+function WeatherPageContent({ windowSize, ipData, tempUnit, setTempUnit, location, forecastData }) {
 
   return (
     <div id="weather-content-container"
@@ -161,6 +179,7 @@ function WeatherPageContent({ windowSize, ipData, tempUnit, setTempUnit, forecas
           windowSize={windowSize}
           ipData={ipData}
           tempUnit={tempUnit}
+          location={location}
           forecastData={forecastData} />
         <WeatherForecastContent
           windowSize={windowSize}
@@ -173,7 +192,7 @@ function WeatherPageContent({ windowSize, ipData, tempUnit, setTempUnit, forecas
   )
 }
 
-function WeatherSideBar({ windowSize, ipData, tempUnit, forecastData }) {
+function WeatherSideBar({ windowSize, ipData, tempUnit, location, forecastData }) {
   return (
     <div id="weather-sidebar"
       className={`sidebar flex flex-col gap-2.5 
@@ -181,6 +200,7 @@ function WeatherSideBar({ windowSize, ipData, tempUnit, forecastData }) {
       <WeatherCurrentConditions
         ipData={ipData}
         tempUnit={tempUnit}
+        location={location}
         forecastData={forecastData} />
       <WeatherOverview
         tempUnit={tempUnit}
@@ -189,13 +209,13 @@ function WeatherSideBar({ windowSize, ipData, tempUnit, forecastData }) {
   )
 }
 
-function WeatherCurrentConditions({ ipData, tempUnit, forecastData }) {
+function WeatherCurrentConditions({ ipData, tempUnit, forecastData, location }) {
   const { city, region } = ipData || {};
   const { currentConditions, days } = forecastData || {};
   const { description } = days[0]
   const { dateToday, timer } = useClock();
   const hour = new Date().getHours();
-
+  const address = location || `${city}, ${region}`
   return (
     <div className="min-w-70 backdrop-blur-lg shadow-[var(--bs-banner-1)] rounded-xl 
           h-auto px-2.5 p-5 flex flex-col gap-1.5">
@@ -205,7 +225,7 @@ function WeatherCurrentConditions({ ipData, tempUnit, forecastData }) {
           <i className="fas fa-map-marker-alt"></i>
         </div>
         <div className="location-text">
-          <p id="location">{city}, {region}</p>
+          <p id="location">{address}</p>
         </div>
       </div>
       <div className="weather-icon h-24 self-center">
@@ -394,7 +414,7 @@ function WeatherForecastContent({ windowSize, tempUnit, setTempUnit, forecastDat
         className="w-full flex justify-evenly flex-wrap sm:flex-row gap-2.5 py-2.5">
         {forecast && forecast.map(forecast => (
           <WeatherCard
-            key={forecast.datetimeEpoch}
+            key={forecast.datetimeEpoch || forecast.datetime}
             tempUnit={tempUnit}
             forecast={forecast}
             selectedMode={selectedMode} />
@@ -537,4 +557,26 @@ function updateCloudcoverStatus(cloudcover) {
     { value: 90, status: 'Broken' },
   ]
   return cloudcoverStatus.filter(cloud => cloudcover <= cloud.value)[0].status
+}
+
+export const weatherSearchAction = async ({ request }) => {
+  const formData = await request.formData();
+  const location = formData.get('location')
+  const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${location}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2`
+  if (!location) return { error: 'Location is required' }
+  try {
+    const response = await fetch(VISUALCROSSING_URL)
+    if (!response.ok) {
+      const error = new Error('Search failed')
+      error.status = response.status
+      throw error
+    }
+
+    const result = await response.json();
+    return { result, location }
+  } catch (error) {
+    if (error.name === 'AbortError') return;
+    console.log(error)
+    return { error: error.message }
+  }
 }

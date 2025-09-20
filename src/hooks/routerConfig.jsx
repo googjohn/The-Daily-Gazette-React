@@ -10,7 +10,7 @@ import Search, { SearchLoader } from "../pages/search/Search";
 import { Suspense } from "react";
 import Spinner from "../components/spinner/Spinner";
 import WeatherForecastPage from "../components/weatherapp/WeatherForecastPage";
-import WeatherPage from "../pages/weatherForecast/WeatherPage";
+import WeatherPage, { weatherSearchAction } from "../pages/weatherForecast/WeatherPage";
 
 export const router = createBrowserRouter([
   {
@@ -44,5 +44,6 @@ export const router = createBrowserRouter([
   {
     path: 'weather',
     element: <WeatherPage />,
-  }
+    action: weatherSearchAction,
+  },
 ])

@@ -49,13 +49,14 @@ export default function Search() {
                   id="search"
                   placeholder="Search"
                   value={searchTerm}
+                  required
                   className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-full sm:w-8/12 h-9 
                 transition-(--transition) focus:transition-(--transition) outline-0`}
                 />
-                <label htmlFor="search" className="absolute right-0 sm:right-[16.55%] 
+                <button type="submit" htmlFor="search" className="absolute right-0 sm:right-[16.55%] 
               bg-(--light-navy) rounded-full">
                   <i className="fa-sharp fa-solid fa-magnifying-glass p-2.5 cursor-pointer  w-9 h-9"></i>
-                </label>
+                </button>
               </div>
             </Form>
 
@@ -121,7 +122,7 @@ export default function Search() {
 export const SearchLoader = async ({ request }) => {
   const requestUrl = new URL(request.url);
   const query = requestUrl.searchParams.get("q");
-
+  if (!query) return null
   try {
 
     const url = `https://newsapi.org/v2/everything?q=${query}&apiKey=${import.meta.env.VITE_NEWSAPIORG_API_KEY}`

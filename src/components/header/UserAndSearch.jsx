@@ -58,6 +58,7 @@ function Search({ mobileActive, mobileMenuIsOpen }) {
               id="search"
               placeholder="Search"
               value={searchTerm}
+              required
               className={`rounded-full pl-[15px] shadow-(--bs-lightBlue) w-9 h-9 transition-(--transition)
               ${mobileMenuIsOpen ? 'hover:w-full  focus:w-full' : 'hover:w-11/12 focus:w-11/12'} 
               focus:transition-(--transition) transition-(--transition) outline-0`}
