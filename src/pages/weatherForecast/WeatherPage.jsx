@@ -38,7 +38,7 @@ const navLinks = [
 
 export default function WeatherPage() {
   const [tempUnit, setTempUnit] = useState('c');
-  const [weather, setWeather] = useState(null);
+  const [searchedWeather, setSearchedWeather] = useState(null);
 
   const { windowSize } = useWindowSize();
   const { weatherBackground } = useUpdateWeatherBackground();
@@ -46,7 +46,7 @@ export default function WeatherPage() {
   const { ipdata, error: ipdataError } = useIpGetter();
   const { latitude, longitude } = ipdata || {}
 
-  const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${latitude},${longitude}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2`
+  const VISUALCROSSING_URL = latitude && longitude ? `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${latitude},${longitude}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2` : null
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
 
   const actionData = useActionData() || {};
@@ -54,16 +54,15 @@ export default function WeatherPage() {
 
   useEffect(() => {
     if (weatherSearchData) {
-      setWeather(weatherSearchData)
+      setSearchedWeather(weatherSearchData)
     }
   }, [weatherSearchData])
-  console.log(weather)
 
   const isIpdataLoading = !ipdata;
   const isWeatherDataLoading = ipdata && !weatherData;
   const isLoading = isWeatherDataLoading || isIpdataLoading;
 
-  const forecastData = weather || weatherData;
+  const forecastData = searchedWeather || weatherData;
 
   return (
     <div id="weather-forecast-page"
@@ -71,7 +70,7 @@ export default function WeatherPage() {
 
       {isLoading && (ipdataError || weatherDataError ? <Error /> : <Spinner />)}
 
-      {weatherData && (
+      {(searchedWeather || weatherData) && (
         <div id="weather-container"
           className="w-full p-0">
           <WeatherPageNavigation />
@@ -289,8 +288,8 @@ function WeatherOverview({ tempUnit, forecastData }) {
     day.icon === 'thunder-showers-day' ||
     day.icon === 'showers-day' ||
     day.icon === 'snow')
-  const averageTempHigh = Math.round(days.reduce((acc, curr) => acc + curr.tempmax, 0) / days.length * 100) / 100
-  const averageTempLow = Math.round(days.reduce((acc, curr) => acc + curr.tempmin, 0) / days.length * 100) / 100
+  const averageTempHigh = days?.length ? Math.round(days.reduce((acc, curr) => acc + curr.tempmax, 0) / days.length * 100) / 100 : 0
+  const averageTempLow = days?.length ? Math.round(days.reduce((acc, curr) => acc + curr.tempmin, 0) / days.length * 100) / 100 : 0
 
   const pieChartData = [
     { id: 'Rainy/Snowy Days', name: 'Rainy/Snowy Days', label: 'Rainy', value: rainySnowyDays.length, color: '#0575e6' },
@@ -371,9 +370,10 @@ function WeatherOverview({ tempUnit, forecastData }) {
 
 function WeatherForecastContent({ windowSize, tempUnit, setTempUnit, forecastData }) {
   const { currentConditions, days } = forecastData
-  console.log(days)
+  const [dayToFocus, setDayToFocus] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [selectedMode, setSelectedMode] = useState('hourly')
+
 
   useEffect(() => {
     if (selectedMode === 'hourly') {
@@ -383,10 +383,18 @@ function WeatherForecastContent({ windowSize, tempUnit, setTempUnit, forecastDat
     }
   }, [selectedMode, days])
 
+  // changes hourly data depending on clicked daily forecast
+  useEffect(() => {
+    if (dayToFocus) {
+      const filterDays = days.filter(day => day.datetimeEpoch === dayToFocus)
+      setForecast(filterDays[0]?.hours)
+    }
+  }, [dayToFocus, days])
+
   return (
     <div id="weather-forecast-content"
       className={`shadow-[var(--bs-banner-1)] w-full backdrop-blur-lg overflow-hidden rounded-xl flex flex-col 
-      gap-2.5 p-2.5 ${windowSize.width < 640 ? 'rounded-b-xl' : ''} sm:rounded-r-xl`}>
+      gap-2.5 p-2.5 pb-5 ${windowSize.width < 640 ? 'rounded-b-xl' : ''} sm:rounded-r-xl`}>
       <div id="select-mode-container" className="w-full flex justify-between items-center pb-2.5 border-b border-white/20">
         <div className="options text-white h-full flex text-md w-[150px]
           rounded-lg bg-[rgba(var(--white-rgb),.1)] text-center
@@ -414,10 +422,13 @@ function WeatherForecastContent({ windowSize, tempUnit, setTempUnit, forecastDat
         className="w-full flex justify-evenly flex-wrap sm:flex-row gap-2.5 py-2.5">
         {forecast && forecast.map(forecast => (
           <WeatherCard
+            id={forecast.datetimeEpoch}
             key={forecast.datetimeEpoch || forecast.datetime}
             tempUnit={tempUnit}
             forecast={forecast}
-            selectedMode={selectedMode} />
+            selectedMode={selectedMode}
+            setSelectedMode={setSelectedMode}
+            setDayToFocus={setDayToFocus} />
         ))}
       </div>
       <WeatherHighlights currentConditions={currentConditions} />

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaTemperatureHalf } from "react-icons/fa6";
 import { handleConditionsIcon, tempConverter } from "../../components/weatherapp/WeatherForecastUtility";
 
-export function WeatherCard({ tempUnit, forecast, selectedMode, }) {
+export function WeatherCard({ tempUnit, forecast, selectedMode, setSelectedMode, setDayToFocus }) {
   const { conditions, icon, temp, datetime, precipprob } = forecast
   const [formattedDatetime, setFormattedDatetime] = useState(null)
   const hour = +datetime.split(':')[0];
@@ -22,8 +22,20 @@ export function WeatherCard({ tempUnit, forecast, selectedMode, }) {
     }
   }, [selectedMode, datetime, formattedDatetime])
 
+  const handleDailyCardOnClick = () => {
+    if (selectedMode === 'daily') {
+      setDayToFocus(forecast.datetimeEpoch)
+      setSelectedMode('hourly')
+    }
+  }
+
   return (
-    <div id="content-container" className="basis-30 grow">
+    <div
+      style={{
+        cursor: selectedMode === 'daily' ? 'pointer' : 'default'
+      }}
+      onClick={handleDailyCardOnClick}
+      className="basis-30 grow">
       <div className="hourly-daily-forecast flex flex-col items-center gap-1 sm:gap-2.5
       p-2.5 rounded-lg shadow-[var(--bs-banner-1)] backdrop-blur-sm">
         {selectedMode === 'hourly' ? (
