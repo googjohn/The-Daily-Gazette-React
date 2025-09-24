@@ -28,13 +28,14 @@ export default function useIpGetter() {
 
       try {
         const result = await tryFetch(IPINFO_URL);
-        const { city, region, loc } = result
+        const { city, region, loc, country } = result
         const latitude = loc?.split(',')[0]
         const longitude = loc?.split(',')[1]
 
         setIpdata({
           city,
           region,
+          country,
           latitude,
           longitude
         })
@@ -44,11 +45,12 @@ export default function useIpGetter() {
         // fallback fetch if the first fetch fails
         try {
           const res = await tryFetch(IPGEO_URL);
-          const { city, state_prov, latitude, longitude } = res
+          const { city, state_prov, latitude, longitude, country } = res
 
           setIpdata({
             city,
             region: state_prov,
+            country,
             latitude,
             longitude
           })

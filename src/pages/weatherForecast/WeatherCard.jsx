@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaTemperatureHalf } from "react-icons/fa6";
 import { handleConditionsIcon, tempConverter } from "../../components/weatherapp/WeatherForecastUtility";
 
-export function WeatherCard({ tempUnit, forecast, selectedMode, setSelectedMode, setDayToFocus }) {
+export default function WeatherCard({ tempUnit, forecast, selectedMode, setSelectedMode, setDayToFocus }) {
   const { conditions, icon, temp, datetime, precipprob } = forecast
   const [formattedDatetime, setFormattedDatetime] = useState(null)
   const hour = +datetime.split(':')[0];
@@ -36,7 +36,7 @@ export function WeatherCard({ tempUnit, forecast, selectedMode, setSelectedMode,
       }}
       onClick={handleDailyCardOnClick}
       className="basis-30 grow">
-      <div className="hourly-daily-forecast flex flex-col items-center gap-1 sm:gap-2.5
+      <div className="hourly-daily-forecast flex flex-col items-center gap-2.5
       p-2.5 rounded-lg shadow-[var(--bs-banner-1)] backdrop-blur-sm">
         {selectedMode === 'hourly' ? (
           <div className="time">{
@@ -57,7 +57,7 @@ export function WeatherCard({ tempUnit, forecast, selectedMode, setSelectedMode,
         </div>
         <div className="temp flex items-center gap-1" title="Temperature">
           <FaTemperatureHalf className="text-[.7rem]" />
-          {tempConverter(temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}
+          {tempConverter(temp, 'f', tempUnit)}<span className="text-[.6rem]">&deg;{tempUnit.toUpperCase()}</span>
         </div>
         <div className="precipitate flex flex-nowrap gap-1 items-center" title="Rain probability">
           <i className="fa-solid fa-droplet text-[.7rem]"></i>{precipprob}%
