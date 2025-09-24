@@ -1,5 +1,4 @@
 import useClock from "../../hooks/useClock";
-import useFormatter from "../../hooks/useFormatter";
 import { FaCloud, FaCloudSunRain, FaFan, FaTemperatureArrowDown, FaTemperatureArrowUp, FaTemperatureHalf, FaWind } from "react-icons/fa6";
 import { FaTint } from "react-icons/fa";
 import { GiSunrise, GiSunset } from "react-icons/gi";
@@ -159,12 +158,11 @@ export function WeatherOverview({ tempUnit, forecastData }) {
     { id: 'Sunny/Cloudy Days', name: 'Sunny/Cloudy Days', label: 'Sunny', value: (days.length - rainySnowyDays.length), color: 'hsl(39, 100%, 50%)' },
   ]
 
-  const formatterOptions = {
+  const formatter = new Intl.DateTimeFormat('default', {
     year: 'numeric',
     month: 'short',
-    timeZone: 'UTC',
-  }
-  const formattedDate = useFormatter(new Date(), formatterOptions)
+  })
+  const formattedDate = formatter.format(new Date())
   const dateArray = formattedDate.split(' ')
   const month = dateArray[0]
   const year = dateArray[dateArray.length - 1]
@@ -275,10 +273,12 @@ export function WeatherForecastContent({ windowSize, tempUnit, setTempUnit, fore
   const [dayToFocus, setDayToFocus] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [selectedMode, setSelectedMode] = useState('hourly')
-  const today = useFormatter(new Date(), {
+
+  const formatter = new Intl.DateTimeFormat('default', {
     month: 'short',
     day: 'numeric',
   })
+  const today = formatter.format(new Date())
 
   useEffect(() => {
     if (selectedMode === 'hourly') {
