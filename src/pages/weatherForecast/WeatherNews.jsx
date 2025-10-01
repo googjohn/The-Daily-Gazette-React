@@ -1,5 +1,5 @@
 import Card from "../../components/card/Card"
-import Error from "../../components/error/Error"
+import ErrorPage from "../../components/error/ErrorPage"
 import Spinner from "../../components/spinner/Spinner"
 import { useFetchForAll } from "../../hooks/UseFetchForAll"
 
@@ -11,28 +11,33 @@ export default function WeatherNews() {
   const slicedArticles = articles?.length > 24 ? articles?.slice(0, 24) : articles?.slice()
 
   return (
-    <div id="weather-news" className="container w-full sm:w-11/12 p-2.5 max-w-[1280px] mx-auto mt-10 rounded-xl backdrop-blur-lg shadow-[var(--bs-banner-1)]">
+    <div id="weather-news"
+      className="container w-full sm:w-11/12 p-2.5 max-w-[1280px] mx-auto mt-10 rounded-xl 
+      backdrop-blur-lg shadow-[var(--bs-banner-1)]">
       <div className="weather-news-card">
         <div className="weather-heading ">
           <h2 className="text-white text-xl py-2.5 pb-5 border-b border-white/20">Weather News</h2>
         </div>
-        {!weatherNews && <Spinner />}
-        {weatherNewsError && (<Error />)}
-        <div className="bg-[var(--gray-10)] mt-6">
-          <div className="p-2.5 flex flex-col grid-template-search sm:grid 
+        {!weatherNews ? <Spinner /> :
+
+          weatherNewsError ? (<ErrorPage error={weatherNewsError} />) :
+
+            <div className="bg-[var(--gray-10)] mt-6">
+              <div className="p-2.5 flex flex-col grid-template-search sm:grid 
               sm:[&>*]:col-span-6 md:[&>*]:col-span-4 lg:[&>*]:col-span-3 gap-2.5">
 
-            {slicedArticles && slicedArticles?.slice(0, 24).map(article => (
-              <Card
-                key={article.description}
-                cardTitle={article.title}
-                cardImageSrc={article.urlToImage}
-                link={article.urll}
-                source={article?.source?.name} />
-            ))}
+                {slicedArticles && slicedArticles?.slice(0, 24).map(article => (
+                  <Card
+                    key={article.description}
+                    cardTitle={article.title}
+                    cardImageSrc={article.urlToImage}
+                    link={article.url}
+                    source={article.source} />
+                ))}
 
-          </div>
-        </div>
+              </div>
+            </div>
+        }
       </div>
     </div>
   )

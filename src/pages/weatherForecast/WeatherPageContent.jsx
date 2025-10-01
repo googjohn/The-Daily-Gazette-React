@@ -23,62 +23,61 @@ import {
 } from "./WeatherPageUtility";
 import OverviewChart from "./PieChart";
 import WeatherCard from "./WeatherCard";
+import { formatDate } from "./WeatherPageUtility";
 
-export default function WeatherPageContent({ windowSize, ipData, tempUnit, setTempUnit, location, forecastData }) {
+export default function WeatherPageContent({ windowSize, ipData, tempUnit, setTempUnit, forecastData }) {
 
   return (
     <div id="weather-content-container"
       className="container px-2.5 sm:px-0 w-full sm:w-11/12 max-w-[1280px] 
       mx-auto flex flex-col sm:flex-row gap-2.5">
-      <div id="current-weather-conditions" className={`sidebar flex flex-col sm:flex-row gap-2.5 
+      <div id="current-weather-conditions" className={`flex flex-col sm:flex-row gap-2.5 
         text-white  ${windowSize.width < 640 ? 'rounded-t-xl' : ''} sm:rounded-l-xl`}>
         <WeatherSideBar
           windowSize={windowSize}
           ipData={ipData}
           tempUnit={tempUnit}
-          location={location}
           forecastData={forecastData} />
         <WeatherForecastContent
           windowSize={windowSize}
           tempUnit={tempUnit}
           setTempUnit={setTempUnit}
-          forecastData={forecastData}
-        />
+          forecastData={forecastData} />
       </div>
     </div>
   )
 }
 
-export function WeatherSideBar({ windowSize, ipData, tempUnit, location, forecastData }) {
+export function WeatherSideBar({ windowSize, ipData, tempUnit, forecastData }) {
   return (
     <div id="weather-sidebar"
-      className={`sidebar flex flex-col gap-2.5 
-        text-white  ${windowSize.width < 640 ? 'rounded-t-xl' : ''} sm:rounded-l-xl`}>
+      className={`flex flex-col basis-lg gap-2.5 text-white 
+      ${windowSize.width < 640 ? 'rounded-t-xl' : ''} sm:rounded-l-xl`}>
       <WeatherCurrentConditions
         ipData={ipData}
         tempUnit={tempUnit}
-        location={location}
         forecastData={forecastData} />
       <WeatherOverview
         tempUnit={tempUnit}
         forecastData={forecastData} />
-      <WeatherNewsLocal
+      {/* <WeatherNewsLocal
         windowSize={windowSize}
-        ipdata={ipData} />
+        ipdata={ipData} /> */}
     </div>
   )
 }
 
-export function WeatherCurrentConditions({ ipData, tempUnit, forecastData, locationToUse }) {
+export function WeatherCurrentConditions({ ipData, tempUnit, forecastData }) {
   const { city, region } = ipData || {};
-  const { currentConditions, days } = forecastData || {};
+  const { currentConditions, days, address } = forecastData || {};
   const { description } = days[0] || []
   const { dateToday, timer } = useClock();
   const hour = new Date().getHours();
-  const address = locationToUse || `${city}, ${region}`
+  const resolvedAdressLen = address?.split(',').length
+  const addressToUse = resolvedAdressLen === 2 ? `${city}, ${region}` : address
 
   return (
-    <div className="min-w-70 backdrop-blur-lg shadow-[var(--bs-banner-1)] rounded-xl 
+    <div className="min-w-80 backdrop-blur-lg shadow-[var(--bs-banner-1)] rounded-xl 
           h-auto px-2.5 p-5 flex flex-col gap-1.5">
 
       <div className="location flex items-center gap-2">
@@ -86,7 +85,7 @@ export function WeatherCurrentConditions({ ipData, tempUnit, forecastData, locat
           <i className="fas fa-map-marker-alt"></i>
         </div>
         <div className="location-text">
-          <p id="location">{address}</p>
+          <p id="location">{addressToUse}</p>
         </div>
       </div>
       <div className="weather-icon h-24 self-center">
@@ -158,18 +157,17 @@ export function WeatherOverview({ tempUnit, forecastData }) {
     { id: 'Sunny/Cloudy Days', name: 'Sunny/Cloudy Days', label: 'Sunny', value: (days.length - rainySnowyDays.length), color: 'hsl(39, 100%, 50%)' },
   ]
 
-  const formatter = new Intl.DateTimeFormat('default', {
+  const formattedDate = formatDate(new Date(), {
     year: 'numeric',
     month: 'short',
   })
-  const formattedDate = formatter.format(new Date())
   const dateArray = formattedDate.split(' ')
   const month = dateArray[0]
   const year = dateArray[dateArray.length - 1]
 
   return (
     <div id="weather-overview"
-      className="relative min-w-70 backdrop-blur-lg shadow-[var(--bs-banner-1)] 
+      className="relative min-w-80 backdrop-blur-lg shadow-[var(--bs-banner-1)] 
       rounded-xl h-auto px-2.5 p-5 flex flex-col gap-1.5">
       <div className="location flex items-center gap-2">
         <div className="w-full text-center">
@@ -236,8 +234,8 @@ export function WeatherNewsLocal({ ipdata, windowSize }) {
 
   return (
     <div id="local-weather-news"
-      className={`${windowSize.width < 1280 ? 'h-auto' : 'h-[600px]'} relative min-w-70 backdrop-blur-lg shadow-[var(--bs-banner-1)]
-      rounded-xl px-2.5 p-5 flex flex-col gap-1.5`}>
+      className={`${windowSize.width < 1280 ? 'h-auto' : 'h-[600px]'} relative min-w-80 
+      backdrop-blur-lg shadow-[var(--bs-banner-1)] rounded-xl px-2.5 p-5 flex flex-col gap-1.5`}>
       <div className="header pb-4 border-b border-white/20">
         <h2 className="heading text-xl">Local Weather News</h2>
       </div>
@@ -274,11 +272,11 @@ export function WeatherForecastContent({ windowSize, tempUnit, setTempUnit, fore
   const [forecast, setForecast] = useState(null);
   const [selectedMode, setSelectedMode] = useState('hourly')
 
-  const formatter = new Intl.DateTimeFormat('default', {
+  const formatterOptions = {
     month: 'short',
     day: 'numeric',
-  })
-  const today = formatter.format(new Date())
+  }
+  const today = formatDate(new Date(), formatterOptions)
 
   useEffect(() => {
     if (selectedMode === 'hourly') {
@@ -294,15 +292,9 @@ export function WeatherForecastContent({ windowSize, tempUnit, setTempUnit, fore
       const filterDays = days.filter(day => day.datetimeEpoch === dayToFocus)
       setForecast(filterDays[0]?.hours)
 
-      const dateToday = new Date(dayToFocus * 1000);
-      if (dateToday instanceof Date && !isNaN(dateToday.getTime())) {
-        const formatter = new Intl.DateTimeFormat('default', {
-          month: 'short',
-          day: 'numeric',
-        })
-        const formattedDate = formatter.format(dateToday)
-        setForecastDate(formattedDate)
-      }
+      const date = new Date(dayToFocus * 1000);
+      const formattedDate = formatDate(date, formatterOptions)
+      setForecastDate(formattedDate)
     }
   }, [dayToFocus, days])
   return (

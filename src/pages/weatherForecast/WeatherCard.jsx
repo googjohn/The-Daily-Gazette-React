@@ -1,22 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
 import { FaTemperatureHalf } from "react-icons/fa6";
 import { handleConditionsIcon, tempConverter } from "../../components/weatherapp/WeatherForecastUtility";
+import { formatDate } from "./WeatherPageUtility";
 
 export default function WeatherCard({ tempUnit, forecast, selectedMode, setSelectedMode, setDayToFocus }) {
   const { conditions, icon, temp, datetime, precipprob } = forecast
   const [formattedDatetime, setFormattedDatetime] = useState(null)
-  const hour = +datetime.split(':')[0];
+  const hour = Number(datetime.split(':')[0]) || 0;
 
   useEffect(() => {
     if (selectedMode === 'daily') {
       const dateToday = new Date(datetime);
-      if (dateToday instanceof Date && !isNaN(dateToday.getTime())) {
-        const formatter = new Intl.DateTimeFormat('default', {
+      if (dateToday instanceof Date && !isNaN(dateToday)) {
+        const formattedDate = formatDate(dateToday, {
           day: 'numeric',
           weekday: 'short',
-          timeZone: 'UTC'
         })
-        const formattedDate = formatter.format(dateToday)
         setFormattedDatetime(formattedDate)
       }
     }

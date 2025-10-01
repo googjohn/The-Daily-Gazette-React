@@ -43,39 +43,3 @@ export default function Card({ cardTitle, cardDescription, cardImageSrc, cardIma
     </div>
   )
 }
-/* 
-articles[] = {
-  content, 
-  description, 
-  id, 
-  image, 
-  publishedAt, 
-  source = {id, name, url}, 
-  title, 
-  url
-} 
-*/
-
-/* 
-headnews=world
-trendnews=general
-local=nation
-business=business
-entertainment=entertainment
-health=health
-science=science
-technology=technology
-sportnews=sports
-*/
-
-/* 
-{
-city,
-country_code2,
-ip,
-latitude,
-longitude,
-zipcode,
-
-}
-*/

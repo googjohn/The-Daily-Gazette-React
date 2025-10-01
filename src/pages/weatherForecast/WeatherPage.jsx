@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { NavLink, useActionData } from "react-router-dom";
+import { NavLink, useActionData, useNavigation } from "react-router-dom";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
 import useWindowSize from "../../hooks/UseWindowSize";
 import useIpGetter from "../../hooks/UseIpGetter";
-import Error from "../../components/error/Error";
+import ErrorPage from "../../components/error/ErrorPage";
 import Spinner from "../../components/spinner/Spinner";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import { FaHome } from "react-icons/fa";
@@ -26,55 +26,43 @@ const navLinks = [
 
 export default function WeatherPage() {
   const [tempUnit, setTempUnit] = useState('c');
-  const [searchedWeather, setSearchedWeather] = useState(null);
   const [forecastDataToUse, setForecastDataToUse] = useState(null);
-  const [locationToUse, setLocationToUse] = useState(null)
 
   const { windowSize } = useWindowSize();
-  const { weatherBackground } = useUpdateWeatherBackground();
+  const navigation = useNavigation();
 
-  const { ipdata, error: ipdataError } = useIpGetter();
+  const { ipdata, error: ipdataError } = useIpGetter()
   const { latitude, longitude } = ipdata || {}
 
   const VISUALCROSSING_URL = latitude && longitude ?
-    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius` : null
+    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius` :
+    null;
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
 
-  const actionData = useActionData() || {};
-  const { result: weatherSearchData, location: locationQuery } = actionData;
+  const { weatherBackground } = useUpdateWeatherBackground(forecastDataToUse?.days[0]?.hours[new Date().getHours()]?.icon);
 
   useEffect(() => {
-    if (weatherSearchData) {
-      setSearchedWeather(weatherSearchData)
-    } else {
-      // maybe we can use the last data if seach fails
-      setSearchedWeather(null)
-    }
-  }, [weatherSearchData])
-
-  useEffect(() => {
-    if (searchedWeather) {
-      setForecastDataToUse(searchedWeather)
-    } else {
-      setForecastDataToUse(weatherData)
-    }
-  }, [searchedWeather, weatherData])
-
-  useEffect(() => {
-    if (locationQuery) {
-      setLocationToUse(locationQuery)
-    }
-  }, [locationQuery, locationToUse])
+    // if (weatherSearchData) {
+    //   setForecastDataToUse(weatherSearchData)
+    // } else {
+    // }
+    setForecastDataToUse(weatherData)
+  }, [weatherData])
 
   const isIpdataLoading = !ipdata;
   const isWeatherDataLoading = ipdata && !weatherData;
   const isLoading = isWeatherDataLoading || isIpdataLoading;
+  const isSubmitting = navigation.state === 'submitting';
 
   return (
     <div id="weather-forecast-page"
       style={{ background: weatherBackground }}>
 
-      {isLoading && (ipdataError || weatherDataError ? <Error /> : <Spinner />)}
+      {isSubmitting && <Spinner />}
+      {isLoading && (ipdataError || weatherDataError ?
+        <ErrorPage error={ipdataError || weatherDataError} /> :
+        <Spinner />)
+      }
 
       {forecastDataToUse && (
         <div id="weather-container"
@@ -85,19 +73,17 @@ export default function WeatherPage() {
               ipdata={ipdata}
               tempUnit={tempUnit}
               forecastData={forecastDataToUse}
-              locationQuery={locationQuery}
+              // locationQuery={locationQuery}
               setForecastData={setForecastDataToUse}
-              setLocationToUse={setLocationToUse}
             />
             <WeatherPageContent
               windowSize={windowSize}
               ipData={ipdata}
               tempUnit={tempUnit}
               setTempUnit={setTempUnit}
-              locationToUse={locationToUse}
               forecastData={forecastDataToUse} />
           </WeatherPageMainContainer>
-          <WeatherNews />
+          {/* <WeatherNews /> */}
         </div>
       )}
     </div>
@@ -141,12 +127,14 @@ function WeatherPageMainContainer({ children }) {
 export const weatherSearchAction = async ({ request }) => {
   const formData = await request.formData();
   const location = formData.get('location')
+  console.log(location)
   const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius`
   if (!location) return { error: 'Location is required' }
   try {
     const response = await fetch(VISUALCROSSING_URL)
     if (!response.ok) {
-      const error = new Error('Search failed')
+      const errorText = await response.text()
+      const error = new Error('Search failed: location unknown', errorText)
       error.status = response.status
       throw error
     }
@@ -155,7 +143,7 @@ export const weatherSearchAction = async ({ request }) => {
     return { result, location }
   } catch (error) {
     if (error.name === 'AbortError') return;
-    console.log(error)
-    return { error: error.message }
+    console.log(error.message)
+    return { result: error, location }
   }
 }

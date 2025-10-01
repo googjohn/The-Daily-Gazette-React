@@ -101,3 +101,13 @@ export function updateWindDirection(winddir) {
 
   return winddirStatus.filter(wind => winddir <= wind.value)[0].status
 }
+
+export function formatDate(date, options = { dateStyle: 'medium' }) {
+  let datestring = '';
+  const parsedDate = new Date(date);
+  if (parsedDate instanceof Date && !isNaN(parsedDate)) {
+    const formatter = new Intl.DateTimeFormat('default', options);
+    datestring = formatter.format(parsedDate);
+  }
+  return datestring;
+}

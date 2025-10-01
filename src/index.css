@@ -114,9 +114,6 @@
   }
 }
 
-#navigation ul li {
-  /* position: relative; */
-}
 .navLink-hover::after, .navLink-hover::before {
   content: '';
   position: absolute;

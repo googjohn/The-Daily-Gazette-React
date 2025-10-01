@@ -5,7 +5,7 @@ import { FaTemperatureHalf } from "react-icons/fa6";
 import Spinner from "../spinner/Spinner";
 import { useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
-import Error from "../error/Error";
+import ErrorPage from "../error/ErrorPage";
 
 const WAPP = {
   endpoint: 'timeline',
@@ -44,7 +44,7 @@ export default function WeatherApp() {
 
   return (
     <div id="weather-app" className="flex justify-end sticky top-20 w-full z-30">
-      {isLoading && (ipdataError || weatherDataError ? <Error /> : <Spinner />)}
+      {isLoading && (ipdataError || weatherDataError ? <ErrorPage error={ipdataError || weatherDataError} /> : <Spinner />)}
       {weatherDataError && <div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>}
       {ipdataError && <div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>}
       <WeatherBanner weatherBg={weatherBackground}>
