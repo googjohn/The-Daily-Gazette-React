@@ -39,7 +39,7 @@ export default function WeatherPage() {
     null;
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
 
-  const { weatherBackground } = useUpdateWeatherBackground(forecastDataToUse?.days[0]?.hours[new Date().getHours()]?.icon);
+  const { weatherBackground } = useUpdateWeatherBackground(forecastDataToUse?.currentConditions?.icon);
 
   useEffect(() => {
     setForecastDataToUse(weatherData)

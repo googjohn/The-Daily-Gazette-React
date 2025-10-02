@@ -7,8 +7,6 @@ export const entertainmentOptions = {
   category: 'entertainment',
   language: 'en',
   max: 10,
-  gnewsApikey: import.meta.env.VITE_GNEWS_API_KEY_5,
-  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
 
 export default function Entertainment() {

@@ -9,7 +9,6 @@ export const businessOptions = {
   category: 'business',
   language: 'en',
   max: 10,
-  gnewsApikey: import.meta.env.VITE_GNEWS_API_KEY_4
 }
 export const moreBusinessOptions = {
   endpoint: 'top-headlines',
@@ -17,7 +16,6 @@ export const moreBusinessOptions = {
   language: 'en',
   country: 'us',
   max: 10,
-  gnewsApikey: import.meta.env.VITE_GNEWS_API_KEY_9,
 }
 
 const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;

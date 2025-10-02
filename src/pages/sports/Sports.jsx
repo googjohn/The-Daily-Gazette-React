@@ -8,10 +8,6 @@ export const sportsOptions = {
   category: 'sports',
   language: 'en',
   max: 10,
-  gnewsApikey: import.meta.env.VITE_GNEWS_API_KEY_8,
-  gnewsNbaApikey: import.meta.env.VITE_GNEWS_API_KEY_9,
-  gnewsMlbApikey: import.meta.env.VITE_GNEWS_API_KEY_10,
-  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY,
 }
 
 export default function Sports() {

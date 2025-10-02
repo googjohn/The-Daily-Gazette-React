@@ -46,7 +46,6 @@ export function useFetchForAll(URL) {
   useEffect(() => {
 
     if (!URL) return;
-
     fetchData();
 
     return () => {

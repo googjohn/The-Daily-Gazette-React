@@ -7,8 +7,6 @@ export const localOptions = {
   language: 'en',
   country: 'ph',
   max: 10,
-  gnewsApikey: import.meta.env.VITE_GNEWS_API_KEY_3,
-  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
 
 export default function LocalNews({ localNewsData }) {

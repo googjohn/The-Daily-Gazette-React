@@ -6,8 +6,6 @@ export const scienceOptions = {
   category: 'science',
   language: 'en',
   max: 10,
-  gnewsApikey: import.meta.env.VITE_GNEWS_API_KEY_7,
-  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY
 }
 
 export default function Science() {
