@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 // needs to be updated for condition rain at day and night
 export default function useUpdateWeatherBackground(condition) {
   const [hour, setHour] = useState(new Date().getHours());
-  const [weatherBackground, setWeatherBackground] = useState("url('/images/icons/weather_backgrounds/bright-sun-in-blue-sky.jpg') no-repeat center / cover");
+  const [weatherBackground, setWeatherBackground] = useState("url('/images/icons/weather_backgrounds/sunny-day.jpg') no-repeat center / cover");
 
   const rainConditions = ['showers', 'rain', 'thunder', 'storm']
   const cloudyConditions = ['overcast', 'cloudy']

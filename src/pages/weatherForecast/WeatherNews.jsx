@@ -3,9 +3,10 @@ import Card from "../../components/card/Card"
 import ErrorPage from "../../components/error/ErrorPage"
 import Spinner from "../../components/spinner/Spinner"
 import { useFetchNews } from "../home/Home"
+import { useFetchForAll } from "../../hooks/UseFetchForAll"
 
 export default function WeatherNews({ ipdata }) {
-  const { country } = ipdata || {}
+  // const { country } = ipdata || {}
   // const [weatherNewsData, setWeatherNewsData] = useState([]);
 
   // const NEWSAPIORG_URL = `https://newsapi.org/v2/everything?q=weather&language=en&apiKey=${import.meta.env.VITE_NEWSAPIORG_API_KEY}`
@@ -33,11 +34,14 @@ export default function WeatherNews({ ipdata }) {
   //   }
   // }, [weatherNewsArticlesPh, weatherNewsArticlesUs, weatherNewsArticlesIn])
 
-  const { articles: weatherNewsArticles, error: weatherNewsError } = useFetchNews({
-    language: 'en',
-    country: 'us',
-    max: 24
-  }, country, 'weather')
+  // const { articles: weatherNewsArticles, error: weatherNewsError } = useFetchNews({
+  //   language: 'en',
+  //   country: 'us',
+  //   max: 24
+  // }, country, 'weather')
+  const WORLDNEWS_URL = `https://api.worldnewsapi.com/search-news?text=weather&language=EN&source-country=US&number=24&categories=environment&api-key=${import.meta.env.VITE_WORLDNEWS_API_KEY}`
+  const { data: weatherNews, error: weatherNewsError } = useFetchForAll(WORLDNEWS_URL)
+  const weatherNewsArticles = weatherNews?.news
 
   const slicedArticles = weatherNewsArticles?.length > 24 ? weatherNewsArticles?.slice(0, 24) : weatherNewsArticles?.slice()
   // const slicedArticles = weatherNewsData?.length > 24 ? weatherNewsData?.slice(0, 24) : weatherNewsData?.slice()
