@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, useActionData, useNavigation } from "react-router-dom";
+import { NavLink, useNavigation } from "react-router-dom";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
 import useWindowSize from "../../hooks/UseWindowSize";
 import useIpGetter from "../../hooks/UseIpGetter";
@@ -42,10 +42,6 @@ export default function WeatherPage() {
   const { weatherBackground } = useUpdateWeatherBackground(forecastDataToUse?.days[0]?.hours[new Date().getHours()]?.icon);
 
   useEffect(() => {
-    // if (weatherSearchData) {
-    //   setForecastDataToUse(weatherSearchData)
-    // } else {
-    // }
     setForecastDataToUse(weatherData)
   }, [weatherData])
 
@@ -73,7 +69,6 @@ export default function WeatherPage() {
               ipdata={ipdata}
               tempUnit={tempUnit}
               forecastData={forecastDataToUse}
-              // locationQuery={locationQuery}
               setForecastData={setForecastDataToUse}
             />
             <WeatherPageContent
@@ -83,7 +78,7 @@ export default function WeatherPage() {
               setTempUnit={setTempUnit}
               forecastData={forecastDataToUse} />
           </WeatherPageMainContainer>
-          {/* <WeatherNews /> */}
+          <WeatherNews />
         </div>
       )}
     </div>
@@ -127,9 +122,10 @@ function WeatherPageMainContainer({ children }) {
 export const weatherSearchAction = async ({ request }) => {
   const formData = await request.formData();
   const location = formData.get('location')
-  console.log(location)
+
   const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius`
   if (!location) return { error: 'Location is required' }
+
   try {
     const response = await fetch(VISUALCROSSING_URL)
     if (!response.ok) {

@@ -60,21 +60,21 @@ export function WeatherSideBar({ windowSize, ipData, tempUnit, forecastData }) {
       <WeatherOverview
         tempUnit={tempUnit}
         forecastData={forecastData} />
-      {/* <WeatherNewsLocal
+      <WeatherNewsLocal
         windowSize={windowSize}
-        ipdata={ipData} /> */}
+        ipdata={ipData} />
     </div>
   )
 }
 
 export function WeatherCurrentConditions({ ipData, tempUnit, forecastData }) {
   const { city, region } = ipData || {};
-  const { currentConditions, days, address } = forecastData || {};
+  const { currentConditions, days, resolvedAddress } = forecastData || {};
   const { description } = days[0] || []
   const { dateToday, timer } = useClock();
   const hour = new Date().getHours();
-  const resolvedAdressLen = address?.split(',').length
-  const addressToUse = resolvedAdressLen === 2 ? `${city}, ${region}` : address
+  const resolvedAdressLen = resolvedAddress?.split(',').length
+  const addressToUse = resolvedAdressLen === 2 ? `${city}, ${region}` : resolvedAddress
 
   return (
     <div className="min-w-80 backdrop-blur-lg shadow-[var(--bs-banner-1)] rounded-xl 

@@ -26,9 +26,9 @@ export default function WeatherNews() {
               <div className="p-2.5 flex flex-col grid-template-search sm:grid 
               sm:[&>*]:col-span-6 md:[&>*]:col-span-4 lg:[&>*]:col-span-3 gap-2.5">
 
-                {slicedArticles && slicedArticles?.slice(0, 24).map(article => (
+                {slicedArticles && slicedArticles?.slice(0, 24).map((article, i) => (
                   <Card
-                    key={article.description}
+                    key={`${article.description}-${i}`}
                     cardTitle={article.title}
                     cardImageSrc={article.urlToImage}
                     link={article.url}

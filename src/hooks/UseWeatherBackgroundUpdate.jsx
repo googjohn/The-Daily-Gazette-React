@@ -13,7 +13,6 @@ export default function useUpdateWeatherBackground(condition) {
     setHour(currentHour);
 
     const conditionArray = condition?.split('-') || []
-    console.log('this is condition array', conditionArray)
     const isRainy = rainConditions.some(cond => conditionArray.includes(cond))
     const isCloudy = cloudyConditions.some(cond => conditionArray.includes(cond))
 
