@@ -78,7 +78,7 @@ export default function WeatherPage() {
               setTempUnit={setTempUnit}
               forecastData={forecastDataToUse} />
           </WeatherPageMainContainer>
-          <WeatherNews />
+          <WeatherNews ipdata={ipdata} />
         </div>
       )}
     </div>

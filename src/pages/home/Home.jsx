@@ -14,11 +14,10 @@ import ErrorPage from "../../components/error/ErrorPage";
 
 const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
 
-const useFetchNews = (options, ipCountry, searchTerm) => {
+export const useFetchNews = (options, ipCountry, searchTerm) => {
   // destructure the options {}
   const {
     endpoint,
-    searchEndpoint,
     category,
     country,
     language = 'en',
@@ -26,11 +25,12 @@ const useFetchNews = (options, ipCountry, searchTerm) => {
   } = options;
 
   const query = searchTerm
-    ? `/api/news?searchTerm=${searchTerm}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}&searchEndpoint=${searchEndpoint}`
+    ? `/api/news?searchTerm=${searchTerm}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}`
     : `/api/news?category=${category}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}&endpoint=${endpoint}`;
 
-  const { data } = useFetchForAll(query);
-  return data?.articles
+  const { data, error } = useFetchForAll(query);
+  const articles = data?.articles
+  return { articles, error }
 }
 
 export default function Home() {
@@ -38,17 +38,17 @@ export default function Home() {
   const { data: ipData, error: ipFetchError } = useFetchForAll(`https://ipinfo.io/json?token=${IPINFO_API_KEY}`)
   const { country: ipCountry } = ipData || {}
 
-  const headNewsArticles = useFetchNews(headnewsOptions, ipCountry)
-  const trendNewsArticles = useFetchNews(trendnewsOptions, ipCountry)
-  const localNewsArticles = useFetchNews(localOptions, ipCountry)
-  const financeNewsArticles = useFetchNews(businessOptions, ipCountry)
-  const moreFinanceNewsArticles = useFetchNews(moreBusinessOptions, ipCountry)
-  const entertainmentNewsArticles = useFetchNews(entertainmentOptions, ipCountry)
-  const technologyNewsArticles = useFetchNews(technologyOptions, ipCountry)
-  const scienceNewsArticles = useFetchNews(scienceOptions, ipCountry)
-  const sportsNewsArticles = useFetchNews(sportsOptions, ipCountry)
-  const nbaNewsArticles = useFetchNews(sportsOptions, ipCountry, 'nba')
-  const mlbNewsArticles = useFetchNews(sportsOptions, ipCountry, 'mlb')
+  const { articles: headNewsArticles, error: headNewsError } = useFetchNews(headnewsOptions, ipCountry)
+  const { articles: trendNewsArticles, error: trendNewsError } = useFetchNews(trendnewsOptions, ipCountry)
+  const { articles: localNewsArticles, error: localNewsError } = useFetchNews(localOptions, ipCountry)
+  const { articles: financeNewsArticles, error: financeNewsError } = useFetchNews(businessOptions, ipCountry)
+  const { articles: moreFinanceNewsArticles, error: moreFinanceNewsError } = useFetchNews(moreBusinessOptions, ipCountry)
+  const { articles: entertainmentNewsArticles, error: entertainmentNewsError } = useFetchNews(entertainmentOptions, ipCountry)
+  const { articles: technologyNewsArticles, error: technologyNewsError } = useFetchNews(technologyOptions, ipCountry)
+  const { articles: scienceNewsArticles, error: scienceNewsError } = useFetchNews(scienceOptions, ipCountry)
+  const { articles: sportsNewsArticles, error: sportsNewsError } = useFetchNews(sportsOptions, ipCountry)
+  const { articles: nbaNewsArticles, error: nbaNewsError } = useFetchNews(sportsOptions, ipCountry, 'nba')
+  const { articles: mlbNewsArticles, error: mlbNewsError } = useFetchNews(sportsOptions, ipCountry, 'mlb')
 
   const ipdataLoading = !ipData;
   const TOPICS_DATA = [
@@ -65,11 +65,25 @@ export default function Home() {
     mlbNewsArticles,
   ]
 
+  const TOPICS_ERROR = [
+    headNewsError,
+    trendNewsError,
+    localNewsError,
+    financeNewsError,
+    moreFinanceNewsError,
+    entertainmentNewsError,
+    technologyNewsError,
+    scienceNewsError,
+    sportsNewsError,
+    nbaNewsError,
+    mlbNewsError,
+  ]
   const isLoading = TOPICS_DATA.some(topic => !topic)
-
+  const hasError = TOPICS_ERROR.some(err => err)
+  console.log(hasError)
   return (
     <main className="w-full min-h-screen mx-auto">
-      {(ipdataLoading || isLoading) && (ipFetchError ? <ErrorPage /> : <Spinner />)}
+      {(ipdataLoading || isLoading) && (ipFetchError || hasError ? <ErrorPage /> : <Spinner />)}
       <World
         headNewsData={headNewsArticles}
         trendNewsData={trendNewsArticles}
