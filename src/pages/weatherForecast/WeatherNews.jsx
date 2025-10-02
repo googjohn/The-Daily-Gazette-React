@@ -1,41 +1,46 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Card from "../../components/card/Card"
 import ErrorPage from "../../components/error/ErrorPage"
 import Spinner from "../../components/spinner/Spinner"
 import { useFetchNews } from "../home/Home"
-import { useEffect } from "react"
 
 export default function WeatherNews({ ipdata }) {
   const { country } = ipdata || {}
-  const [weatherNewsData, setWeatherNewsData] = useState([]);
+  // const [weatherNewsData, setWeatherNewsData] = useState([]);
 
   // const NEWSAPIORG_URL = `https://newsapi.org/v2/everything?q=weather&language=en&apiKey=${import.meta.env.VITE_NEWSAPIORG_API_KEY}`
   // const { data: weatherNews, error: weatherNewsError } = useFetchForAll(NEWSAPIORG_URL)
   // const { articles } = weatherNews || {}
-  const { articles: weatherNewsArticlesUs, error: weatherNewsErrorUs } = useFetchNews({
+  // const { articles: weatherNewsArticlesUs, error: weatherNewsErrorUs } = useFetchNews({
+  //   language: 'en',
+  //   country: 'us',
+  //   max: 10,
+  // }, country, 'weather forecast')
+  // const { articles: weatherNewsArticlesPh, error: weatherNewsErrorPh } = useFetchNews({
+  //   language: 'en',
+  //   country: 'ph',
+  //   max: 10,
+  // }, country, 'weather forecast')
+  // const { articles: weatherNewsArticlesIn, error: weatherNewsErrorIn } = useFetchNews({
+  //   language: 'en',
+  //   country: 'in',
+  //   max: 10,
+  // }, country, 'weather forecast')
+
+  // useEffect(() => {
+  //   if (weatherNewsArticlesPh && weatherNewsArticlesUs && weatherNewsArticlesIn) {
+  //     setWeatherNewsData(prev => [...prev, ...weatherNewsArticlesPh, ...weatherNewsArticlesUs, ...weatherNewsArticlesIn])
+  //   }
+  // }, [weatherNewsArticlesPh, weatherNewsArticlesUs, weatherNewsArticlesIn])
+
+  const { articles: weatherNewsArticles, error: weatherNewsError } = useFetchNews({
     language: 'en',
     country: 'us',
-    max: 10,
-  }, country, 'weather forecast')
-  const { articles: weatherNewsArticlesPh, error: weatherNewsErrorPh } = useFetchNews({
-    language: 'en',
-    country: 'ph',
-    max: 10,
-  }, country, 'weather forecast')
-  const { articles: weatherNewsArticlesIn, error: weatherNewsErrorIn } = useFetchNews({
-    language: 'en',
-    country: 'in',
-    max: 10,
-  }, country, 'weather forecast')
+    max: 24
+  }, country, 'weather')
 
-  useEffect(() => {
-    if (weatherNewsArticlesPh && weatherNewsArticlesUs && weatherNewsArticlesIn) {
-      setWeatherNewsData(prev => [...prev, ...weatherNewsArticlesPh, ...weatherNewsArticlesUs, ...weatherNewsArticlesIn])
-    }
-  }, [weatherNewsArticlesPh, weatherNewsArticlesUs, weatherNewsArticlesIn])
-
-  const slicedArticles = weatherNewsData?.length > 24 ? weatherNewsData?.slice(0, 24) : weatherNewsData?.slice()
-  console.log(slicedArticles)
+  const slicedArticles = weatherNewsArticles?.length > 24 ? weatherNewsArticles?.slice(0, 24) : weatherNewsArticles?.slice()
+  // const slicedArticles = weatherNewsData?.length > 24 ? weatherNewsData?.slice(0, 24) : weatherNewsData?.slice()
 
   return (
     <div id="weather-news"
@@ -45,9 +50,9 @@ export default function WeatherNews({ ipdata }) {
         <div className="weather-heading ">
           <h2 className="text-white text-xl py-2.5 pb-5 border-b border-white/20">Weather News</h2>
         </div>
-        {!weatherNewsData ? <Spinner /> :
+        {!weatherNewsArticles ? <Spinner /> :
 
-          weatherNewsErrorPh || weatherNewsErrorUs || weatherNewsErrorIn ? (<ErrorPage error={weatherNewsErrorPh || weatherNewsErrorUs || weatherNewsArticlesIn} />) :
+          weatherNewsError ? (<ErrorPage error={weatherNewsError} />) :
 
             <div className="bg-[var(--gray-10)] mt-6">
               <div className="p-2.5 flex flex-col grid-template-search sm:grid 
@@ -59,7 +64,8 @@ export default function WeatherNews({ ipdata }) {
                     cardTitle={article.title}
                     cardImageSrc={article.image}
                     link={article.url}
-                    source={article.source} />
+                  // source={article.source} 
+                  />
                 ))}
 
               </div>

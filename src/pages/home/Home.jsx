@@ -24,12 +24,14 @@ export const useFetchNews = (options, ipCountry, searchTerm) => {
     max = 10,
   } = options;
 
-  const query = searchTerm
-    ? `/api/news?searchTerm=${searchTerm}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}`
-    : `/api/news?category=${category}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}&endpoint=${endpoint}`;
+  const query = searchTerm ?
+    (searchTerm === 'weather' ?
+      `/api/news?searchTerm=${searchTerm}&lang=${language}&country=${country}&max=${max}` :
+      `/api/news?searchTerm=${searchTerm}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}`) :
+    `/api/news?category=${category}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}&endpoint=${endpoint}`;
 
   const { data, error } = useFetchForAll(query);
-  const articles = data?.articles
+  const articles = data?.articles || data?.news
   return { articles, error }
 }
 
