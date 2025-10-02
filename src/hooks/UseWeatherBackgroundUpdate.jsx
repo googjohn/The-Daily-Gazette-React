@@ -14,7 +14,7 @@ export default function useUpdateWeatherBackground(condition) {
 
     const conditionArray = condition?.split('-') || []
     const isRainy = rainConditions.some(cond => conditionArray.includes(cond))
-    const isCloudy = cloudyConditions.some(cond => conditionArray.includes(cond))
+    const isCloudy = cloudyConditions.some(cond => conditionArray.includes(cond) && !conditionArray.includes('partly'))
 
     if (isRainy) {
       hour <= 6 ?

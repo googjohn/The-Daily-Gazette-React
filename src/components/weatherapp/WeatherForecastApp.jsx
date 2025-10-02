@@ -3,7 +3,7 @@ import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import { tempConverter, handleConditionsIcon } from "./WeatherForecastUtility";
 import { FaTemperatureHalf } from "react-icons/fa6";
 import Spinner from "../spinner/Spinner";
-import { useLoaderData, useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
 import ErrorPage from "../error/ErrorPage";
 
@@ -24,17 +24,18 @@ export default function WeatherApp() {
   const [tempUnit, setTempUnit] = useState('c')
   const [isHovered, setIsHovered] = useState(false);
   const [hour, setHour] = useState(new Date().getHours());
-  const { weatherBackground } = useUpdateWeatherBackground();
 
   const IPINFO_URL = `https://ipinfo.io/json?token=${WAPP.ipinfoApikey}`;
   const { data: ipdata, error: ipdataError } = useFetchForAll(IPINFO_URL);
   const { loc, city, region } = ipdata || {};
   const lat = loc?.split(',')[0]
   const lon = loc?.split(',')[1]
-  console.log(lat, lon)
+
   const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${lat},${lon}?&key=${WAPP.visualCrossingApikey}&iconSet=icons1`
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
   const { currentConditions } = weatherData || {};
+
+  const { weatherBackground } = useUpdateWeatherBackground(currentConditions?.icon);
 
   // // very important check to make sure both ipdata and weatherdata 
   // // are fetched and has value before return jsx is rendered
