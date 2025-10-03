@@ -1,13 +1,6 @@
 import Card from "../../../components/card/Card"
 import Aside from "../../../components/mainbody/Aside"
 
-export const scienceOptions = {
-  endpoint: 'top-headlines',
-  category: 'science',
-  language: 'en',
-  max: 10,
-}
-
 export default function Science() {
   return (
     <>

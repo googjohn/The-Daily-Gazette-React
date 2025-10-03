@@ -60,9 +60,9 @@ export function WeatherSideBar({ windowSize, ipData, tempUnit, forecastData }) {
       <WeatherOverview
         tempUnit={tempUnit}
         forecastData={forecastData} />
-      <WeatherNewsLocal
+      {/* <WeatherNewsLocal
         windowSize={windowSize}
-        ipdata={ipData} />
+        ipdata={ipData} /> */}
     </div>
   )
 }

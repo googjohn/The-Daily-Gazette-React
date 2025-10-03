@@ -1,13 +1,6 @@
 import Card from "../../../components/card/Card";
 import Aside from "../../../components/mainbody/Aside";
 
-export const trendnewsOptions = {
-  endpoint: 'top-headlines',
-  category: 'general',
-  language: 'en',
-  max: 10,
-}
-
 export default function TrendingNews({ trendNewsData }) {
 
   return (

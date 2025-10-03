@@ -1,12 +1,5 @@
 import Card from "../../../components/card/Card";
 
-export const headnewsOptions = {
-  endpoint: 'top-headlines',
-  category: 'world',
-  language: 'en',
-  max: 10,
-}
-
 export default function HeadNews({ headNewsData }) {
 
   return (

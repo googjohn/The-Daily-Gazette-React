@@ -2,13 +2,6 @@ import Card from "../../components/card/Card";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
 
-export const entertainmentOptions = {
-  endpoint: 'top-headlines',
-  category: 'entertainment',
-  language: 'en',
-  max: 10,
-}
-
 export default function Entertainment() {
   return (
     <div className="min-h-screen bg-[var(--gray-10)]">Entertainment</div>

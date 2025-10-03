@@ -1,13 +1,6 @@
 import Card from "../../../components/card/Card"
 import Aside from "../../../components/mainbody/Aside"
 
-export const technologyOptions = {
-  endpoint: 'top-headlines',
-  category: 'technology',
-  language: 'en',
-  max: 10,
-}
-
 export default function Technology() {
   return (
     <div>Techonology</div>

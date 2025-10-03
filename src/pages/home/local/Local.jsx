@@ -1,14 +1,6 @@
 import Card from "../../../components/card/Card";
 import Section from "../../../components/mainbody/Section";
 
-export const localOptions = {
-  endpoint: 'top-headlines',
-  category: 'nation',
-  language: 'en',
-  country: 'ph',
-  max: 10,
-}
-
 export default function LocalNews({ localNewsData }) {
 
   const sections = [

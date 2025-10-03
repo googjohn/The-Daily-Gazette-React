@@ -1,14 +1,7 @@
+import { BiCategory } from "react-icons/bi";
 import Card from "../../components/card/Card";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
-
-export const sportsOptions = {
-  endpoint: 'top-headlines',
-  searchEndpoint: 'search',
-  category: 'sports',
-  language: 'en',
-  max: 10,
-}
 
 export default function Sports() {
   return (

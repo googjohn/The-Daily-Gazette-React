@@ -3,20 +3,7 @@ import Card from "../../components/card/Card";
 import Section from "../../components/mainbody/Section";
 import Spinner from "../../components/spinner/Spinner";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
-
-export const businessOptions = {
-  endpoint: 'top-headlines',
-  category: 'business',
-  language: 'en',
-  max: 10,
-}
-export const moreBusinessOptions = {
-  endpoint: 'top-headlines',
-  category: 'business',
-  language: 'en',
-  country: 'us',
-  max: 10,
-}
+import { businessOptions, moreBusinessOptions } from "../../data/gnewsOptions";
 
 const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
 

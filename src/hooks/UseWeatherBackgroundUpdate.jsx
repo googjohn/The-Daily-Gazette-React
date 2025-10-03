@@ -18,16 +18,16 @@ export default function useUpdateWeatherBackground(condition) {
 
     if (isRainy) {
       hour <= 6 ?
-        setWeatherBackground("url('/images/icons/weather_backgrounds/rain-night.jpg') no-repeat center / cover") :
+        setWeatherBackground("url('/images/icons/weather_backgrounds/rain-night-3.jpg') no-repeat center top / cover") :
         hour >= 18 ?
-          setWeatherBackground("url('/images/icons/weather_backgrounds/rain-night.jpg') no-repeat center / cover") :
+          setWeatherBackground("url('/images/icons/weather_backgrounds/rain-night-3.jpg') no-repeat center top / cover") :
           setWeatherBackground("url('/images/icons/weather_backgrounds/rain-day.jpg') no-repeat center / cover")
     } else if (isCloudy) {
       hour <= 6 ?
-        setWeatherBackground("url('/images/icons/weather_backgrounds/cloudy-night-2.jpg') no-repeat center / cover") :
+        setWeatherBackground("url('/images/icons/weather_backgrounds/cloudy-night.jpg') no-repeat left top / cover") :
         hour >= 18 ?
-          setWeatherBackground("url('/images/icons/weather_backgrounds/cloudy-night-2.jpg') no-repeat center / cover") :
-          setWeatherBackground("url('/images/icons/weather_backgrounds/cloudy-day.jpg') no-repeat center / cover")
+          setWeatherBackground("url('/images/icons/weather_backgrounds/cloudy-night.jpg') no-repeat left top / cover") :
+          setWeatherBackground("url('/images/icons/weather_backgrounds/cloudy-day.jpg') no-repeat top / cover")
     } else {
       hour <= 6 ?
         setWeatherBackground("url('/images/icons/weather_backgrounds/starry-night.png') no-repeat center / cover") :
