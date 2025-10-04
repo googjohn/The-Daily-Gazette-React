@@ -1,11 +1,14 @@
 import { useState, useEffect, useMemo } from "react"
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
-import { tempConverter, handleConditionsIcon } from "./WeatherForecastUtility";
-import { FaTemperatureHalf } from "react-icons/fa6";
-import Spinner from "../spinner/Spinner";
 import { useNavigate } from "react-router-dom";
+import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import { FaTemperatureHalf } from "react-icons/fa6";
+import {
+  tempConverter,
+  handleConditionsIcon,
+} from "../../pages/weatherForecast/WeatherPageUtility.js";
+import Spinner from "../spinner/Spinner";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
-import ErrorPage from "../error/ErrorPage";
+import useIpGetter from "../../hooks/UseIpGetter.jsx";
 
 const WAPP = {
   endpoint: 'timeline',
@@ -25,48 +28,53 @@ export default function WeatherApp() {
   const [isHovered, setIsHovered] = useState(false);
   const [hour, setHour] = useState(new Date().getHours());
 
-  const IPINFO_URL = `https://ipinfo.io/json?token=${WAPP.ipinfoApikey}`;
-  const { data: ipdata, error: ipdataError } = useFetchForAll(IPINFO_URL);
-  const { loc, city, region } = ipdata || {};
-  const lat = loc?.split(',')[0]
-  const lon = loc?.split(',')[1]
+  const { ipdata, error: ipdataError } = useIpGetter();
+  const { city, region, latitude, longitude } = ipdata || {}
 
-  const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${lat},${lon}?&key=${WAPP.visualCrossingApikey}&iconSet=icons1`
+  const VISUALCROSSING_URL = latitude && longitude
+    ? `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${latitude},${longitude}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2`
+    : null;
+
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
   const { currentConditions } = weatherData || {};
 
   const { weatherBackground } = useUpdateWeatherBackground(currentConditions?.icon);
 
-  // // very important check to make sure both ipdata and weatherdata 
-  // // are fetched and has value before return jsx is rendered
+  // very important check to make sure both ipdata and weatherdata 
+  // are fetched and has value before return jsx is rendered
   const isIpdataLoading = !ipdata;
   const isWeatherDataLoading = ipdata && !weatherData;
   const isLoading = isWeatherDataLoading || isIpdataLoading;
 
   return (
     <div id="weather-app" className="flex justify-end sticky top-20 w-full z-30">
-      {isLoading && (ipdataError || weatherDataError ? <ErrorPage error={ipdataError || weatherDataError} /> : <Spinner />)}
-      {weatherDataError && <div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>}
-      {ipdataError && <div className="flex w-full h-full text-black justify-center items-center text-4xl">Error fetching data!</div>}
+
       <WeatherBanner weatherBg={weatherBackground}>
-        {weatherData && isHovered ?
-          "Weather Forecast Today" : (
-            <>
-              <div id="current-location"
-                title="City, Region"
-                className="transition-[var(--transition)]">
-                {city}, {region}
-              </div>
-              <div className="current-condition-icon aspect-square h-[30px]">
-                <img src={handleConditionsIcon(currentConditions?.icon, hour)}
-                  alt={currentConditions?.conditions}
-                  title={currentConditions?.conditions}
-                  className="w-full h-full" />
-              </div>
-              <div className="current-temp">{isHovered ? "" : <span title={'Temperature'}>
-                {tempConverter(currentConditions?.temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}</span>}
-              </div>
-            </>)
+
+        {ipdataError || weatherDataError ?
+
+          (<div>Error loading data. {ipdataError?.message || weatherDataError?.message}</div>) :
+
+          isLoading ? <Spinner /> :
+
+            weatherData && isHovered ?
+              "Weather Forecast Today" : (
+                <>
+                  <div id="current-location"
+                    title="City, Region"
+                    className="transition-[var(--transition)]">
+                    {city}, {region}
+                  </div>
+                  <div className="current-condition-icon aspect-square h-[30px]">
+                    <img src={handleConditionsIcon(currentConditions?.icon, hour)}
+                      alt={currentConditions?.conditions}
+                      title={currentConditions?.conditions}
+                      className="w-full h-full" />
+                  </div>
+                  <div className="current-temp">{isHovered ? "" : <span title={'Temperature'}>
+                    {tempConverter(currentConditions?.temp, 'f', tempUnit)}&deg;{tempUnit.toUpperCase()}</span>}
+                  </div>
+                </>)
         }
         {weatherData && (
           <div id="dropdown"

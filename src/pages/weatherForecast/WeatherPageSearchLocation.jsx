@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo, } from "react";
 import { useActionData, useSubmit } from "react-router-dom";
 import { IoIosClose } from "react-icons/io";
-import { handleConditionsIcon, tempConverter } from "../../components/weatherapp/WeatherForecastUtility";
 import AlertModal from "../../components/alert/AlertModal";
+import { handleConditionsIcon, tempConverter } from "./WeatherPageUtility.js";
 
 export default function WeatherPageSearchLocation({ ipdata, forecastData, tempUnit, setForecastData }) {
   const { city, region } = ipdata || {}

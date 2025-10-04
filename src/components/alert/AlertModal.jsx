@@ -90,7 +90,7 @@ export default function AlertModal({ isOpen, onClose, title, message, type = 'wa
           animation: slideIn 0.3s ease-out;
         }
         .animate-shrink {
-          animation: shrink 3s linear;
+          animation: shrink 1.5s linear;
         }
       `}</style>
     </div>

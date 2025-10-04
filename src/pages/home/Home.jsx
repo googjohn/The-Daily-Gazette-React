@@ -1,12 +1,12 @@
-import { FinanceForHome } from "../finance/Finance";
-import { EntertainmentForHome } from "../entertainment/Entertainment";
-import { SportsForHome } from "../sports/Sports";
-import ScienceTechnology from "../scienceAndTechnology/ScienceAndTechnology";
 import Local from "./local/Local";
 import World from "./world/World";
 import Spinner from "../../components/spinner/Spinner";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import ErrorPage from "../../components/error/ErrorPage";
+import ScienceTechnology from "../scienceAndTechnology/ScienceAndTechnology";
+import { FinanceForHome } from "../finance/Finance";
+import { EntertainmentForHome } from "../entertainment/Entertainment";
+import { SportsForHome } from "../sports/Sports";
+import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import {
   localOptions,
   sportsOptions,
@@ -18,11 +18,12 @@ import {
   moreBusinessOptions,
   entertainmentOptions,
 } from "../../data/gnewsOptions";
+import { useRef } from "react";
+import useIpGetter from "../../hooks/UseIpGetter";
 
 const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
 
 export const useFetchNews = (options, ipCountry, searchTerm) => {
-  // destructure the options {}
   const {
     endpoint,
     category,
@@ -50,26 +51,24 @@ export const useFetch = (country) => {
 }
 
 export default function Home() {
-  const { data: ipData, error: ipFetchError } = useFetchForAll(`https://ipinfo.io/json?token=${IPINFO_API_KEY}`)
-  const { country: ipCountry } = ipData || {}
+  const { ipdata, error: ipdataError } = useIpGetter();
+  const { country } = ipdata || {}
 
-  const articlesArray = useFetch(ipCountry)
+  const articlesArray = useFetch(country)
   const { data: articlesArrayData, error: articlesArrayError } = articlesArray || {}
   const articles = articlesArrayData?.map(data => {
     return { [data?.forCategory]: data?.result?.articles }
   })
-  console.log(articles)
-  const newsObj = {}
+
+  const newsObj = useRef({})
 
   articles?.forEach(article => {
     const key = Object.keys(article)
     const value = Object.values(article)
-    if (!(key in newsObj)) {
-      newsObj[key] = value[0]
+    if (!(key in newsObj.current)) {
+      newsObj.current[key] = value[0]
     }
   })
-
-  console.log(newsObj)
 
   const {
     world: headNewsArticles,
@@ -83,7 +82,7 @@ export default function Home() {
     'sports-mlb': mlbNewsArticles,
     'business-PH': financeNewsArticles,
     'business-us': moreFinanceNewsArticles,
-  } = newsObj || {}
+  } = newsObj.current || {}
 
   // const { articles: headNewsArticles, error: headNewsError } = useFetchNews(headnewsOptions, ipCountry)
   // const { articles: trendNewsArticles, error: trendNewsError } = useFetchNews(trendnewsOptions, ipCountry)
@@ -97,7 +96,7 @@ export default function Home() {
   // const { articles: nbaNewsArticles, error: nbaNewsError } = useFetchNews(sportsOptions, ipCountry, 'nba')
   // const { articles: mlbNewsArticles, error: mlbNewsError } = useFetchNews(sportsOptions, ipCountry, 'mlb')
 
-  const ipdataLoading = !ipData;
+  const ipdataLoading = !ipdata;
   const TOPICS_DATA = [
     headNewsArticles,
     trendNewsArticles,
@@ -130,28 +129,37 @@ export default function Home() {
 
   return (
     <main className="w-full min-h-screen mx-auto">
-      {(ipdataLoading || isLoading) && (ipFetchError || articlesArrayError ? <ErrorPage /> : <Spinner />)}
-      <World
-        headNewsData={headNewsArticles}
-        trendNewsData={trendNewsArticles}
-      />
+      {ipdataError || articlesArrayError ?
 
-      <Local localNewsData={localNewsArticles} />
+        <ErrorPage error={ipdataError || articlesArrayError} /> :
 
-      <FinanceForHome
-        financeNewsData={financeNewsArticles}
-        moreFinanceNewsData={moreFinanceNewsArticles} />
+        (ipdataLoading || isLoading) ?
 
-      <EntertainmentForHome entertainementNewsDAta={entertainmentNewsArticles} />
+          <Spinner /> : (
+            <>
+              <World
+                headNewsData={headNewsArticles}
+                trendNewsData={trendNewsArticles}
+              />
 
-      <ScienceTechnology
-        scienceNewsData={scienceNewsArticles}
-        technologyNewsData={technologyNewsArticles} />
+              <Local localNewsData={localNewsArticles} />
 
-      <SportsForHome
-        nbaNewsDAta={nbaNewsArticles}
-        mlbNewsData={mlbNewsArticles}
-        sportsNewsData={sportsNewsArticles} />
+              <FinanceForHome
+                financeNewsData={financeNewsArticles}
+                moreFinanceNewsData={moreFinanceNewsArticles} />
+
+              <EntertainmentForHome entertainementNewsDAta={entertainmentNewsArticles} />
+
+              <ScienceTechnology
+                scienceNewsData={scienceNewsArticles}
+                technologyNewsData={technologyNewsArticles} />
+
+              <SportsForHome
+                nbaNewsDAta={nbaNewsArticles}
+                mlbNewsData={mlbNewsArticles}
+                sportsNewsData={sportsNewsArticles} />
+            </>
+          )}
     </main>
   )
 }

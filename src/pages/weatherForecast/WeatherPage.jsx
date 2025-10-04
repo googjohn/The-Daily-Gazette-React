@@ -10,7 +10,7 @@ import { FaHome } from "react-icons/fa";
 import WeatherNews from "./WeatherNews";
 import WeatherPageSearchLocation from "./WeatherPageSearchLocation";
 import WeatherPageContent from "./WeatherPageContent";
-
+import useVisualCrossing from "../../hooks/UseVisualCrossing";
 
 const WAPP = {
   endpoint: 'timeline',
@@ -39,6 +39,8 @@ export default function WeatherPage() {
     null;
   const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
 
+  // backup if cors restricted during deployment
+  // const { data: weatherData, error: weatherDataError } = useVisualCrossing(latitude, longitude);
   const { weatherBackground } = useUpdateWeatherBackground(forecastDataToUse?.currentConditions?.icon);
 
   useEffect(() => {
@@ -78,7 +80,7 @@ export default function WeatherPage() {
               setTempUnit={setTempUnit}
               forecastData={forecastDataToUse} />
           </WeatherPageMainContainer>
-          {/* <WeatherNews ipdata={ipdata} /> */}
+          <WeatherNews />
         </div>
       )}
     </div>
@@ -123,11 +125,14 @@ export const weatherSearchAction = async ({ request }) => {
   const formData = await request.formData();
   const location = formData.get('location')
 
-  const VISUALCROSSING_URL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius`
   if (!location) return { error: 'Location is required' }
 
+  const URL = location
+    ? `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius`
+    : null
+
   try {
-    const response = await fetch(VISUALCROSSING_URL)
+    const response = await fetch(URL)
     if (!response.ok) {
       const errorText = await response.text()
       const error = new Error('Search failed: location unknown', errorText)

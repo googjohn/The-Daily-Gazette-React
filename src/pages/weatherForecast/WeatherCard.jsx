@@ -1,7 +1,10 @@
 import { useEffect, useState, } from "react";
 import { FaTemperatureHalf } from "react-icons/fa6";
-import { handleConditionsIcon, tempConverter } from "../../components/weatherapp/WeatherForecastUtility";
-import { formatDate } from "./WeatherPageUtility";
+import {
+  formatDate,
+  tempConverter,
+  handleConditionsIcon,
+} from "./WeatherPageUtility.js";
 
 export default function WeatherCard({ tempUnit, forecast, selectedMode, setSelectedMode, setDayToFocus }) {
   const { conditions, icon, temp, datetime, precipprob } = forecast

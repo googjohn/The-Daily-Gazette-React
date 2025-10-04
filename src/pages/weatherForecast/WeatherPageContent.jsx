@@ -1,5 +1,4 @@
 import useClock from "../../hooks/useClock";
-import { FaCloud, FaCloudSunRain, FaFan, FaTemperatureArrowDown, FaTemperatureArrowUp, FaTemperatureHalf, FaWind } from "react-icons/fa6";
 import { FaTint } from "react-icons/fa";
 import { GiSunrise, GiSunset } from "react-icons/gi";
 import { LuWindArrowDown } from "react-icons/lu";
@@ -7,20 +6,30 @@ import { MdVisibility } from "react-icons/md";
 import { TbUvIndex } from "react-icons/tb";
 import { WiBarometer, WiHumidity } from "react-icons/wi";
 import { useEffect, useState } from "react";
-import { handleConditionsIcon, tempConverter } from "../../components/weatherapp/WeatherForecastUtility";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import {
-  toKm,
+  FaFan,
+  FaWind,
+  FaCloud,
+  FaCloudSunRain,
+  FaTemperatureArrowDown,
+  FaTemperatureArrowUp,
+  FaTemperatureHalf,
+} from "react-icons/fa6";
+import {
   toM,
+  toKm,
+  tempConverter,
   updateUVIndex,
   updateWindDirection,
   updateHumidityStatus,
+  handleConditionsIcon,
   updatePressureStatus,
   updateWindspeedStatus,
   updateAirQualityIndex,
   updateCloudcoverStatus,
   updateVisibilityStatus,
-} from "./WeatherPageUtility";
+} from "./WeatherPageUtility.js";
 import OverviewChart from "./PieChart";
 import WeatherCard from "./WeatherCard";
 import { formatDate } from "./WeatherPageUtility";
@@ -60,9 +69,9 @@ export function WeatherSideBar({ windowSize, ipData, tempUnit, forecastData }) {
       <WeatherOverview
         tempUnit={tempUnit}
         forecastData={forecastData} />
-      {/* <WeatherNewsLocal
+      <WeatherNewsLocal
         windowSize={windowSize}
-        ipdata={ipData} /> */}
+        ipdata={ipData} />
     </div>
   )
 }
@@ -240,25 +249,27 @@ export function WeatherNewsLocal({ ipdata, windowSize }) {
         <h2 className="heading text-xl">Local Weather News</h2>
       </div>
       <div className="mt-4 h-auto text-black overflow-auto">
-        {error && (<div>No available data.</div>)}
-        {!localWeatherNews && (<div>Loading data...</div>)}
         <ul>
-          {localWeatherNews && localWeatherNews?.results?.map((article, index) => (
-            <li
-              key={article.article_id}
-              className="flex items-center gap-2.5 [&:nth-child(even)]:bg-transparent
-            [&:nth-child(even)]:text-white [&:nth-child(odd)]:bg-(--gray-20)">
+          {error ? (<div>No available data.</div>) :
 
-              <span className="item-number basis-[45px] w-[45px] h-[60px] flex 
-              justify-center items-center text-white rounded-[50%] m-[5px] 
-              text-[clamp(1.2rem,_2vw,_1.5rem)] bg-(--navy)">{index + 1}</span>
+            !localWeatherNews ? (<div>Loading data...</div>) :
 
-              <a href={article.link} target="_blank" className=" 
-              basis-[calc(100%-55px)] text-[clamp(.7rem,_1.5vw,_.8rem)] 
-              hover:underline">{article.title}</a>
+              localWeatherNews && localWeatherNews?.results?.map((article, index) => (
+                <li
+                  key={article.article_id}
+                  className="flex items-center gap-2.5 [&:nth-child(even)]:bg-transparent
+                [&:nth-child(even)]:text-white [&:nth-child(odd)]:bg-(--gray-20)">
 
-            </li>
-          ))}
+                  <span className="item-number basis-[45px] w-[45px] h-[60px] flex 
+                  justify-center items-center text-white rounded-[50%] m-[5px] 
+                  text-[clamp(1.2rem,_2vw,_1.5rem)] bg-(--navy)">{index + 1}</span>
+
+                  <a href={article.link} target="_blank" className=" 
+                  basis-[calc(100%-55px)] text-[clamp(.7rem,_1.5vw,_.8rem)] 
+                  hover:underline">{article.title}</a>
+
+                </li>
+              ))}
         </ul>
       </div>
     </div>

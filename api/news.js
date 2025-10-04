@@ -29,9 +29,6 @@ export default async function fetchHandler(req, res) {
   let apikey = process.env.VITE_GNEWS_API_KEY_25
   if (searchTerm === 'nba') apikey = process.env.VITE_GNEWS_API_KEY_21;
   else if (searchTerm === 'mlb') apikey = process.env.VITE_GNEWS_API_KEY_22
-  // else if (searchTerm === 'weather forecast' && country.toLowerCase() === 'ph') apikey = process.env.VITE_GNEWS_API_KEY_12
-  // else if (searchTerm === 'weather forecast' && country.toLowerCase() === 'us') apikey = process.env.VITE_GNEWS_API_KEY_13
-  // else if (searchTerm === 'weather forecast' && country.toLowerCase() === 'in') apikey = process.env.VITE_GNEWS_API_KEY_14
   else if (category === 'business' && country.toLowerCase() === 'ph') apikey = process.env.VITE_GNEWS_API_KEY_19
   else if (category === 'business' && country.toLowerCase() === 'us') apikey = process.env.VITE_GNEWS_API_KEY_20
   else if (category === 'world') apikey = process.env.VITE_GNEWS_API_KEY_12
@@ -57,7 +54,6 @@ export default async function fetchHandler(req, res) {
       return res.status(response.status).json({ error: data.message || 'Fetch error' })
     }
 
-    res.setHeader('Access-Control-Allow-Origin', '*')
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: 'Server error', details: error.message })

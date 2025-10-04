@@ -87,53 +87,116 @@ export function tempConverter(temp = 0, baseUnit, resultUnit) {
   }
 }
 
-export function ConditionsIcon(condition, time) {
-  const conditions = [
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/HeavyDrizzle.svg',
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/ModerateRainV2.svg',
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/RainShowersDayV2.svg', //showers-day
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D310LightRainShowersV2.svg', //mostly-sunny/light-showers-day
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D210LightRainShowersV2.svg', // parlty-cloudy/showers
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D240TstormsV2.svg', // thunder-rain
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/N240TstormsV2.svg',
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/PartlyCloudyNightV2.svg', // partly-cloudy-night/partly-cloudy
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/MostlyCloudyNightV2.svg', // 
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/RainShowersNightV2.svg', // showers-night
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/N310LightRainShowersV2.svg', // light-showers-night/more-moon
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/N210LightRainShowersV2.svg',// ligth-showers-night/more-clouds
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/MostlyCloudyDayV2.svg', // mosty-cloudy
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/CloudyV3.svg', // cloudy
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/MostlySunnyDay.svg', // mostly-sunny
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D200PartlySunnyV2.svg', // partly-sunny/partly-cloudy
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/SunnyDayV3.svg', // sunny
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/ClearNightV3.svg', //clear-night
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/MostlyClearNight.svg', //mostly-clear-night
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/WindyV2.svg', //windy
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/RainShowersDayV2.svg', //rain-showers
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D210LightRainShowersV2.svg', //light-rain-showers
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D311LightRainSnowShowersV2.svg', //light-rain-snow-showers
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/LightSnowShowersDay.svg', // light-snow-showers-day
-    'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/LightSnowV2.svg', // light-snow
-  ]
+export function toKm(distance) {
+  return Math.round((distance / 0.6213712) * 100) / 100;
 }
-/* 
-  needs to be added
 
-  snow-showers-day
-  snow-showers-night
-  snow
-  thunder-showers-day
-  thunder-showers-night
-  thunder-rain
-  showers-day
-  showers-night
-  rain/light/drizzle/moderate
-  clear-day >> <20% clouds
-  clear-night >> <20% clouds
-  partly-cloudy-day >> >20% clouds
-  partly-cloudy-night >> >20% clouds
-  cloudy >> 90% clouds
-  mostly-sunny
-  partly-sunny/partly-couldy
-  sunny
-*/
+export function toM(distance) {
+  return toKm(distance) * 1000
+}
+
+export function updateWindspeedStatus(windspeed) {
+  const windspeedStatus = [
+    { speed: 2, status: 'Calm' },
+    { speed: 5, status: 'Light Air' },
+    { speed: 11, status: 'Light Breeze' },
+    { speed: 19, status: 'Gentle Breeze' },
+    { speed: 28, status: 'Moderate Breeze' },
+    { speed: 38, status: 'Fresh Breeze' },
+    { speed: 49, status: 'Strong Breeze' },
+    { speed: 61, status: 'Neare/Moderate Gale' },
+    { speed: 74, status: 'Gale/Fresh Gale' },
+    { speed: 88, status: 'Strong/Severe Gale' },
+    { speed: 102, status: 'Storm/Whole Gale' },
+    { speed: 117, status: 'Violent Storm' },
+  ]
+  return toKm(windspeed) >= 118 ? 'Hurricane-Force' : windspeedStatus.filter(wind => windspeed < wind.speed)[0].status
+}
+
+export function updatePressureStatus(pressure) {
+  if (pressure < 1000) {
+    return "Low";
+  } else if (pressure <= 1013) {
+    return "Moderate";
+  } else {
+    return "High";
+  }
+}
+
+export function updateHumidityStatus(humidity) {
+  if (humidity <= 30) {
+    return "Low";
+  } else if (humidity <= 60) {
+    return "Moderate";
+  } else {
+    return "High";
+  }
+}
+
+export function updateVisibilityStatus(distance) {
+  const visibilityStatus = [
+    { range: 200, status: 'Dense Fog' },
+    { range: 500, status: 'Thick Fog' },
+    { range: 1000, status: 'Fog' },
+    { range: 5000, status: 'Mist/Haze' },
+    { range: 10000, status: 'Moderate' },
+  ]
+  return toM(distance) > 10000 ? 'Good' : visibilityStatus.filter(visibility => distance <= visibility.range)[0].status
+}
+
+export function updateCloudcoverStatus(cloudcover) {
+  const cloudcoverStatus = [
+    { value: 12.5, status: 'Sky Clear' },
+    { value: 25, status: 'Few Clouds' },
+    { value: 50, status: 'Scattered' },
+    { value: 90, status: 'Broken' },
+  ]
+  return cloudcover > 90 ? 'Overcast' : cloudcoverStatus.filter(cloud => cloudcover <= cloud.value)[0].status
+}
+
+export function updateAirQualityIndex(aqi) {
+  const airQualityIndex = [
+    { value: 50, status: 'Good' },
+    { value: 100, status: 'Moderate' },
+    { value: 150, status: 'Unhealthy for Sensetive Groups' },
+    { value: 200, status: 'Unhealthy' },
+    { value: 300, status: 'Very Unhealthy' },
+  ]
+  return aqi > 300 ? 'Hazardous' : airQualityIndex.filter(air => aqi <= air.value)[0].status
+}
+
+export function updateUVIndex(uvindex) {
+  const uvIndex = [
+    { value: 2, status: 'Low risk' },
+    { value: 5, status: 'Moderate risk' },
+    { value: 7, status: 'High risk' },
+    { value: 10, status: 'Very High risk' },
+  ]
+  return uvindex > 10 ? 'Extreme risk' : uvIndex.filter(uv => uvindex <= uv.value)[0].status
+}
+
+export function updateWindDirection(winddir) {
+  const winddirStatus = [
+    { value: 22.5, status: 'North (N)' },
+    { value: 67.5, status: 'Northeast (NE)' },
+    { value: 112.5, status: 'East (E)' },
+    { value: 157.5, status: 'Southeast (SE)' },
+    { value: 202.5, status: 'South (S)' },
+    { value: 247.5, status: 'Southwest (SW)' },
+    { value: 292.5, status: 'West (W)' },
+    { value: 337.5, status: 'Northwest (NW)' },
+    { value: 360, status: 'North (N)' },
+  ]
+
+  return winddirStatus.filter(wind => winddir <= wind.value)[0].status
+}
+
+export function formatDate(date, options = { dateStyle: 'medium' }) {
+  let datestring = '';
+  const parsedDate = new Date(date);
+  if (parsedDate instanceof Date && !isNaN(parsedDate)) {
+    const formatter = new Intl.DateTimeFormat('default', options);
+    datestring = formatter.format(parsedDate);
+  }
+  return datestring;
+}

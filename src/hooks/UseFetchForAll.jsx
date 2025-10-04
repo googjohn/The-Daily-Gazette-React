@@ -31,6 +31,7 @@ export function useFetchForAll(URL) {
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Standard abort cleanup behavior')
+        return;
       } else {
         console.error(`HTTP error: status ${error.statusCode}`)
         setError(error)
