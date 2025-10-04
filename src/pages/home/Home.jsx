@@ -148,13 +148,17 @@ export default function Home() {
                 financeNewsData={financeNewsArticles}
                 moreFinanceNewsData={moreFinanceNewsArticles} />
 
-              <EntertainmentForHome entertainementNewsDAta={entertainmentNewsArticles} />
+              <EntertainmentForHome
+                ipdata={ipdata}
+                entertainmentNewsDAta={entertainmentNewsArticles} />
 
               <ScienceTechnology
+                ipdata={ipdata}
                 scienceNewsData={scienceNewsArticles}
                 technologyNewsData={technologyNewsArticles} />
 
               <SportsForHome
+                ipdata={ipdata}
                 nbaNewsDAta={nbaNewsArticles}
                 mlbNewsData={mlbNewsArticles}
                 sportsNewsData={sportsNewsArticles} />
