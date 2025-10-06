@@ -125,7 +125,7 @@ export const weatherSearchAction = async ({ request }) => {
   const formData = await request.formData();
   const location = formData.get('location')
 
-  if (!location) return { error: 'Location is required' }
+  if (!location) return new Response('No location found', { result: 'Location is required', location })
 
   const URL = location
     ? `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius`
@@ -144,7 +144,10 @@ export const weatherSearchAction = async ({ request }) => {
     return { result, location }
   } catch (error) {
     if (error.name === 'AbortError') return;
-    console.log(error.message)
-    return { result: error, location }
+    console.error(error.message)
+    throw new Response('Action failed', {
+      result: error,
+      location
+    })
   }
 }

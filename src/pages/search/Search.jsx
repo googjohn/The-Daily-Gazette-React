@@ -1,4 +1,4 @@
-import { Form, NavLink, useLoaderData, useLocation, useNavigate, useNavigation } from "react-router-dom";
+import { Form, NavLink, useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 import { useState } from "react";
 import Card from "../../components/card/Card";
 import { FaList } from "react-icons/fa6";
@@ -23,7 +23,7 @@ export default function Search() {
   const navigation = useNavigation();
   const { previousPath } = useAppContext()
 
-  const slicedResult = result.articles.length > 24 ? result.articles.slice(0, 24) : result.articles.slice()
+  const slicedResult = result?.length > 24 ? result?.slice(0, 24) : result?.slice()
 
   return (
     <>
@@ -101,14 +101,22 @@ export default function Search() {
                 className="p-2.5 flex flex-col grid-template-search sm:grid 
               sm:[&>*]:col-span-6 md:[&>*]:col-span-4 lg:[&>*]:col-span-3 gap-2.5">
                 {
-                  result && slicedResult.map((article, index) => (
-                    <Card
-                      key={index}
-                      cardTitle={article.title}
-                      cardImageSrc={article.urlToImage}
-                      source={article.source}
-                      link={article.url} />
-                  ))
+                  slicedResult && slicedResult.map((article, i) => {
+                    const url = new URL(article.url)
+                    const source = {
+                      url: url.origin,
+                      name: url.hostname
+                    }
+                    return (
+                      <Card
+                        key={`${article.id}-${i}`}
+                        cardTitle={article.title}
+                        cardImageSrc={article.image}
+                        link={article.url}
+                        source={source}
+                      />
+                    )
+                  })
                 }
               </div>
             )}
@@ -122,21 +130,37 @@ export default function Search() {
 export const SearchLoader = async ({ request }) => {
   const requestUrl = new URL(request.url);
   const query = requestUrl.searchParams.get("q");
-  if (!query) return null
+
+  if (!query) return new Response('Fetch failed', { result: null, query })
   try {
-
-    const url = `https://newsapi.org/v2/everything?q=${query}&apiKey=${import.meta.env.VITE_NEWSAPIORG_API_KEY}`
-    const response = await fetch(url)
-
-    if (!response.ok) {
-      const error = new Error('Fetch failed')
-      error.statusCode = response.status
-      throw error
+    const ipinfoUrl = `https://ipinfo.io/json?token=${import.meta.env.VITE_IPINFO_API_KEY}`
+    const ipResponse = await fetch(ipinfoUrl)
+    if (!ipResponse.ok) {
+      const ipError = new Error('IPInfo fetch failed')
+      ipError.status = ipResponse.status
+      throw ipError
     }
-    const result = await response.json();
-    return { result, query }
+
+    const ipResult = await ipResponse.json();
+    const { country } = ipResult;
+
+    const apiUrl = country ? `/api/searchAction?searchTerm=${query}&country=${country}` : null
+    const apiResponse = await fetch(apiUrl)
+
+    if (!apiResponse.ok) {
+      const apiError = new Error('API fetch failed');
+      apiError.status = apiResponse.status
+      throw apiError
+    }
+
+    const apiResult = await apiResponse.json();
+    return { result: apiResult, query }
   } catch (error) {
-    console.log(error)
+    console.error(error)
+    throw new Response('Loader failed', {
+      status: error.status,
+      statusText: error.message
+    })
   }
 }
 

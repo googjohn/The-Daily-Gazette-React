@@ -19,7 +19,7 @@ export function TechnologyForHome({ technologyNewsData, ipdata }) {
     <>
       <div className="grid grid-template grid-area-entmnt-scitech">
         {tehcnologyError
-          ? (<div>Error loading data.</div>)
+          ? (<div className="text-black">Error loading data.</div>)
           : technologyArticles && technologyArticles.slice(0, 7).map((article, index) => {
             const source = {
               url: article.source_url,

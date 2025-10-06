@@ -14,7 +14,7 @@ const BREAKPOINTS = {
 export default function Header() {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
   const [mobileActive, setMobileActive] = useState(false);
-  const windowSize = useWindowSize();
+  const { windowSize } = useWindowSize();
 
   useEffect(() => {
     const isMobile = windowSize.width <= BREAKPOINTS.MOBILE

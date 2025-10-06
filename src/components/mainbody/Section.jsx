@@ -29,7 +29,7 @@ export default function Section({ id, sectionData, salutation, weatherData }) {
               </div>
             )}
             {data.content && (
-              <div className={`section-content ${sectionContentStyle} ${data.customGrid}`}>
+              <div className={`section-content ${data.customGrid ? sectionContentStyle : ''} ${data.customGrid} ${data.customClass}`}>
                 {data.content}
               </div>
             )}

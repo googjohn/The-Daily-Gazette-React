@@ -25,7 +25,7 @@ export function EntertainmentForHome({ entertainmentNewsDAta, ipdata }) {
         <>
           <div className="grid grid-template grid-area-entmnt-scitech">
             {entertainmentError
-              ? (<div>Error loading data.</div>)
+              ? (<div className="text-black">Error loading data.</div>)
               : entertainmentArticles && entertainmentArticles.slice(0, 7).map((article, index) => {
                 const source = {
                   url: article.source_url,

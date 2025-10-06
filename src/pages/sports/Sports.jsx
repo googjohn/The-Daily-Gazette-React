@@ -24,7 +24,7 @@ export function SportsForHome({ ipdata, sportsNewsData, nbaNewsDAta, mlbNewsData
         <>
           <div className="grid grid-template grid-area-sports">
             {sportsError
-              ? (<div>Error loading data.</div>)
+              ? (<div className="text-black">Error loading data.</div>)
               : sportsArticles && sportsArticles.slice(0, 9).map((article, index) => {
                 const source = {
                   url: article.source_url,

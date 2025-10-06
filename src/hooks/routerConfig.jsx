@@ -18,18 +18,18 @@ export const router = createBrowserRouter([
     errorElement: <div className="text-center text-4xl flex justify-center items-center h-screen">Error loading. Page not found.</div>,
     children: [
       { index: true, element: <Home /> },
-      { path: 'finance', element: <Finance /> },
-      { path: 'entertainment', element: <Entertainment /> },
-      { path: 'scienceTechnology', element: <SciAndTech /> },
-      { path: 'sports', element: <Sports /> },
+      { path: '/finance', element: <Finance /> },
+      { path: '/entertainment', element: <Entertainment /> },
+      { path: '/scienceTechnology', element: <SciAndTech /> },
+      { path: '/sports', element: <Sports /> },
     ]
   },
   {
-    path: 'login',
+    path: '/login',
     element: <Login />
   },
   {
-    path: 'search',
+    path: '/search',
     element:
       <Suspense fallback={<Spinner />}>
         <Search />
@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
     loader: SearchLoader,
   },
   {
-    path: 'weather',
+    path: '/weather',
     element: <WeatherPage />,
     action: weatherSearchAction,
   },
