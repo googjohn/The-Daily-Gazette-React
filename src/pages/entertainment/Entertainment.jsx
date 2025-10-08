@@ -2,10 +2,13 @@ import Card from "../../components/card/Card";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import useIpGetter from "../../hooks/UseIpGetter";
 
 export default function Entertainment() {
+  const { ipdata, error: ipdataError } = useIpGetter();
+  console.log(ipdata)
   return (
-    <div className="min-h-screen bg-[var(--gray-10)]">Entertainment</div>
+    <EntertainmentForHome ipdata={ipdata} />
   )
 }
 
