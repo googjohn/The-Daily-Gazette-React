@@ -145,7 +145,6 @@ export default function Home() {
               <Local localNewsData={localNewsArticles} />
 
               <FinanceForHome
-                ipdata={ipdata}
                 financeNewsData={financeNewsArticles}
                 moreFinanceNewsData={moreFinanceNewsArticles} />
 

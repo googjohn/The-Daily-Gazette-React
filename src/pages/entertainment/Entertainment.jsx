@@ -1,14 +1,25 @@
 import Card from "../../components/card/Card";
+import ErrorPage from "../../components/error/ErrorPage";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
+import Spinner from "../../components/spinner/Spinner";
+import { entertainmentOptions } from "../../data/gnewsOptions";
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
 import useIpGetter from "../../hooks/UseIpGetter";
+import { useFetchNews } from "../home/Home";
 
 export default function Entertainment() {
   const { ipdata, error: ipdataError } = useIpGetter();
-  console.log(ipdata)
+  const entertainmentNewsData = useFetchNews(entertainmentOptions, ipdata?.country)
   return (
-    <EntertainmentForHome ipdata={ipdata} />
+    <>
+      {ipdataError && <ErrorPage />}
+      {!entertainmentNewsData?.articles && <Spinner />}
+      {<EntertainmentForHome
+        ipdata={ipdata}
+        entertainmentNewsDAta={entertainmentNewsData?.articles} />
+      }
+    </>
   )
 }
 

@@ -53,7 +53,6 @@ export default async function fetchHandler(req, res) {
     if (!response.ok) {
       return res.status(response.status).json({ error: data.message || 'Fetch error' })
     }
-
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: 'Server error', details: error.message })

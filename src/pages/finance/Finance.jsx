@@ -4,7 +4,7 @@ import Section from "../../components/mainbody/Section";
 import Spinner from "../../components/spinner/Spinner";
 import ErrorPage from '../../components/error/ErrorPage';
 import { useFetchForAll } from "../../hooks/UseFetchForAll";
-import { businessOptions, moreBusinessOptions } from "../../data/gnewsOptions";
+import { businessOptions, moreBusinessOptions } from "../../data/gnewsOptions.js";
 import useIpGetter from "../../hooks/UseIpGetter";
 import MarketOverviewWidget from './MarketOverview'
 import MarketNewsWidget from "./MarketNews";
@@ -12,8 +12,9 @@ import TickerTape from "./TickerTape";
 import StockMarketWidget from "./StockMarketOverview";
 import MarketChartWidget from "./MarketChart";
 import CryptoWidget from "./CryptoMarket";
+import { useFetchNews } from "../home/Home";
 
-const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
+/* const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
 
 const generateGnewsUrl = (newsOptions, country, searchTerm) => searchTerm ?
   `https://gnews.io/api/v4/${newsOptions.searchEndpoint}?q=${searchTerm}&apikey=${searchTerm === 'nba' ? newsOptions.gnewsNbaApikey : newsOptions.gnewsMlbApikey}` :
@@ -22,7 +23,7 @@ const generateGnewsUrl = (newsOptions, country, searchTerm) => searchTerm ?
 const useFetchNews = (options, country, searchTerm) => {
   const { data } = useFetchForAll(generateGnewsUrl(options, country, searchTerm));
   return data?.articles
-}
+} */
 
 export default function Finance() {
   const { ipdata, error: ipdataError } = useIpGetter();
@@ -30,7 +31,7 @@ export default function Finance() {
 
   // const financeNewsArticles = useFetchNews(businessOptions, country)
   const moreFinanceNewsArticles = useFetchNews(moreBusinessOptions, country)
-
+  console.log(moreFinanceNewsArticles)
   const NEWSDATAIO_URL = ipdata?.country
     ? `https://newsdata.io/api/1/latest?country=${ipdata?.country}&language=en&category=business&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY_5}`
     : null
@@ -98,7 +99,7 @@ export default function Finance() {
       title: 'Popular in Business and Finance',
       customGrid: 'grid-area-more-finance',
       content: (
-        moreFinanceNewsArticles && moreFinanceNewsArticles.slice().map((article, index) => (
+        moreFinanceNewsArticles?.articles && moreFinanceNewsArticles?.articles?.slice().map((article, index) => (
           <Card
             key={article.id}
             cardTitle={article.title}
