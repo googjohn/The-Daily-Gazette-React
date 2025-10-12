@@ -18,6 +18,7 @@ export default async function fetchHandler(req, res) {
 
   const allowedOrigins = [
     'http://localhost:3000',
+    'http://localhost:5173',
     'https://the-daily-gazette-react.vercel.app'
   ]
 
@@ -38,6 +39,7 @@ export default async function fetchHandler(req, res) {
   else if (category === 'science') apikey = process.env.VITE_GNEWS_API_KEY_16
   else if (category === 'technology') apikey = process.env.VITE_GNEWS_API_KEY_17
   else if (category === 'sports') apikey = process.env.VITE_GNEWS_API_KEY_18
+  else if (category === 'health') apikey = process.env.VITE_GNEWS_API_KEY_1
   else apikey = process.env.VITE_WORLDNEWS_API_KEY
 
   const gnewsUrl = searchTerm ?

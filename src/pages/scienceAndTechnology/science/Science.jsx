@@ -1,11 +1,23 @@
 import Card from "../../../components/card/Card"
+import ErrorPage from "../../../components/error/ErrorPage.jsx";
 import Aside from "../../../components/mainbody/Aside"
+import Spinner from "../../../components/spinner/Spinner.jsx";
+import { scienceOptions } from "../../../data/gnewsOptions.js";
 import { useFetchForAll } from "../../../hooks/UseFetchForAll"
+import useIpGetter from "../../../hooks/UseIpGetter";
+import { useFetchNews } from "../../home/Home";
 
 export default function Science() {
+  const { ipdata, error: ipdataError } = useIpGetter();
+  const scienceNewsData = useFetchNews(scienceOptions, ipdata?.country)
   return (
     <>
-      <div>Science</div>
+      {ipdataError && <ErrorPage />}
+      {!scienceNewsData?.articles && <Spinner />}
+      {<ScienceForHome
+        ipdata={ipdata}
+        entertainmentNewsDAta={scienceNewsData?.articles} />
+      }
     </>
   )
 }

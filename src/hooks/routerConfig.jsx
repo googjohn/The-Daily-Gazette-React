@@ -3,13 +3,13 @@ import RootLayout from "../layout/RootLayout";
 import Home from "../pages/home/Home";
 import Finance from "../pages/finance/Finance";
 import Entertainment from "../pages/entertainment/Entertainment";
-import SciAndTech from "../pages/scienceAndTechnology/ScienceAndTechnology";
 import Sports from "../pages/sports/Sports";
 import Login from "../routes/login/Login";
 import Search, { SearchLoader } from "../pages/search/Search";
 import { Suspense } from "react";
 import Spinner from "../components/spinner/Spinner";
 import WeatherPage, { weatherSearchAction } from "../pages/weatherForecast/WeatherPage";
+import ScienceTechnologyPage from "../pages/scienceAndTechnology/ScienceAndTechnology";
 
 export const router = createBrowserRouter([
   {
@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: '/finance', element: <Finance /> },
       { path: '/entertainment', element: <Entertainment /> },
-      { path: '/scienceTechnology', element: <SciAndTech /> },
+      { path: '/scienceTechnology', element: <ScienceTechnologyPage /> },
       { path: '/sports', element: <Sports /> },
     ]
   },

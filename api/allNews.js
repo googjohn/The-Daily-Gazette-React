@@ -24,6 +24,7 @@ export default async function handler(req, res) {
 
   const allowedOrigins = [
     'http://localhost:3000',
+    'http://localhost:5173',
     'https://the-daily-gazette-react.vercel.app'
   ]
 
@@ -59,6 +60,7 @@ export default async function handler(req, res) {
     else if (categoryOption.category === 'entertainment') apikey = process.env.VITE_GNEWS_API_KEY_15
     else if (categoryOption.category === 'science') apikey = process.env.VITE_GNEWS_API_KEY_16
     else if (categoryOption.category === 'technology') apikey = process.env.VITE_GNEWS_API_KEY_17
+    else if (categoryOption.category === 'health') apikey = process.env.VITE_GNEWS_API_KEY_23
 
     if (categoryOption.endpoint === 'search') {
       return { forCategory: `sports-${categoryOption?.searchTerm}`, url: `https://gnews.io/api/v4/search?q=${categoryOption?.searchTerm}&lang=${categoryOption.language}&country=${categoryOption?.country || country}&apikey=${apikey}` }

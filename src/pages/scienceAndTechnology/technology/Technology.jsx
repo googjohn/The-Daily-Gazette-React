@@ -1,10 +1,24 @@
 import Card from "../../../components/card/Card"
+import ErrorPage from "../../../components/error/ErrorPage";
 import Aside from "../../../components/mainbody/Aside"
+import Spinner from "../../../components/spinner/Spinner";
+import { technologyOptions } from "../../../data/gnewsOptions";
 import { useFetchForAll } from "../../../hooks/UseFetchForAll"
+import useIpGetter from "../../../hooks/UseIpGetter";
+import { useFetchNews } from "../../home/Home";
 
 export default function Technology() {
+  const { ipdata, error: ipdataError } = useIpGetter();
+  const technologyNewsData = useFetchNews(technologyOptions, ipdata?.country)
   return (
-    <div>Techonology</div>
+    <>
+      {ipdataError && <ErrorPage />}
+      {!technologyNewsData?.articles && <Spinner />}
+      {<TechnologyForHome
+        ipdata={ipdata}
+        entertainmentNewsDAta={technologyNewsData?.articles} />
+      }
+    </>
   )
 }
 export function TechnologyForHome({ technologyNewsData, ipdata }) {

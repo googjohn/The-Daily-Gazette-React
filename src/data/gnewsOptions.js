@@ -56,6 +56,13 @@ export const technologyOptions = {
   max: 10,
 }
 
+export const healthOptions = {
+  endpoint: 'top-headlines',
+  category: 'health',
+  language: 'en',
+  max: 10,
+}
+
 export const sportsOptions = {
   endpoint: 'top-headlines',
   searchEndpoint: 'search',

@@ -2,7 +2,7 @@ import Local from "./local/Local";
 import World from "./world/World";
 import Spinner from "../../components/spinner/Spinner";
 import ErrorPage from "../../components/error/ErrorPage";
-import ScienceTechnology from "../scienceAndTechnology/ScienceAndTechnology";
+import { ScienceTechnologyForHome } from "../scienceAndTechnology/ScienceAndTechnology";
 import { FinanceForHome } from "../finance/Finance";
 import { EntertainmentForHome } from "../entertainment/Entertainment";
 import { SportsForHome } from "../sports/Sports";
@@ -152,7 +152,7 @@ export default function Home() {
                 ipdata={ipdata}
                 entertainmentNewsDAta={entertainmentNewsArticles} />
 
-              <ScienceTechnology
+              <ScienceTechnologyForHome
                 ipdata={ipdata}
                 scienceNewsData={scienceNewsArticles}
                 technologyNewsData={technologyNewsArticles} />

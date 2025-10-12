@@ -31,7 +31,7 @@ export default function Finance() {
 
   // const financeNewsArticles = useFetchNews(businessOptions, country)
   const moreFinanceNewsArticles = useFetchNews(moreBusinessOptions, country)
-  console.log(moreFinanceNewsArticles)
+
   const NEWSDATAIO_URL = ipdata?.country
     ? `https://newsdata.io/api/1/latest?country=${ipdata?.country}&language=en&category=business&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY_5}`
     : null
