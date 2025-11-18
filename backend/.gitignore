@@ -3,4 +3,4 @@
 *.pyo
 cache.sqlite
 *.sqlite
-__pychace__/
+__pycache__
