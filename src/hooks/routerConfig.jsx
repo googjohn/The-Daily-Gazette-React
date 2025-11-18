@@ -10,12 +10,13 @@ import { Suspense } from "react";
 import Spinner from "../components/spinner/Spinner";
 import WeatherPage, { weatherSearchAction } from "../pages/weatherForecast/WeatherPage";
 import ScienceTechnologyPage from "../pages/scienceAndTechnology/ScienceAndTechnology";
+import ErrorPage from "../components/error/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
-    errorElement: <div className="text-center text-4xl flex justify-center items-center h-screen">Error loading. Page not found.</div>,
+    errorElement: <ErrorPage />, //<div className="text-center text-4xl flex justify-center items-center h-screen">Error loading. Page not found.</div>,
     children: [
       { index: true, element: <Home /> },
       { path: '/finance', element: <Finance /> },

@@ -21,20 +21,22 @@ export default function Section({ id, sectionData, salutation, weatherData }) {
             formatter={formatter}
           />
         }
-        {sectionData.map((data, index) => (
-          <div key={index} className="section-content-container">
-            {data.title && (
-              <div className="section-title py-2.5">
-                <h2>{data.title}</h2>
-              </div>
-            )}
-            {data.content && (
-              <div className={`section-content ${data.customGrid ? sectionContentStyle : ''} ${data.customGrid || ""} ${data.customClass || ''}`}>
-                {data.content}
-              </div>
-            )}
-          </div>
-        ))}
+        {!sectionData
+          ? (<div className="text-black">No data to show for now. Page is under development.</div>)
+          : sectionData.map((data, index) => (
+            <div key={index} className="section-content-container">
+              {data.title && (
+                <div className="section-title pb-2.5">
+                  <h2>{data.title}</h2>
+                </div>
+              )}
+              {data.content && (
+                <div className={`section-content ${data.customGrid ? sectionContentStyle : ''} ${data.customGrid || ""} ${data.customClass || ''}`}>
+                  {data.content}
+                </div>
+              )}
+            </div>
+          ))}
       </div>
     </section>
   )

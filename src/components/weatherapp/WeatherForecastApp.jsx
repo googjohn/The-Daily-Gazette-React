@@ -8,7 +8,7 @@ import {
 } from "../../pages/weatherForecast/WeatherPageUtility.js";
 import Spinner from "../spinner/Spinner";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
-import useIpGetter from "../../hooks/UseIpGetter.jsx";
+import useIpGetter from "../../hooks/UseIpGetter.js";
 
 const WAPP = {
   endpoint: 'timeline',

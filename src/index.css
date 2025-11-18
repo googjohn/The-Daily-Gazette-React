@@ -40,6 +40,7 @@
   --navy: #0a192f;
   --navy-rgb: 10, 25, 47;
   --light-navy: #112240;
+  --light-navy-rgb: 17, 34, 64;
   --lightest-navy: #233554;
   --lightest-navy-rgb: 35, 53, 84;
   --navy-shadow: rgba(2, 12, 27, 0.7);
@@ -75,6 +76,7 @@
   --bs-cards: 0 0 4px 0 rgba(var(--black-rgb), .5);
   --bs-cards-lup-ddown: 4px -4px 10px 0 rgba(var(--white-rgb), 0.75),
     -4px 4px 10px 0 rgba(var(--black-rgb), 0.45);
+  --shadow-bottom: 0 8px 10px rgba(0,0,0,0.3);
 
   /* transition */
   --transition: all 350ms ease-in-out;

@@ -213,7 +213,7 @@ img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  /* color: #1a1a1a; */
+  color: #1a1a1a;
   color: var(--primary-color);
   background-color: #fff;
 }
@@ -233,7 +233,7 @@ img {
   height: 130px;
   border-radius: 20px;
   color: #fff;
-  /* background-color: rgba(255, 255, 255, .618); */
+  background-color: rgba(255, 255, 255, .618);
   background-color: #0576e62c;
   text-align: center;
   padding: 10px 0;

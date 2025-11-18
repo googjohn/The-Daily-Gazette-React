@@ -13,3 +13,9 @@ export default function useFormatter(date, options = { dateStyle: 'full' }) {
 
   return formattedDate.toString()
 }
+
+export function formatDate(date, options = { dateStyle: 'full' }) {
+  const formatter = new Intl.DateTimeFormat('default', options)
+  const newDate = new Date(date)
+  return formatter.format(newDate)
+}
