@@ -76,7 +76,7 @@ export default function Sports() {
     }
 
     try {
-      const url = `http://localhost:8000/api/${sportsSelected.toLowerCase()}/${selected}`
+      const url = `https://the-daily-gazette-react.onrender.com/api/${sportsSelected.toLowerCase()}/${selected}`
       const response = await fetch(url, { signal })
 
       if (!response.ok) {
