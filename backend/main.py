@@ -8,6 +8,7 @@ from nba_api.stats.static import players, teams
 from dotenv import load_dotenv
 import nba_api.library.http as http
 import requests
+from requests.exceptions import Timeout, ConnectionError, HTTPError, ConnectTimeout
 import mlbstatsapi
 import os
 
@@ -41,7 +42,7 @@ def home():
     return {"message": 'Backend running'}
 
 # get nba
-@app.get("/api/nba/schedules")
+@app.get("/api/NBA/schedules")
 def get_season_schedule():
     try:
         current_year = datetime.now().year
@@ -89,12 +90,44 @@ def get_season_schedule():
                 'gamesList': list(games_group)
             })
         
-        return result or []
-        
+        return {
+            "ok": True,
+            "error": None,
+            "data": result
+        }   
+    
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
     except Exception as e:
-        return {"error": str(e), "data": []}
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
 
-@app.get("/api/nba/standings")
+@app.get("/api/NBA/standings")
 def get_standings():
     try:
         results = leaguestandings.LeagueStandings()
@@ -141,11 +174,44 @@ def get_standings():
         grouped['east'] = sorted(grouped['east'], key=get_conf_record, reverse=True)
         grouped['west'] = sorted(grouped['west'], key=get_conf_record, reverse=True)
 
-        return grouped or {}
+        return {
+            "ok": True,
+            "error":None,
+            "data": grouped
+        }
+    
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
     except Exception as e:
-        return {"error": str(e), "data": []}
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
 
-@app.get("/api/nba/players")
+@app.get("/api/NBA/players")
 def get_players():
     # session.cache.clear()
     # url = "https://api.sportsdata.io/v3/nba/scores/json/Standings/2026"
@@ -185,14 +251,46 @@ def get_players():
                     league_leaders_index.append(player_data_filtered)
     
         league_leaders_index.sort(key=lambda x: x["player_rank"])
+        
+        return {
+            "ok": True,
+            "error": None,
+            "data": league_leaders_index 
+        }
     
-        return league_leaders_index or []
-    
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
     except Exception as e:
-        return {"error": str(e), "data": []}
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
 
 # get mlb
-@app.get('/api/mlb/standings')
+@app.get('/api/MLB/standings')
 def get_mlb_standings():
     try:
         current_year = datetime.now().year
@@ -261,84 +359,151 @@ def get_mlb_standings():
         mlb_leagues_standings["american_league"].sort(key=lambda x: int(x["league_rank"]))
         mlb_leagues_standings["national_league"].sort(key=lambda x: int(x["league_rank"]))
         
-        return mlb_leagues_standings or {}
-        # return mlb_standings or {}
+        return {
+            "ok": True,
+            "error": None,
+            "data": mlb_leagues_standings
+        }
 
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
     except Exception as e:
-        return {"error": str(e), "data": []}
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
 
-@app.get('/api/mlb/schedules')
+@app.get('/api/MLB/schedules')
 def get_season_schedule():
-    current_date = datetime.now().date()
-    current_year_season = datetime.now().year
-    next_year_season = current_year_season + 1
-  
-    mlb = mlbstatsapi.Mlb()
-    # current/previous season
-    mlb_current_year_season = mlb.get_season(season_id=current_year_season)
-    start_date_current = mlb_current_year_season.seasonstartdate
-    end_date_current = mlb_current_year_season.seasonenddate
+    try:
+        current_date = datetime.now().date()
+        current_year_season = datetime.now().year
+        next_year_season = current_year_season + 1
+    
+        mlb = mlbstatsapi.Mlb()
+        # current/previous season
+        mlb_current_year_season = mlb.get_season(season_id=current_year_season)
+        start_date_current = mlb_current_year_season.seasonstartdate
+        end_date_current = mlb_current_year_season.seasonenddate
 
-    # upcoming/next season
-    mlb_next_year_season = mlb.get_season(season_id=next_year_season)
-    start_date_next = mlb_next_year_season.seasonstartdate
-    end_date_next = mlb_next_year_season.seasonenddate
+        # upcoming/next season
+        mlb_next_year_season = mlb.get_season(season_id=next_year_season)
+        start_date_next = mlb_next_year_season.seasonstartdate
+        end_date_next = mlb_next_year_season.seasonenddate
 
-    mlb_schedule = None
+        mlb_schedule = None
 
-    # if season ended we want to show the last played games
-    if datetime.now().timestamp() >= datetime.strptime(end_date_current, "%Y-%m-%d").timestamp():
-        # if current date is > next season start, we get the current date schedules
-        if datetime.now().timestamp() >= datetime.strptime(start_date_next, "%Y-%m-%d").timestamp():
+        # if season ended we want to show the last played games
+        if datetime.now().timestamp() >= datetime.strptime(end_date_current, "%Y-%m-%d").timestamp():
+            # if current date is > next season start, we get the current date schedules
+            if datetime.now().timestamp() >= datetime.strptime(start_date_next, "%Y-%m-%d").timestamp():
+                startdate = datetime.now().date() - timedelta(days=10)
+                enddate = datetime.now().date() + timedelta(days=10)
+                mlb_schedule = mlb.get_schedule(start_date=startdate, end_date=enddate)
+            else:
+                startdate = datetime.strptime(end_date_current, "%Y-%m-%d").date() - timedelta(days=10)
+                mlb_schedule = mlb.get_schedule(start_date=startdate, end_date=end_date_current)
+        # season hasn't ended yet, we can normally query using the date today as base   
+        elif datetime.now().timestamp() < datetime.strptime(end_date_current, "%Y-%m-%d").timestamp():
             startdate = datetime.now().date() - timedelta(days=10)
             enddate = datetime.now().date() + timedelta(days=10)
             mlb_schedule = mlb.get_schedule(start_date=startdate, end_date=enddate)
-        else:
-            startdate = datetime.strptime(end_date_current, "%Y-%m-%d").date() - timedelta(days=10)
-            mlb_schedule = mlb.get_schedule(start_date=startdate, end_date=end_date_current)
-    # season hasn't ended yet, we can normally query using the date today as base   
-    elif datetime.now().timestamp() < datetime.strptime(end_date_current, "%Y-%m-%d").timestamp():
-        startdate = datetime.now().date() - timedelta(days=10)
-        enddate = datetime.now().date() + timedelta(days=10)
-        mlb_schedule = mlb.get_schedule(start_date=startdate, end_date=enddate)
 
-    # mlb_teams = mlb.get_teams(sport_id=1)
+        # mlb_teams = mlb.get_teams(sport_id=1)
 
-    schedules = []
-    # create an array of games per date
-    for date in mlb_schedule.dates:
-        game_day = date.date
-        game_list = []
-        # map the props of the game appended to list
-        for game in date.games:
-            filtered_game = {
-                "gameId": game.gameguid,
-                "gameDate": game.gamedate,
-                "gamepk": game.gamepk,
-                "gameStatus": game.status.detailedstate,
-                "gameLabel": game.seriesdescription,
-                "homeTeam_name": game.teams.home.team.name,
-                "homeTeam_id": game.teams.home.team.id,
-                "awayTeam_name": game.teams.away.team.name,
-                "awayTeam_id": game.teams.away.team.id,
-                "homeTeam_score": game.teams.home.score,
-                "awayTeam_score": game.teams.away.score,
-                "homeTeam_seriesRecord": game.teams.home.leaguerecord,
-                "awayTeam_seriesRecord": game.teams.away.leaguerecord
-            }
-            game_list.append(filtered_game)
+        schedules = []
+        # create an array of games per date
+        for date in mlb_schedule.dates:
+            game_day = date.date
+            game_list = []
+            # map the props of the game appended to list
+            for game in date.games:
+                filtered_game = {
+                    "gameId": game.gameguid,
+                    "gameDate": game.gamedate,
+                    "gamepk": game.gamepk,
+                    "gameStatus": game.status.detailedstate,
+                    "gameLabel": game.seriesdescription,
+                    "homeTeam_name": game.teams.home.team.name,
+                    "homeTeam_id": game.teams.home.team.id,
+                    "awayTeam_name": game.teams.away.team.name,
+                    "awayTeam_id": game.teams.away.team.id,
+                    "homeTeam_score": game.teams.home.score,
+                    "awayTeam_score": game.teams.away.score,
+                    "homeTeam_seriesRecord": game.teams.home.leaguerecord,
+                    "awayTeam_seriesRecord": game.teams.away.leaguerecord
+                }
+                game_list.append(filtered_game)
 
-        schedules.append({
-            "date": game_day,
-            "gamesList": game_list
-        })
-    # sort using the date
-    schedules.sort(key=lambda x: x["date"])
-       
-    return schedules or []
+            schedules.append({
+                "date": game_day,
+                "gamesList": game_list
+            })
+        # sort using the date
+        schedules.sort(key=lambda x: x["date"])
+        
+        return {
+            "ok": True,
+            "error": None,
+            "data": schedules
+        }
+    
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
+    except Exception as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
 
 # create our own ranking based on stats and allstar vote
-@app.get('/api/mlb/players')
+@app.get('/api/MLB/players')
 def get_mlb_players():
     try:
         current_date = datetime.now().date()
@@ -411,10 +576,42 @@ def get_mlb_players():
                     result_al_copy.remove(player)
                     break
                 
-        return playerlist or []
+        return {
+            "ok": True,
+            "error": None,
+            "data": playerlist
+        }
     
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
     except Exception as e:
-        return {"error": str(e), "data": []}
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
  
 # get soccer from footbal-api
 # premier league england id = 39
@@ -428,7 +625,7 @@ def get_mlb_players():
 # bundesliga id
 # serie a id
 # league 1 id
-@app.get('/api/soccer/schedules')
+@app.get('/api/SOCCER/schedules')
 def get_soccer_schedules():
     try:
         current_year = datetime.now().year
@@ -474,11 +671,44 @@ def get_soccer_schedules():
                 "date": date,
                 "gamesList": list(group_games)
             })
-        return schedules or []
+        return {
+            "ok": True,
+            "error": None,
+            "data": schedules
+        }
+    
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
     except Exception as e:
-        return {"error": str(e), "data": []}
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
 
-@app.get('/api/soccer/standings')
+@app.get('/api/SOCCER/standings')
 def get_standings():
     try:
         current_year = datetime.now().year
@@ -519,13 +749,45 @@ def get_standings():
             }
             standings_list.append(filtered_team_data)
 
-        return standings_list or {}
+        return {
+            "ok": True,
+            "error": None,
+            "data": standings_list
+        }
     
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
     except Exception as e:
-        return {"error": str(e), "data": []}
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
 
 # https://media.api-sports.io/football/players/{player_id}.png for player photo
-@app.get('/api/soccer/players')
+@app.get('/api/SOCCER/players')
 def get_players():
     try:
         current_year=datetime.now().year
@@ -557,11 +819,42 @@ def get_players():
             }
             playerlist.append(filtered_player_data)
 
-        return playerlist or []
+        return {
+            "ok": True,
+            "error": None,
+            "data": playerlist
+        }
     
+    except Timeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Request timed out."
+        }
+    except ConnectionError:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection error."
+        }
+    except ConnectTimeout:
+        return {
+            "ok": False,
+            "data": None,
+            "error": "Network connection timeout."
+        }
+    except HTTPError as e:
+        return {
+            "ok": False,
+            "data": None,
+            "error": f"HTTP error {e.response.status_code}."
+        }
     except Exception as e:
-        return {"error": str(e), "data": []}
-
+        return {
+            "ok": False,
+            "data": None,
+            "error": str(e)
+        }
 
 #uvicorn main:app --reload --port 8000
 #python -m venv venv

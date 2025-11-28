@@ -127,43 +127,6 @@ export default function Search() {
   )
 }
 
-export const SearchLoader = async ({ request }) => {
-  const requestUrl = new URL(request.url);
-  const query = requestUrl.searchParams.get("q");
-
-  if (!query) return new Response('Fetch failed', { result: null, query })
-  try {
-    const ipinfoUrl = `https://ipinfo.io/json?token=${import.meta.env.VITE_IPINFO_API_KEY}`
-    const ipResponse = await fetch(ipinfoUrl)
-    if (!ipResponse.ok) {
-      const ipError = new Error('IPInfo fetch failed')
-      ipError.status = ipResponse.status
-      throw ipError
-    }
-
-    const ipResult = await ipResponse.json();
-    const { country } = ipResult;
-
-    const apiUrl = country ? `/api/searchAction?searchTerm=${query}&country=${country}` : null
-    const apiResponse = await fetch(apiUrl)
-
-    if (!apiResponse.ok) {
-      const apiError = new Error('API fetch failed');
-      apiError.status = apiResponse.status
-      throw apiError
-    }
-
-    const apiResult = await apiResponse.json();
-    return { result: apiResult, query }
-  } catch (error) {
-    console.error(error)
-    throw new Response('Loader failed', {
-      status: error.status,
-      statusText: error.message
-    })
-  }
-}
-
 function SearchNavigation({ mobileMenuIsOpen }) {
   const linkClassess = "relative p-1"
   const navLinkBaseClasses = "navLink-hover text-[clamp(1.1rem,_2.5vw,1.3rem)] cursor-pointer"

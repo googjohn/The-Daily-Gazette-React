@@ -1,129 +1,71 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo, useReducer } from "react";
 import Card from "../../components/card/Card";
-import useIpGetter from "../../hooks/UseIpGetter";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
-import { useFetchNews } from "../home/Home";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import { useFetch } from "../../hooks/UseFetchForAll";
 import { mlbOptions, nbaOptions } from "../../data/gnewsOptions";
 import ErrorPage from "../../components/error/ErrorPage";
 import Spinner from "../../components/spinner/Spinner";
 import SportsFrame from "./sportsFrame/SportsFrame";
-
-const framesData = [
-  {
-    "frameName": 'NBA',
-    "frameTitle": "NBA Stats and Schedule",
-    "frameLogo": "/images/sports-logo/nba-logo.png",
-    "frameData": {
-      "GAMES": null,
-      "STANDINGS": null,
-      "PLAYERS": null,
-    },
-  },
-  {
-    "frameName": 'MLB',
-    "frameTitle": "MLB Stats and Schedule",
-    "frameLogo": "/images/sports-logo/mlb-logo.png",
-    "frameData": {
-      "GAMES": null,
-      "STANDINGS": null,
-      "PLAYERS": null,
-    },
-  },
-  {
-    "frameName": 'SOCCER',
-    "frameTitle": "Soccer Stats and Schedule",
-    "frameLogo": "/images/sports-logo/premier-league-logo.png",
-    "frameData": {
-      "GAMES": null,
-      "STANDINGS": null,
-      "PLAYERS": null,
-    },
-  },
-]
+import { Skeleton } from "@heroui/skeleton";
+import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder";
 
 export default function Sports() {
   const [sportsSelected, setSportsSelected] = useState('NBA') // NBA | MLB | SOCCER
   const [categorySelected, setCategorySelected] = useState('GAMES') // GAMES | STANDINGS | PLAYERS
-  const abortControl = useRef(null);
-  const { ipdata, error: ipdataError } = useIpGetter();
-  const nbaNewsData = useFetchNews(nbaOptions, ipdata?.country, 'nba')
-  const mlbNewsData = useFetchNews(mlbOptions, ipdata?.country, 'mlb')
 
-  // state manager for all sports frames
-  const [frames, setFrames] = useState(framesData)
+  const IP_URL = useMemo(() => '/api/ip/ipLookUp', [])
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(IP_URL);
 
-  // fetcher function
-  const fetchSports = useCallback(async (signal) => {
+  const nbaUrl = useNewsdataUrlBuilder(ipdata, nbaOptions)
+  const {
+    data: nbanewsData,
+    error: nbanewsError,
+    loading: nbanewsLoading
+  } = useFetch(nbaUrl)
 
-    let selected;
-    if (categorySelected === 'GAMES') {
-      selected = 'schedules'
-    } else if (categorySelected === 'STANDINGS') {
-      selected = 'standings'
-    } else if (categorySelected === 'PLAYERS') {
-      selected = 'players'
-    }
+  const mlbUrl = useNewsdataUrlBuilder(ipdata, mlbOptions)
+  const {
+    data: mlbnewsData,
+    error: mlbnewsError,
+    loading: mlbnewsLoading
+  } = useFetch(mlbUrl)
 
-    const frameCurrent = frames.find(frame => frame.frameName === sportsSelected)
-    // save api call by checking if data has already been fetched
-    // return if did and is not error object otherwise run fetch in trycatch
-    const data = frameCurrent.frameData[categorySelected]
-    if (data !== null && !data.error) {
-      console.log('Data already fetched! Call saved.')
-      return;
-    }
+  const NEWSDATAIO_URL = useNewsdataUrlBuilder(ipdata, {
+    'max': 10,
+    'endpoint': '',
+    'country': '',
+    'language': 'en',
+    'category': 'sports',
+    'searchTerm': 'sports',
+    'source': 'newsdataio'
+  })
 
-    try {
-      const url = `https://the-daily-gazette-react.onrender.com/api/${sportsSelected.toLowerCase()}/${selected}`
-      const response = await fetch(url, { signal })
+  const {
+    data: sportsdata,
+    error: sportsdataError,
+    loading: sportsdataLoading
+  } = useFetch(NEWSDATAIO_URL)
 
-      if (!response.ok) {
-        throw new Error('Fetch failed.', response.statusText)
-      }
+  const isLoading = sportsdataLoading || nbanewsLoading || mlbnewsLoading
+  const isDataAvail = !sportsdata || !nbanewsData || !mlbnewsData
 
-      const result = await response.json();
-      setFrames(prev => {
-        const newFrames = [...prev]
-        const frameToUpdate = newFrames.find(frame => frame.frameName === sportsSelected)
-        frameToUpdate.frameData[categorySelected] = result
-        return newFrames
-      })
-    } catch (err) {
-      if (err.name === 'AbortError') {
-        console.log('Standard abort procedure')
-        return;
-      }
-      console.error(err.name)
-    }
+  const sportsMap = {
+    NBA: 'NBA Stats and Schedules',
+    MLB: 'MLB Stats and Schedules',
+    SOCCER: 'SOCCER Stats and Schedules',
+  }
 
-  }, [sportsSelected, categorySelected, frames])
-
-  // fetch sports data
-  useEffect(() => {
-    if (abortControl.current) abortControl.current = null;
-
-    abortControl.current = new AbortController();
-    const signal = abortControl.current.signal;
-
-    fetchSports(signal)
-
-    return () => {
-      if (abortControl.current) abortControl.current.abort()
-    }
-  }, [fetchSports])
-
-  const allError = ipdataError || nbaNewsData?.error || mlbNewsData?.error || frames[0].frameData[categorySelected]?.error
-  const isLoading = !nbaNewsData?.articles && !mlbNewsData?.articles && frames[0].frameData[categorySelected] === null
-
+  const frameTitle = sportsMap[sportsSelected]
   const sections = [
     {
-      title: frames[0].frameTitle,
+      title: frameTitle,
       content:
         <SportsFrame
-          frames={frames}
-          setFrames={setFrames}
           categorySelected={categorySelected}
           setCategorySelected={setCategorySelected}
           sportsSelected={sportsSelected}
@@ -134,13 +76,15 @@ export default function Sports() {
 
   return (
     <>
-      {allError && <ErrorPage />}
-      {isLoading && <Spinner />}
-      {<SportsForHome
-        ipdata={ipdata}
-        nbaNewsDAta={nbaNewsData?.articles}
-        mlbNewsData={mlbNewsData?.articles}
-      />}
+      {(ipdataError || nbanewsError || mlbnewsError || sportsdataError) && <ErrorPage error={
+        (ipdataError || nbanewsError || mlbnewsError || sportsdataError)
+      } />}
+      {(isLoading || isDataAvail) && <Spinner />}
+      <SportsForHome
+        nbanewsData={nbanewsData}
+        mlbnewsData={mlbnewsData}
+        sportsnewsData={sportsdata}
+      />
       <Section
         id={'sports-page'}
         sectionData={sections}
@@ -149,13 +93,7 @@ export default function Sports() {
   )
 }
 
-export function SportsForHome({ ipdata, nbaNewsDAta, mlbNewsData }) {
-
-  const NEWSDATAIO_URL = ipdata?.country
-    ? `https://newsdata.io/api/1/latest?country=${ipdata?.country}&language=en&category=sports&q=sports&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY_4}`
-    : null
-  const { data: sportsNews, error: sportsError } = useFetchForAll(NEWSDATAIO_URL)
-  const sportsArticles = sportsNews?.results
+export function SportsForHome({ nbanewsData, mlbnewsData, sportsnewsData }) {
 
   const sections = [
     {
@@ -163,36 +101,139 @@ export function SportsForHome({ ipdata, nbaNewsDAta, mlbNewsData }) {
       customGrid: 'grid-area-sports-container',
       content: (
         <>
-          <div className="grid grid-template grid-area-sports">
-            {sportsError
-              ? (<div className="text-black">Error loading data.</div>)
-              : sportsArticles && sportsArticles.slice(0, 9).map((article, index) => {
+          <div className="grid grid-template grid-area-sports relative">
+            {!sportsnewsData ? (
+              <>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-6/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
+                  <div className="block w-full h-full">
+                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
+                  </div>
+                  <div className="block w-full absolute bottom-5 px-5">
+                    <div className="w-full flex flex-col gap-2" >
+                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
+                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
+                    </div>
+                  </div>
+                </div>
+
+
+              </>
+            )
+              : sportsnewsData && sportsnewsData.data.slice(0, 9).map((article, index) => {
                 const source = {
-                  url: article.source_url,
-                  name: article.source_name,
+                  url: article.source_url || article.source.url,
+                  name: article.source_name || article.source.name,
                 }
 
                 return (
                   <Card
-                    key={article.article_id}
+                    key={article.article_id || article.id}
                     cardTitle={article.title}
                     cardDescription={index === 0 ? article.description : null}
-                    cardImageSrc={article.image_url}
+                    cardImageSrc={article.image_url || article.image}
                     source={source}
-                    link={article.link}
+                    link={article.link || article.url}
                   />
                 )
               })
             }
           </div>
-          <div className="aside">
+          <div className="aside flex flex-col gap-2.5">
             <Aside
               asideTitle={'NBA Sports Updates'}
-              asideContent={nbaNewsDAta}
+              asideContent={nbanewsData}
             />
             <Aside
               asideTitle={'MLB Sports Updates'}
-              asideContent={mlbNewsData}
+              asideContent={mlbnewsData}
             />
           </div>
         </>

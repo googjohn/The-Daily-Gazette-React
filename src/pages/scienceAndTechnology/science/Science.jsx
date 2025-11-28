@@ -3,38 +3,60 @@ import ErrorPage from "../../../components/error/ErrorPage.jsx";
 import Aside from "../../../components/mainbody/Aside"
 import Spinner from "../../../components/spinner/Spinner.jsx";
 import { scienceOptions } from "../../../data/gnewsOptions.js";
-import { useFetchForAll } from "../../../hooks/UseFetchForAll"
-import useIpGetter from "../../../hooks/UseIpGetter";
-import { useFetchNews } from "../../home/Home";
+import { useFetch } from "../../../hooks/UseFetchForAll"
+import { useNewsdataUrlBuilder } from "../../../hooks/useUrlBuilder.js";
 
 export default function Science() {
-  const { ipdata, error: ipdataError } = useIpGetter();
-  const scienceNewsData = useFetchNews(scienceOptions, ipdata?.country)
+  const ipLookUpURL = '/api/ip/ipLookUp'
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(ipLookUpURL);
+
+  const scienceUrl = useNewsdataUrlBuilder(ipdata, scienceOptions)
+  const {
+    data: scienceNewsData,
+    error: scienceNewsError,
+    loading: scienceNewsLoading
+  } = useFetch(scienceUrl)
+
   return (
     <>
-      {ipdataError && <ErrorPage />}
-      {!scienceNewsData?.articles && <Spinner />}
+      {(ipdataError || scienceNewsError) && <ErrorPage error={ipdataError || scienceNewsError} />}
+      {(ipdataLoading || scienceNewsLoading) && <Spinner />}
       {<ScienceForHome
         ipdata={ipdata}
-        entertainmentNewsDAta={scienceNewsData?.articles} />
+        entertainmentNewsDAta={scienceNewsData} />
       }
     </>
   )
 }
 export function ScienceForHome({ scienceNewsData, ipdata }) {
 
-  const NEWSDATAIO_URL = ipdata?.country
-    ? `https://newsdata.io/api/1/latest?country=${ipdata?.country}&language=en&category=science&&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY}`
-    : null
-  const { data: scienceNews, error: scienceError } = useFetchForAll(NEWSDATAIO_URL)
-  const scienceArticles = scienceNews?.results
+  const options = {
+    'max': 10,
+    'category': 'science',
+    'searchTerm': '',
+    'language': 'en',
+    'country': ipdata?.data?.country,
+    'endpoint': '',
+    'source': 'newsdataio'
+  }
+
+  const NEWSDATAIO_URL = useNewsdataUrlBuilder(ipdata, options)
+  const {
+    data: scienceData,
+    error: scienceDataError,
+    loading: scienceDataLoading
+  } = useFetch(NEWSDATAIO_URL)
 
   return (
     <>
       <div className="grid grid-template grid-area-entmnt-scitech">
-        {scienceError
+        {scienceDataError
           ? (<div className="text-black">Error loading data.</div>)
-          : scienceArticles && scienceArticles.slice(0, 7).map((article, index) => {
+          : scienceData && scienceData?.data.slice(0, 7).map((article, index) => {
             const source = {
               url: article.source_url,
               name: article.source_name,

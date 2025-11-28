@@ -5,7 +5,7 @@ import AlertModal from "../../components/alert/AlertModal";
 import { handleConditionsIcon, tempConverter } from "./WeatherPageUtility.js";
 
 export default function WeatherPageSearchLocation({ ipdata, forecastData, tempUnit, setForecastData }) {
-  const { city, region } = ipdata || {}
+  const { city, region } = ipdata?.data || {}
   const initialLocation = city && region ? `${city}, ${region}` : 'Home address'
   const initialWeather = useMemo(() => {
     const uniqueId = crypto.randomUUID();

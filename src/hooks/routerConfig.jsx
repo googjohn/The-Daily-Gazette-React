@@ -4,24 +4,26 @@ import Home from "../pages/home/Home";
 import Finance from "../pages/finance/Finance";
 import Entertainment from "../pages/entertainment/Entertainment";
 import Sports from "../pages/sports/Sports";
-import Login from "../routes/login/Login";
-import Search, { SearchLoader } from "../pages/search/Search";
+import Login from "../pages/login/Login";
+import Search from "../pages/search/Search";
 import { Suspense } from "react";
 import Spinner from "../components/spinner/Spinner";
-import WeatherPage, { weatherSearchAction } from "../pages/weatherForecast/WeatherPage";
-import ScienceTechnologyPage from "../pages/scienceAndTechnology/ScienceAndTechnology";
+import WeatherPage from "../pages/weatherForecast/WeatherPage";
+import ScienceAndTechnology from "../pages/scienceAndTechnology/ScienceAndTechnology";
 import ErrorPage from "../components/error/ErrorPage";
+import { weatherSearchAction } from "../pages/weatherForecast/WeatherPageUtility";
+import { SearchLoader } from "../pages/search/searchUtility";
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
-    errorElement: <ErrorPage />, //<div className="text-center text-4xl flex justify-center items-center h-screen">Error loading. Page not found.</div>,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
       { path: '/finance', element: <Finance /> },
       { path: '/entertainment', element: <Entertainment /> },
-      { path: '/scienceTechnology', element: <ScienceTechnologyPage /> },
+      { path: '/scienceTechnology', element: <ScienceAndTechnology /> },
       { path: '/sports', element: <Sports /> },
     ]
   },

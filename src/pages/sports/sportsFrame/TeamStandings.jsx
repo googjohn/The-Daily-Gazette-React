@@ -1,14 +1,13 @@
-import clsx from "clsx"
 import { useState, useEffect } from "react"
 import { nbaLogos } from "../../../data/nbaLogos"
 import { mlbLogos } from "../../../data/mlbLogos"
-import Spinner from "../../../components/spinner/Spinner"
 import useWindowSize from "../../../hooks/UseWindowSize"
-import ErrorPage from "../../../components/error/ErrorPage"
+import clsx from "clsx"
 
-export default function TeamStandings({ framedata, sportsSelected, categorySelected }) {
+export default function TeamStandings({ framedata, sportsSelected }) {
   const data = framedata?.frameData?.STANDINGS || {}
   const { windowSize } = useWindowSize();
+
   // for initial data
   const conferenceData = sportsSelected === "NBA"
     ? data?.west
@@ -53,87 +52,78 @@ export default function TeamStandings({ framedata, sportsSelected, categorySelec
 
   const handleClick = (conference) => setSelectedConference(conference)
 
-  const loading = !framedata?.frameData[categorySelected]
-  const isError = framedata?.frameData[categorySelected]?.error
-
-  if (isError) return (<ErrorPage error={framedata?.frameData[categorySelected]?.error} />)
-  console.log(framedata)
   return (
-    <>
-
-      {/* {loading && <div>Loading data...</div> } */}
-
-      {<div className="h-full">
-        {sportsSelected === 'SOCCER'
-          ? <div className="header border-b border-black/15 font-semibold py-4">Table</div>
-          : <div className="header border-b border-black/15 flex [&>*]:basis-1/2 items-center cursor-pointer font-semibold">
-            <span
-              onClick={() => handleClick('western')}
-              className={clsx(
-                `w-full border-b-2 py-4 text-center`,
-                selectedConference === 'western' ? "border-[var(--light-navy)]" : "border-transparent"
-              )}>
-              {sportsSelected === 'NBA' ? 'Western Conference' : 'American League'}
-            </span>
-            <span
-              onClick={() => handleClick('eastern')}
-              className={clsx(
-                `w-full border-b-2 py-4 text-center`,
-                selectedConference === 'eastern' ? "border-[var(--light-navy)]" : "border-transparent"
-              )}>
-              {sportsSelected === 'NBA' ? "Eastern Conference" : "National League"}
-            </span>
-          </div>}
-        {/* WINS, LOSSES, WinPCT,ConferenceGamesBack, ConferenceRecord, ROAD, HOME, L10, strCurrentStreak, PlayoffRank */}
-        <div className="p-3 pt-0">
-          <table className="custom-table w-full">
-            <thead>
-              <tr>
-                <td>{sportsSelected === "SOCCER" ? 'Club' : 'Team'}</td>
-                {sportsSelected === "SOCCER" && <td>MP</td>}
-                <td>W</td>
-                {sportsSelected === "SOCCER" && <td>D</td>}
-                <td>L</td>
-                {(windowSize.width < 1136 ? true : sportsSelected !== "SOCCER" && (windowSize.width >= 640 && <td>Pct</td>))}
-                {(windowSize.width < 920 && sportsSelected === "SOCCER" ? true : sportsSelected === "SOCCER" ? <td>GT</td> : <td>GB</td>)}
-                {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>GA</td> : <td>Home</td>)}
-                {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>GD</td> : <td>Away</td>)}
-                {(windowSize.width < 768 && sportsSelected === "SOCCER" ? true : sportsSelected === "SOCCER" ? <td>Last 5</td> : <td>L10</td>)}
-                {sportsSelected !== "SOCCER" && <td>Strk</td>}
-              </tr>
-            </thead>
-            <tbody>
-              {
-                conferenceToShow && conferenceToShow?.map(team => {
-                  const teamLogo = sportLogo.find(tm => tm.teamId === team.team_id)?.logo
-                  return (
-                    <tr key={team.team_id}>
-                      <td>
-                        <div className="flex items-center gap-2.5">
-                          <img src={sportsSelected === 'SOCCER' ? team.team_crest : teamLogo} alt={team.team_name} className="w-6 aspect-square" />
-                          <span className="">{team.team_name}</span>
-                        </div>
-                      </td>
-                      {sportsSelected === "SOCCER" && <td>{team.wins + team.losses + team.ties}</td>}
-                      <td>{team.wins}</td>
-                      {sportsSelected === "SOCCER" && <td>{team.ties}</td>}
-                      <td>{team.losses}</td>
-                      {(windowSize.width < 1136 ? true : sportsSelected !== "SOCCER" && (windowSize.width >= 640 && <td>{team.winpct}</td>))}
-                      {(windowSize.width < 920 && sportsSelected === "SOCCER" ? true : sportsSelected === "SOCCER" ? <td>{team.goals_total}</td> : <td>{team.conferenceGamesBack}</td>)}
-                      {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>{team.goals_against}</td> : <td>{team.home}</td>)}
-                      {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>{team.goal_difference}</td> : <td>{team.road}</td>)}
-                      {(windowSize.width < 768 && sportsSelected === 'SOCCER' ? true : sportsSelected === "SOCCER" ? <td className="whitespace-nowrap">{team?.last_five?.split(',').join(' ')}</td> : <td>{team.lastTen}</td>)}
-                      {sportsSelected !== "SOCCER" && <td>{team.currentStreak}</td>}
-                    </tr>
-                  )
-                })
-              }
-            </tbody>
-          </table>
-        </div>
-        <style>
-          {
-            `.custom-table {
+    <div className="w-full h-full">
+      {sportsSelected === 'SOCCER'
+        ? <div className="header border-b border-black/15 font-semibold py-4">Table</div>
+        : <div className="header border-b border-black/15 flex [&>*]:basis-1/2 items-center cursor-pointer font-semibold">
+          <span
+            onClick={() => handleClick('western')}
+            className={clsx(
+              `w-full border-b-2 py-4 text-center`,
+              selectedConference === 'western' ? "border-[var(--light-navy)]" : "border-transparent"
+            )}>
+            {sportsSelected === 'NBA' ? 'Western Conference' : 'American League'}
+          </span>
+          <span
+            onClick={() => handleClick('eastern')}
+            className={clsx(
+              `w-full border-b-2 py-4 text-center`,
+              selectedConference === 'eastern' ? "border-[var(--light-navy)]" : "border-transparent"
+            )}>
+            {sportsSelected === 'NBA' ? "Eastern Conference" : "National League"}
+          </span>
+        </div>}
+      {/* WINS, LOSSES, WinPCT,ConferenceGamesBack, ConferenceRecord, ROAD, HOME, L10, strCurrentStreak, PlayoffRank */}
+      <div className="p-3 pt-0">
+        <table className="custom-table w-full">
+          <thead>
+            <tr>
+              <td>{sportsSelected === "SOCCER" ? 'Club' : 'Team'}</td>
+              {sportsSelected === "SOCCER" && <td>MP</td>}
+              <td>W</td>
+              {sportsSelected === "SOCCER" && <td>D</td>}
+              <td>L</td>
+              {(windowSize.width < 1136 ? true : sportsSelected !== "SOCCER" && (windowSize.width >= 640 && <td>Pct</td>))}
+              {(windowSize.width < 920 && sportsSelected === "SOCCER" ? true : sportsSelected === "SOCCER" ? <td>GT</td> : <td>GB</td>)}
+              {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>GA</td> : <td>Home</td>)}
+              {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>GD</td> : <td>Away</td>)}
+              {(windowSize.width < 768 && sportsSelected === "SOCCER" ? true : sportsSelected === "SOCCER" ? <td>Last 5</td> : <td>L10</td>)}
+              {sportsSelected !== "SOCCER" && <td>Strk</td>}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              conferenceToShow && conferenceToShow?.map(team => {
+                const teamLogo = sportLogo.find(tm => tm.teamId === team.team_id)?.logo
+                return (
+                  <tr key={team.team_id}>
+                    <td>
+                      <div className="flex items-center gap-2.5">
+                        <img src={sportsSelected === 'SOCCER' ? team.team_crest : teamLogo} alt={team.team_name} className="w-6 aspect-square" />
+                        <span className="">{sportsSelected === 'MLB' && windowSize.width < 440 ? team.club_name : team.team_name}</span>
+                      </div>
+                    </td>
+                    {sportsSelected === "SOCCER" && <td>{team.wins + team.losses + team.ties}</td>}
+                    <td>{team.wins}</td>
+                    {sportsSelected === "SOCCER" && <td>{team.ties}</td>}
+                    <td>{team.losses}</td>
+                    {(windowSize.width < 1136 ? true : sportsSelected !== "SOCCER" && (windowSize.width >= 640 && <td>{team.winpct}</td>))}
+                    {(windowSize.width < 920 && sportsSelected === "SOCCER" ? true : sportsSelected === "SOCCER" ? <td>{team.goals_total}</td> : <td>{team.conferenceGamesBack}</td>)}
+                    {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>{team.goals_against}</td> : <td>{team.home}</td>)}
+                    {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>{team.goal_difference}</td> : <td>{team.road}</td>)}
+                    {(windowSize.width < 768 && sportsSelected === 'SOCCER' ? true : sportsSelected === "SOCCER" ? <td className="whitespace-nowrap">{team?.last_five?.split(',').join(' ')}</td> : <td>{team.lastTen}</td>)}
+                    {sportsSelected !== "SOCCER" && <td>{team.currentStreak}</td>}
+                  </tr>
+                )
+              })
+            }
+          </tbody>
+        </table>
+      </div>
+      <style>
+        {
+          `.custom-table {
               width: '100%';
               border-collapse: collapse;
             }
@@ -160,10 +150,8 @@ export default function TeamStandings({ framedata, sportsSelected, categorySelec
               padding: 10px 2px;
             }
           `
-          }
-        </style>
-      </div>
-      }
-    </>
+        }
+      </style>
+    </div>
   )
 }

@@ -8,7 +8,7 @@ export default function LocalNews({ localNewsData }) {
       title: 'Latest Local News',
       customGrid: 'grid-area-local',
       content: (
-        localNewsData && localNewsData.slice(0, 8).map(article => (
+        localNewsData && localNewsData.data.slice(0, 8).map(article => (
           <Card
             key={article.id}
             cardTitle={article.title}

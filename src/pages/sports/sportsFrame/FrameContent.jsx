@@ -4,50 +4,42 @@ import PlayerList from "./PlayerList.jsx";
 
 export function MainFrameContent({ mainFrameData, categorySelected, sportsSelected }) {
 
-  // const loading = !mainFrameData?.frameData[categorySelected]
-  // && mainFrameData?.frameData[categorySelected]?.error
   return (
     <div id="frame-content" className="h-[590px] overflow-auto">
       {
         categorySelected === 'GAMES'
           ? (
-            <div className="h-full">
-              <GameSchedules
-                framedata={mainFrameData}
-                sportsSelected={sportsSelected}
-                categorySelected={categorySelected}
-              />
-            </div>
+            <GameSchedules
+              framedata={mainFrameData}
+              sportsSelected={sportsSelected}
+            />
           )
           : categorySelected === 'STANDINGS'
             ? (
-              <div className="h-full">
-                <TeamStandings
-                  framedata={mainFrameData}
-                  sportsSelected={sportsSelected}
-                />
-              </div>
+              <TeamStandings
+                framedata={mainFrameData}
+                sportsSelected={sportsSelected}
+              />
+
             )
             : (
-              <div className="h-full">
-                <PlayerList
-                  framedata={mainFrameData}
-                  sportsSelected={sportsSelected}
-                />
-              </div>
+              <PlayerList
+                framedata={mainFrameData}
+                sportsSelected={sportsSelected}
+              />
+
             )
       }
     </div>
   )
 }
 
-export function SubFrameContent({ subFrameData, categorySelected, sportsSelected }) {
+export function SubFrameContent({ subFrameData, sportsSelected }) {
   return (
-    <div className="h-74 overflow-auto cursor-pointer">
+    <div className={`h-76 overflow-auto`}>
       <GameSchedules
         framedata={subFrameData}
         sportsSelected={sportsSelected}
-        categorySelected={categorySelected}
       />
     </div>
   )

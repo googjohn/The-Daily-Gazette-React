@@ -2,39 +2,71 @@ import Card from "../../components/card/Card";
 import Spinner from "../../components/spinner/Spinner";
 import Section from "../../components/mainbody/Section";
 import ErrorPage from "../../components/error/ErrorPage";
-import useIpGetter from "../../hooks/UseIpGetter";
-import { useFetchNews } from "../home/Home";
 import { ScienceForHome } from "./science/Science";
 import { TechnologyForHome } from "./technology/Technology";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import { useFetch } from "../../hooks/UseFetchForAll";
 import { healthOptions, scienceOptions, technologyOptions } from "../../data/gnewsOptions";
+import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder";
 
-export default function ScienceTechnologyPage() {
-  const { ipdata, error: ipdataError } = useIpGetter();
-  const scienceNewsData = useFetchNews(scienceOptions, ipdata?.country)
-  const technologyNewsData = useFetchNews(technologyOptions, ipdata?.country)
-  const healthNewsData = useFetchNews(healthOptions, ipdata?.country)
+export default function ScienceAndTechnology() {
+  const ipLookUpURL = '/api/ip/ipLookUp'
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(ipLookUpURL);
 
-  const NEWSDATAIO_URL = ipdata?.country
-    ? `https://newsdata.io/api/1/latest?country=us&language=en&category=technology&q=${encodeURIComponent("artificial intelligence")}&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY}`
-    : null
-  const { data: aiNews, error: aiError } = useFetchForAll(NEWSDATAIO_URL)
-  const aiArticles = aiNews?.results
+  const scienceUrl = useNewsdataUrlBuilder(ipdata, scienceOptions)
+  const {
+    data: scienceData,
+    error: scienceError,
+    loading: sciencecLoading
+  } = useFetch(scienceUrl)
+
+  const technologyUrl = useNewsdataUrlBuilder(ipdata, technologyOptions)
+  const {
+    data: technologyData,
+    error: technologyError,
+    loading: technologyLoading
+  } = useFetch(technologyUrl)
+
+  const healthUrl = useNewsdataUrlBuilder(ipdata, healthOptions)
+  const {
+    data: healthData,
+    error: healthError,
+    loading: healthLoading
+  } = useFetch(healthUrl)
+
+  const options = {
+    'max': 10,
+    'category': 'technology',
+    'searchTerm': encodeURIComponent('artificial intelligence'),
+    'language': 'en',
+    'country': 'us',
+    'endpoint': '',
+    'source': 'newsdataio'
+  }
+  const NEWSDATAIO_URL = useNewsdataUrlBuilder(ipdata, options)
+  const {
+    data: ainews,
+    error: ainewsError,
+    loading: ainewsLoading
+  } = useFetch(NEWSDATAIO_URL)
 
   const sections = [
     {
       title: 'Latest in Technology',
       customGrid: 'grid-area-entmnt-scitech-container',
-      content: <TechnologyForHome technologyNewsData={technologyNewsData?.articles} ipdata={ipdata} />
+      content: <TechnologyForHome technologyNewsData={technologyData} ipdata={ipdata} />
     },
     {
       title: 'Artificial Intelligence',
       customGrid: 'grid-area-finance',
       // customClass: 'flex md:flex-wrap [&>*]:basis-1/3 h-full',
       content: (
-        aiError
+        ainewsError
           ? (<div className="text-black">Error loading data.</div>)
-          : aiArticles && aiArticles.slice(0, 5).map((article, index) => {
+          : ainews && ainews.data.slice(0, 5).map((article, index) => {
             const source = {
               url: article.source_url,
               name: article.source_name,
@@ -57,15 +89,15 @@ export default function ScienceTechnologyPage() {
     {
       title: 'Latest in Science',
       customGrid: 'grid-area-entmnt-scitech-container',
-      content: <ScienceForHome scienceNewsData={scienceNewsData?.articles} ipdata={ipdata} />
+      content: <ScienceForHome scienceNewsData={scienceData} ipdata={ipdata} />
     },
     {
       title: 'Health and Lifestyle',
       customGrid: 'grid-area-finance',
       content: (
-        healthNewsData?.error
-          ? (<div className="text-black">Error loading data. {healthNewsData?.error.message}</div>)
-          : healthNewsData?.articles && healthNewsData?.articles.slice(0, 5).map((article) => {
+        healthData?.error
+          ? (<div className="text-black">Error loading data. {healthData.error.message}</div>)
+          : healthData && healthData.data.slice(0, 5).map((article) => {
             return (
               <Card
                 key={article.id}
@@ -79,10 +111,11 @@ export default function ScienceTechnologyPage() {
       )
     }
   ]
-  const isLoading = !scienceNewsData?.articles || !technologyNewsData?.articles || !healthNewsData?.articles
+  const isLoading = !ipdata || !scienceData || !technologyData || !healthData
+  const hasError = ipdataError && scienceError && technologyError && healthError
   return (
     <>
-      {ipdataError && <ErrorPage />}
+      {hasError && <ErrorPage />}
       {isLoading && <Spinner />}
       {<Section sectionData={sections} />}
     </>
@@ -90,6 +123,7 @@ export default function ScienceTechnologyPage() {
 }
 
 export function ScienceTechnologyForHome({ technologyNewsData, scienceNewsData, ipdata }) {
+
   const sections = [
     {
       title: 'Latest in Technology',

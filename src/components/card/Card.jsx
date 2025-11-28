@@ -1,3 +1,5 @@
+import noImage from "/images/no-image/no-image-available.png";
+
 export default function Card({ cardTitle, cardDescription, cardImageSrc, cardImageAlt, link, source, classNames }) {
   const baseStyle = `card relative h-full w-full rounded-lg text-black shadow-[var(--bs-cards-lup-ddown)] overflow-hidden`
   const cardContainerClassNames = `${baseStyle} ${classNames}`
@@ -5,9 +7,9 @@ export default function Card({ cardTitle, cardDescription, cardImageSrc, cardIma
     <div className={cardContainerClassNames}>
       <div className="card-image-container w-full h-full">
         <img onError={
-          (e) => e.target.src = "/images/no-image/no-image-available.png"
+          (e) => e.target.src = noImage
         }
-          src={cardImageSrc || null}
+          src={cardImageSrc || noImage}
           alt={cardImageAlt}
           className="object-cover w-full h-full"
         />

@@ -1,5 +1,5 @@
-import useClock from "../../hooks/useClock";
-import Salutation from "../../routes/home/Salutation";
+import useClock from "../../hooks/useClock.js";
+import Salutation from "../salutation/Salutation.jsx";
 import WeatherApp from "../weatherapp/WeatherForecastApp";
 
 export default function Section({ id, sectionData, salutation, weatherData }) {

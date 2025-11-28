@@ -1,3 +1,5 @@
+import { fetchNormalWithRetry } from "../../hooks/UseFetchForAll"
+
 const WEATHER_CONDITION_ICONS = {
   'sunny': 'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/SunnyDayV3.svg',
   'partly-sunny': 'https://assets.msn.com/weathermapdata/1/static/weather/Icons/taskbar_v10/Condition_Card/D200PartlySunnyV2.svg',
@@ -199,4 +201,27 @@ export function formatDate(date, options = { dateStyle: 'medium' }) {
     datestring = formatter.format(parsedDate);
   }
   return datestring;
+}
+
+export const weatherSearchAction = async ({ request }) => {
+  const formData = await request.formData();
+  const location = formData.get('location')
+
+  if (!location) return new Response('No location found', { result: 'Location is required', location })
+
+  try {
+    const URL = `/api/weather/visualCrossing?locationQuery=${location}`
+
+    const response = await fetchNormalWithRetry(URL, 2, 300)
+
+    return { result: response.data, location }
+
+  } catch (error) {
+    if (error.name === 'AbortError') return;
+    console.error(error)
+    throw new Response('Action failed', {
+      result: error,
+      location
+    })
+  }
 }

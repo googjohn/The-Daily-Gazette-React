@@ -1,14 +1,13 @@
 import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import { useFetch } from "../../hooks/UseFetchForAll";
 import { FaTemperatureHalf } from "react-icons/fa6";
+import Spinner from "../spinner/Spinner";
+import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
 import {
   tempConverter,
   handleConditionsIcon,
 } from "../../pages/weatherForecast/WeatherPageUtility.js";
-import Spinner from "../spinner/Spinner";
-import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
-import useIpGetter from "../../hooks/UseIpGetter.js";
 
 const WAPP = {
   endpoint: 'timeline',
@@ -28,15 +27,26 @@ export default function WeatherApp() {
   const [isHovered, setIsHovered] = useState(false);
   const [hour, setHour] = useState(new Date().getHours());
 
-  const { ipdata, error: ipdataError } = useIpGetter();
-  const { city, region, latitude, longitude } = ipdata || {}
+  const ipLookUpURL = '/api/ip/ipLookUp'
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(ipLookUpURL);
+  const { city, region, latitude, longitude } = ipdata?.data || {}
 
-  const VISUALCROSSING_URL = latitude && longitude
-    ? `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/${WAPP.endpoint}/${latitude},${longitude}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2`
-    : null;
+  const VISUALCROSSING_URL = useMemo(() => {
+    return latitude && longitude
+      ? `/api/weather/visualCrossing?latitude=${latitude}&longitude=${longitude}`
+      : null;
+  }, [latitude, longitude])
 
-  const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
-  const { currentConditions } = weatherData || {};
+  const {
+    data: weatherData,
+    error: weatherDataError,
+    loading: weatherDataLoading
+  } = useFetch(VISUALCROSSING_URL)
+  const { currentConditions } = weatherData?.data || {};
 
   const { weatherBackground } = useUpdateWeatherBackground(currentConditions?.icon);
 
@@ -95,8 +105,8 @@ export default function WeatherApp() {
               weatherBg={weatherBackground}
               tempUnit={tempUnit}
               setTempUnit={setTempUnit}
-              weatherData={weatherData}
-              ipData={ipdata}
+              weatherData={weatherData?.data}
+              ipData={ipdata?.data}
               isLoading={isLoading} />
           </div>)
         }

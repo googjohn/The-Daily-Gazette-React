@@ -1,16 +1,27 @@
 import Card from "../../components/card/Card"
 import Spinner from "../../components/spinner/Spinner"
-import { useFetchForAll } from "../../hooks/UseFetchForAll"
+import { useFetch } from "../../hooks/UseFetchForAll"
+import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder"
 
-const useFetch = (searchTerm) => {
-  const url = `/api/news?searchTerm=${searchTerm}&lang=en&country=us&max=24`
-  const { data: weatherNews, error: weatherNewsError } = useFetchForAll(url)
-  return { weatherNews, weatherNewsError }
-}
-export default function WeatherNews() {
+export default function WeatherNews({ ipdata }) {
 
-  const { weatherNews, weatherNewsError } = useFetch('weather')
-  const weatherNewsArticles = weatherNews?.news || []
+  const worldnewsUrl = useNewsdataUrlBuilder(ipdata, {
+    'max': 24,
+    'endpoint': '',
+    'country': 'us',
+    'language': 'en',
+    'category': '',
+    'searchTerm': 'weather',
+    'source': 'worldnews'
+  })
+
+  const {
+    data: weatherNews,
+    error: weatherNewsError,
+    loading: weatherNewsLoading
+  } = useFetch(worldnewsUrl)
+
+  const weatherNewsArticles = weatherNews?.data
 
   const slicedArticles = weatherNewsArticles?.length > 24 ? weatherNewsArticles?.slice(0, 24) : weatherNewsArticles?.slice()
 
@@ -25,7 +36,7 @@ export default function WeatherNews() {
         {
           weatherNewsError ? (<div>Error loading data. {weatherNewsError.message}</div>) :
 
-            !weatherNewsArticles ? <Spinner /> :
+            weatherNewsLoading ? <Spinner /> :
 
               <div className="bg-[var(--gray-10)] mt-6">
                 <div className="p-2.5 flex flex-col grid-template-search sm:grid 

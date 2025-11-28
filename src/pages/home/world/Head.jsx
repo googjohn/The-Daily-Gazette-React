@@ -6,7 +6,7 @@ export default function HeadNews({ headNewsData }) {
     <>
       <div id="head-news">
         {
-          headNewsData && headNewsData?.slice(0, 1).map((article) => (
+          headNewsData && headNewsData.data.slice(0, 1).map((article) => (
             <Card
               key={article.id}
               cardTitle={article.title}
@@ -20,7 +20,7 @@ export default function HeadNews({ headNewsData }) {
       </div>
       <div className="grid-item grid grid-template grid-area-box">
         {
-          headNewsData && headNewsData?.slice(1, 5).map((article) => (
+          headNewsData && headNewsData.data.slice(1, 5).map((article) => (
             <Card
               key={article.id}
               cardTitle={article.title}

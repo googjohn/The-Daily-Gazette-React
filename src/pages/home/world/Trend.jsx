@@ -2,11 +2,13 @@ import Card from "../../../components/card/Card";
 import Aside from "../../../components/mainbody/Aside";
 
 export default function TrendingNews({ trendNewsData }) {
-
+  const trendnews = {
+    data: trendNewsData?.data.slice(3)
+  }
   return (
     <>
       <div id="trend-news" className="grid grid-template grid-area-trend">
-        {trendNewsData && trendNewsData?.slice(0, 3).map(article => (
+        {trendNewsData && trendNewsData.data.slice(0, 3).map(article => (
           <Card
             key={article.id}
             cardTitle={article.title}
@@ -21,7 +23,7 @@ export default function TrendingNews({ trendNewsData }) {
       <div className="aside">
         <Aside
           asideTitle={'More Trending News'}
-          asideContent={trendNewsData?.slice(3)}
+          asideContent={trendnews}
         />
       </div>
     </>

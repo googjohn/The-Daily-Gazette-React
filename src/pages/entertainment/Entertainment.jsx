@@ -3,33 +3,59 @@ import ErrorPage from "../../components/error/ErrorPage";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
 import Spinner from "../../components/spinner/Spinner";
+import { useFetch } from "../../hooks/UseFetchForAll";
 import { entertainmentOptions } from "../../data/gnewsOptions";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
-import useIpGetter from "../../hooks/UseIpGetter";
-import { useFetchNews } from "../home/Home";
+import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder";
 
 export default function Entertainment() {
-  const { ipdata, error: ipdataError } = useIpGetter();
-  const entertainmentNewsData = useFetchNews(entertainmentOptions, ipdata?.country)
+  const ipLookUpURL = '/api/ip/ipLookUp'
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(ipLookUpURL);
+
+  const entertainmentUrl = useNewsdataUrlBuilder(ipdata, entertainmentOptions)
+  const {
+    data: entertainmentNewsData,
+    error: entertainmentNewsError,
+    loading: entertainmentNewsLoading
+  } = useFetch(entertainmentUrl)
+
   return (
     <>
-      {ipdataError && <ErrorPage />}
-      {!entertainmentNewsData?.articles && <Spinner />}
-      {<EntertainmentForHome
-        ipdata={ipdata}
-        entertainmentNewsDAta={entertainmentNewsData?.articles} />
+      {(ipdataError || entertainmentNewsError)
+        && <ErrorPage error={ipdataError || entertainmentNewsError} />
+      }
+      {(entertainmentNewsLoading || !entertainmentNewsData) && <Spinner />}
+      {entertainmentNewsData
+        && <EntertainmentForHome
+          ipdata={ipdata}
+          entertainmentNewsData={entertainmentNewsData}
+        />
       }
     </>
   )
 }
 
-export function EntertainmentForHome({ entertainmentNewsDAta, ipdata }) {
+export function EntertainmentForHome({ entertainmentNewsData, ipdata }) {
 
-  const NEWSDATAIO_URL = ipdata?.country
-    ? `https://newsdata.io/api/1/latest?country=${ipdata?.country}&language=en&category=entertainment&&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY_2}`
-    : null
-  const { data: entertainmentNews, error: entertainmentError } = useFetchForAll(NEWSDATAIO_URL)
-  const entertainmentArticles = entertainmentNews?.results
+  const options = {
+    'max': 10,
+    'category': 'entertainment',
+    'searchTerm': '',
+    'language': 'en',
+    'country': '',
+    'endpoint': '',
+    'source': 'newsdataio'
+  }
+  const NEWSDATAIO_URL = useNewsdataUrlBuilder(ipdata, options)
+
+  const {
+    data: entertainmentData,
+    error: entertainmentDataError,
+    loading: entertainmentDataLoading
+  } = useFetch(NEWSDATAIO_URL)
 
   const sections = [
     {
@@ -38,9 +64,9 @@ export function EntertainmentForHome({ entertainmentNewsDAta, ipdata }) {
       content: (
         <>
           <div className="grid grid-template grid-area-entmnt-scitech">
-            {entertainmentError
+            {entertainmentDataError
               ? (<div className="text-black">Error loading data.</div>)
-              : entertainmentArticles && entertainmentArticles.slice(0, 7).map((article, index) => {
+              : entertainmentData && entertainmentData.data.slice(0, 7).map((article, index) => {
                 const source = {
                   url: article.source_url,
                   name: article.source_name,
@@ -62,7 +88,7 @@ export function EntertainmentForHome({ entertainmentNewsDAta, ipdata }) {
           <div className="aside">
             <Aside
               asideTitle={'More on Entertainment'}
-              asideContent={entertainmentNewsDAta}
+              asideContent={entertainmentNewsData}
             />
           </div>
         </>

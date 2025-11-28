@@ -2,15 +2,14 @@ import { useState, useEffect } from "react";
 import { NavLink, useNavigation } from "react-router-dom";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
 import useWindowSize from "../../hooks/UseWindowSize";
-import useIpGetter from "../../hooks/UseIpGetter";
 import ErrorPage from "../../components/error/ErrorPage";
 import Spinner from "../../components/spinner/Spinner";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import { useFetch } from "../../hooks/UseFetchForAll";
 import { FaHome } from "react-icons/fa";
 import WeatherNews from "./WeatherNews";
 import WeatherPageSearchLocation from "./WeatherPageSearchLocation";
 import WeatherPageContent from "./WeatherPageContent";
-import useVisualCrossing from "../../hooks/UseVisualCrossing";
+import { useMemo } from "react";
 
 const WAPP = {
   endpoint: 'timeline',
@@ -31,20 +30,34 @@ export default function WeatherPage() {
   const { windowSize } = useWindowSize();
   const navigation = useNavigation();
 
-  const { ipdata, error: ipdataError } = useIpGetter()
-  const { latitude, longitude } = ipdata || {}
+  const ipLookUpURL = '/api/ip/ipLookUp'
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(ipLookUpURL)
+  const { latitude, longitude } = ipdata?.data || {}
 
-  const VISUALCROSSING_URL = latitude && longitude ?
-    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius` :
-    null;
-  const { data: weatherData, error: weatherDataError } = useFetchForAll(VISUALCROSSING_URL)
+  const VISUALCROSSING_URL = useMemo(() => {
+    return latitude && longitude
+      ? `/api/weather/visualCrossing?latitude=${latitude}&longitude=${longitude}`
+      : null;
+  }, [latitude, longitude])
+
+  const {
+    data: weatherData,
+    error: weatherDataError,
+    loading: weatherDataLoading
+  } = useFetch(VISUALCROSSING_URL)
 
   // backup if cors restricted during deployment
   // const { data: weatherData, error: weatherDataError } = useVisualCrossing(latitude, longitude);
   const { weatherBackground } = useUpdateWeatherBackground(forecastDataToUse?.currentConditions?.icon);
 
   useEffect(() => {
-    setForecastDataToUse(weatherData)
+    if (weatherData) {
+      setForecastDataToUse(weatherData.data)
+    }
   }, [weatherData])
 
   const isIpdataLoading = !ipdata;
@@ -80,7 +93,7 @@ export default function WeatherPage() {
               setTempUnit={setTempUnit}
               forecastData={forecastDataToUse} />
           </WeatherPageMainContainer>
-          <WeatherNews />
+          <WeatherNews ipdata={ipdata} />
         </div>
       )}
     </div>
@@ -119,35 +132,4 @@ function WeatherPageMainContainer({ children }) {
       </div>
     </main>
   )
-}
-
-export const weatherSearchAction = async ({ request }) => {
-  const formData = await request.formData();
-  const location = formData.get('location')
-
-  if (!location) return new Response('No location found', { result: 'Location is required', location })
-
-  const URL = location
-    ? `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?&key=${WAPP.visualCrossingApikey}&iconSet=icons2&elements=%2Baqius`
-    : null
-
-  try {
-    const response = await fetch(URL)
-    if (!response.ok) {
-      const errorText = await response.text()
-      const error = new Error('Search failed: location unknown', errorText)
-      error.status = response.status
-      throw error
-    }
-
-    const result = await response.json();
-    return { result, location }
-  } catch (error) {
-    if (error.name === 'AbortError') return;
-    console.error(error.message)
-    throw new Response('Action failed', {
-      result: error,
-      location
-    })
-  }
 }

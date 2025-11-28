@@ -3,42 +3,58 @@ import Card from "../../components/card/Card";
 import Section from "../../components/mainbody/Section";
 import Spinner from "../../components/spinner/Spinner";
 import ErrorPage from '../../components/error/ErrorPage';
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import { useFetch } from "../../hooks/UseFetchForAll";
 import { businessOptions, moreBusinessOptions } from "../../data/gnewsOptions.js";
-import useIpGetter from "../../hooks/UseIpGetter";
 import MarketOverviewWidget from './MarketOverview'
 import MarketNewsWidget from "./MarketNews";
 import TickerTape from "./TickerTape";
 import StockMarketWidget from "./StockMarketOverview";
 import MarketChartWidget from "./MarketChart";
 import CryptoWidget from "./CryptoMarket";
-import { useFetchNews } from "../home/Home";
-
-/* const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
-
-const generateGnewsUrl = (newsOptions, country, searchTerm) => searchTerm ?
-  `https://gnews.io/api/v4/${newsOptions.searchEndpoint}?q=${searchTerm}&apikey=${searchTerm === 'nba' ? newsOptions.gnewsNbaApikey : newsOptions.gnewsMlbApikey}` :
-  `https://gnews.io/api/v4/${newsOptions.endpoint}?category=${newsOptions.category}&lang=${newsOptions.language}&country=${newsOptions.country || country?.toLowerCase() || 'us'}&max=${newsOptions.max}&apikey=${import.meta.env.VITE_GNEWS_API_KEY_4}`
-
-const useFetchNews = (options, country, searchTerm) => {
-  const { data } = useFetchForAll(generateGnewsUrl(options, country, searchTerm));
-  return data?.articles
-} */
+import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder.js";
 
 export default function Finance() {
-  const { ipdata, error: ipdataError } = useIpGetter();
-  const { country } = ipdata || {}
+  const ipLookUpURL = '/api/ip/ipLookUp'
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(ipLookUpURL);
 
-  // const financeNewsArticles = useFetchNews(businessOptions, country)
-  const moreFinanceNewsArticles = useFetchNews(moreBusinessOptions, country)
+  const financeUrl = useNewsdataUrlBuilder(ipdata, businessOptions)
+  const {
+    data: financeNews,
+    error: financeNewsError,
+    loading: financeNewsLoading
+  } = useFetch(financeUrl)
 
-  const NEWSDATAIO_URL = ipdata?.country
-    ? `https://newsdata.io/api/1/latest?country=${ipdata?.country}&language=en&category=business&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY_5}`
-    : null
-  const { data: businessNews, error: businessError } = useFetchForAll(NEWSDATAIO_URL)
-  const businessArticles = businessNews?.results
+  const morefinanceUrl = useNewsdataUrlBuilder(ipdata, moreBusinessOptions)
+  const {
+    data: moreFinanceNews,
+    error: moreFinanceNewsError,
+    loadign: moreFinanceNewsLoading
+  } = useFetch(morefinanceUrl)
 
-  const ipdataLoading = !ipdata;
+  const options = {
+    'max': 10,
+    'category': 'business',
+    'searchTerm': '',
+    'language': 'en',
+    'country': '',
+    'endpoint': '',
+    'source': 'newsdataio'
+  }
+
+  const NEWSDATAIO_URL = useNewsdataUrlBuilder(ipdata, options)
+  const {
+    data: businessData,
+    error: businessDataError,
+    loading: businessDataLoading
+  } = useFetch(NEWSDATAIO_URL)
+
+  const businessArticles = businessData?.data
+  const moreFinanceNewsArticles = moreFinanceNews?.data
+
   const TOPICS_DATA = [
     businessArticles,
     moreFinanceNewsArticles,
@@ -46,10 +62,10 @@ export default function Finance() {
 
   const isLoading = TOPICS_DATA.some(topic => !topic)
 
-  if (ipdataError || businessError) return <ErrorPage />
+  if (ipdataError || businessDataError) return <ErrorPage />
   if (ipdataLoading || isLoading) return <Spinner />
 
-  const localBusinessNews = businessError
+  const localBusinessNews = businessDataError
     ? (<div className="text-black">Error loading data.</div>)
     : businessArticles && businessArticles.map((article, index) => {
       const source = {
@@ -99,7 +115,7 @@ export default function Finance() {
       title: 'Popular in Business and Finance',
       customGrid: 'grid-area-more-finance',
       content: (
-        moreFinanceNewsArticles?.articles && moreFinanceNewsArticles?.articles?.slice().map((article, index) => (
+        moreFinanceNewsArticles && moreFinanceNewsArticles.slice().map((article, index) => (
           <Card
             key={article.id}
             cardTitle={article.title}
@@ -143,7 +159,7 @@ export function FinanceForHome({ financeNewsData, moreFinanceNewsData }) {
       title: 'Business and Finance',
       customGrid: 'grid-area-finance',
       content: (
-        financeNewsData && financeNewsData.slice(0, 5).map((article, index) => (
+        financeNewsData && financeNewsData.data.slice(0, 5).map((article, index) => (
           <Card
             key={article.id}
             cardTitle={article.title}
@@ -159,7 +175,7 @@ export function FinanceForHome({ financeNewsData, moreFinanceNewsData }) {
       title: 'Popular in Business and Finance',
       customGrid: 'grid-area-more-finance',
       content: (
-        moreFinanceNewsData && moreFinanceNewsData.slice().map((article, index) => (
+        moreFinanceNewsData && moreFinanceNewsData.data.slice().map((article, index) => (
           <Card
             key={article.id}
             cardTitle={article.title}

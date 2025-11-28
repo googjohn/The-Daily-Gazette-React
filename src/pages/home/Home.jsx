@@ -6,164 +6,98 @@ import { ScienceTechnologyForHome } from "../scienceAndTechnology/ScienceAndTech
 import { FinanceForHome } from "../finance/Finance";
 import { EntertainmentForHome } from "../entertainment/Entertainment";
 import { SportsForHome } from "../sports/Sports";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
-import {
-  localOptions,
-  sportsOptions,
-  scienceOptions,
-  headnewsOptions,
-  businessOptions,
-  trendnewsOptions,
-  technologyOptions,
-  moreBusinessOptions,
-  entertainmentOptions,
-} from "../../data/gnewsOptions";
+import { useFetch, useFetchMulti } from "../../hooks/UseFetchForAll";
 import { useRef } from "react";
-import useIpGetter from "../../hooks/UseIpGetter";
-
-const IPINFO_API_KEY = import.meta.env.VITE_IPINFO_API_KEY;
-
-export const useFetchNews = (options, ipCountry, searchTerm) => {
-  const {
-    endpoint,
-    category,
-    country,
-    language = 'en',
-    max = 10,
-  } = options;
-
-  const query = searchTerm ?
-    (searchTerm === 'weather' ?
-      `/api/news?searchTerm=${searchTerm}&lang=${language}&country=${country}&max=${max}` :
-      `/api/news?searchTerm=${searchTerm}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}`) :
-    `/api/news?category=${category}&lang=${language}&country=${country || ipCountry || 'us'}&max=${max}&endpoint=${endpoint}`;
-
-  const { data, error } = useFetchForAll(query);
-  const articles = data?.articles || data?.news
-  return { articles, error }
-}
-
-export const useFetch = (country) => {
-  const query = country ?
-    `/api/allNews?country=${country}` : null
-  const { data, error } = useFetchForAll(query)
-  return { data, error }
-}
 
 export default function Home() {
-  const { ipdata, error: ipdataError } = useIpGetter();
-  const { country } = ipdata || {}
+  const ipLookUpURL = '/api/ip/ipLookUp'
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(ipLookUpURL);
+  const { country } = ipdata?.data || {}
 
-  const articlesArray = useFetch(country)
-  const { data: articlesArrayData, error: articlesArrayError } = articlesArray || {}
-  const articles = articlesArrayData?.map(data => {
-    return { [data?.forCategory]: data?.result?.articles }
+  const newsDataArray = useFetchMulti(country)
+  const {
+    data: newsArray,
+    error: articlesArrayError,
+    loading: articlesArrayLoading
+  } = newsDataArray || {}
+  const news = newsArray?.map(({ forCategory, data }) => {
+    return { [forCategory]: data }
   })
 
   const newsObj = useRef({})
 
-  articles?.forEach(article => {
-    const key = Object.keys(article)
-    const value = Object.values(article)
-    if (!(key in newsObj.current)) {
-      newsObj.current[key] = value[0]
-    }
+  news?.forEach(category => {
+    newsObj.current[Object.keys(category)] = Object.values(category)[0]
   })
 
   const {
-    world: headNewsArticles,
-    nation: localNewsArticles,
-    general: trendNewsArticles,
-    science: scienceNewsArticles,
-    technology: technologyNewsArticles,
-    entertainment: entertainmentNewsArticles,
-    sports: sportsNewsArticles,
-    "sports-nba": nbaNewsArticles,
-    'sports-mlb': mlbNewsArticles,
-    'business-PH': financeNewsArticles,
-    'business-us': moreFinanceNewsArticles,
+    world: headNewsData,
+    nation: localNewsData,
+    general: trendNewsData,
+    science: scienceNewsData,
+    technology: technologyNewsData,
+    entertainment: entertainmentNewsData,
+    sports: sportsNewsData,
+    "sports-nba": nbaNewsData,
+    'sports-mlb': mlbNewsData,
+    'business-ph': financeNewsData,
+    'business-us': moreFinanceNewsData,
   } = newsObj.current || {}
 
-  // const { articles: headNewsArticles, error: headNewsError } = useFetchNews(headnewsOptions, ipCountry)
-  // const { articles: trendNewsArticles, error: trendNewsError } = useFetchNews(trendnewsOptions, ipCountry)
-  // const { articles: localNewsArticles, error: localNewsError } = useFetchNews(localOptions, ipCountry)
-  // const { articles: financeNewsArticles, error: financeNewsError } = useFetchNews(businessOptions, ipCountry)
-  // const { articles: moreFinanceNewsArticles, error: moreFinanceNewsError } = useFetchNews(moreBusinessOptions, ipCountry)
-  // const { articles: entertainmentNewsArticles, error: entertainmentNewsError } = useFetchNews(entertainmentOptions, ipCountry)
-  // const { articles: technologyNewsArticles, error: technologyNewsError } = useFetchNews(technologyOptions, ipCountry)
-  // const { articles: scienceNewsArticles, error: scienceNewsError } = useFetchNews(scienceOptions, ipCountry)
-  // const { articles: sportsNewsArticles, error: sportsNewsError } = useFetchNews(sportsOptions, ipCountry)
-  // const { articles: nbaNewsArticles, error: nbaNewsError } = useFetchNews(sportsOptions, ipCountry, 'nba')
-  // const { articles: mlbNewsArticles, error: mlbNewsError } = useFetchNews(sportsOptions, ipCountry, 'mlb')
-
-  const ipdataLoading = !ipdata;
   const TOPICS_DATA = [
-    headNewsArticles,
-    trendNewsArticles,
-    localNewsArticles,
-    financeNewsArticles,
-    moreFinanceNewsArticles,
-    entertainmentNewsArticles,
-    technologyNewsArticles,
-    scienceNewsArticles,
-    sportsNewsArticles,
-    nbaNewsArticles,
-    mlbNewsArticles,
+    headNewsData,
+    trendNewsData,
+    localNewsData,
+    financeNewsData,
+    moreFinanceNewsData,
+    entertainmentNewsData,
+    technologyNewsData,
+    scienceNewsData,
+    sportsNewsData,
+    nbaNewsData,
+    mlbNewsData,
   ]
 
-  // const TOPICS_ERROR = [
-  //   headNewsError,
-  //   trendNewsError,
-  //   localNewsError,
-  //   financeNewsError,
-  //   moreFinanceNewsError,
-  //   entertainmentNewsError,
-  //   technologyNewsError,
-  //   scienceNewsError,
-  //   sportsNewsError,
-  //   nbaNewsError,
-  //   mlbNewsError,
-  // ]
-  const isLoading = TOPICS_DATA.some(topic => !topic)
-  // const hasError = TOPICS_ERROR.some(err => err)
+  const isLoading = TOPICS_DATA?.some(topic => !topic)
+  const hasError = articlesArrayError?.some(err => !err)
 
   return (
     <main className="w-full min-h-screen mx-auto">
-      {ipdataError || articlesArrayError ?
+      {ipdataError && <ErrorPage error={ipdataError} />}
+      {hasError && <div>Error loading content.</div>}
+      {(ipdataLoading || isLoading) ? <Spinner />
+        : (
+          <>
+            <World
+              headNewsData={headNewsData}
+              trendNewsData={trendNewsData} />
 
-        <ErrorPage error={ipdataError || articlesArrayError} /> :
+            <Local localNewsData={localNewsData} />
 
-        (ipdataLoading || isLoading) ?
+            <FinanceForHome
+              financeNewsData={financeNewsData}
+              moreFinanceNewsData={moreFinanceNewsData} />
 
-          <Spinner /> : (
-            <>
-              <World
-                headNewsData={headNewsArticles}
-                trendNewsData={trendNewsArticles}
-              />
+            <EntertainmentForHome
+              ipdata={ipdata}
+              entertainmentNewsData={entertainmentNewsData} />
 
-              <Local localNewsData={localNewsArticles} />
+            <ScienceTechnologyForHome
+              ipdata={ipdata}
+              scienceNewsData={scienceNewsData}
+              technologyNewsData={technologyNewsData} />
 
-              <FinanceForHome
-                financeNewsData={financeNewsArticles}
-                moreFinanceNewsData={moreFinanceNewsArticles} />
-
-              <EntertainmentForHome
-                ipdata={ipdata}
-                entertainmentNewsDAta={entertainmentNewsArticles} />
-
-              <ScienceTechnologyForHome
-                ipdata={ipdata}
-                scienceNewsData={scienceNewsArticles}
-                technologyNewsData={technologyNewsArticles} />
-
-              <SportsForHome
-                ipdata={ipdata}
-                nbaNewsDAta={nbaNewsArticles}
-                mlbNewsData={mlbNewsArticles}
-                sportsNewsData={sportsNewsArticles} />
-            </>
-          )}
+            <SportsForHome
+              nbanewsData={nbaNewsData}
+              mlbnewsData={mlbNewsData}
+              sportsnewsData={sportsNewsData} />
+          </>
+        )
+      }
     </main>
   )
 }

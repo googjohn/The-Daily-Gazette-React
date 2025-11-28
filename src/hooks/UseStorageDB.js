@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export function useLocalStorage() {
+function useLocalStorage() {
   const [dataInStorage, setDataInStorage] = useState(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export function useLocalStorage() {
   return { dataInStorage }
 }
 
-export function useIndexedDB(framedata) {
+function useIndexedDB(framedata) {
   // initial setup of indexedDB
   const indexed_DB = indexedDB.open('framesDB', 1);
 

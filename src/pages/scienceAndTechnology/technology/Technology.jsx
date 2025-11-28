@@ -3,38 +3,62 @@ import ErrorPage from "../../../components/error/ErrorPage";
 import Aside from "../../../components/mainbody/Aside"
 import Spinner from "../../../components/spinner/Spinner";
 import { technologyOptions } from "../../../data/gnewsOptions";
-import { useFetchForAll } from "../../../hooks/UseFetchForAll"
-import useIpGetter from "../../../hooks/UseIpGetter";
-import { useFetchNews } from "../../home/Home";
+import { useFetch } from "../../../hooks/UseFetchForAll"
+import { useNewsdataUrlBuilder } from "../../../hooks/useUrlBuilder";
 
 export default function Technology() {
-  const { ipdata, error: ipdataError } = useIpGetter();
-  const technologyNewsData = useFetchNews(technologyOptions, ipdata?.country)
+  const ipLookUpURL = '/api/ip/ipLookUp'
+  const {
+    data: ipdata,
+    error: ipdataError,
+    loading: ipdataLoading
+  } = useFetch(ipLookUpURL);
+
+  const technologyUrl = useNewsdataUrlBuilder(ipdata, technologyOptions)
+  const {
+    data: technologyData,
+    error: technologyError,
+    loading: technologyLoading,
+  } = useFetch(technologyUrl)
+
   return (
     <>
-      {ipdataError && <ErrorPage />}
-      {!technologyNewsData?.articles && <Spinner />}
+      {ipdataError && <ErrorPage error={ipdataError} />}
+      {(ipdataLoading || !technologyData) && <Spinner />}
       {<TechnologyForHome
         ipdata={ipdata}
-        entertainmentNewsDAta={technologyNewsData?.articles} />
+        technologyNewsData={technologyData}
+      />
       }
     </>
   )
 }
 export function TechnologyForHome({ technologyNewsData, ipdata }) {
+  const { country } = ipdata?.data || {}
+  const options = {
+    'max': 10,
+    'category': 'technology',
+    'searchTerm': '',
+    'language': 'en',
+    'country': country,
+    'endpoint': '',
+    'source': 'newsdataio'
+  }
 
-  const NEWSDATAIO_URL = ipdata?.country
-    ? `https://newsdata.io/api/1/latest?country=${ipdata?.country}&language=en&category=technology&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY_3}`
-    : null
-  const { data: technologyNews, error: tehcnologyError } = useFetchForAll(NEWSDATAIO_URL)
-  const technologyArticles = technologyNews?.results
+  const NEWSDATAIO_URL = useNewsdataUrlBuilder(ipdata, options)
+
+  const {
+    data: technologyData,
+    error: technologyDataError,
+    loading: technologyDataLoading
+  } = useFetch(NEWSDATAIO_URL)
 
   return (
     <>
       <div className="grid grid-template grid-area-entmnt-scitech">
-        {tehcnologyError
+        {technologyDataError
           ? (<div className="text-black">Error loading data.</div>)
-          : technologyArticles && technologyArticles.slice(0, 7).map((article, index) => {
+          : technologyData && technologyData.data.slice(0, 7).map((article, index) => {
             const source = {
               url: article.source_url,
               name: article.source_name,

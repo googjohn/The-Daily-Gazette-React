@@ -1,4 +1,4 @@
-import useClock from "../../hooks/useClock";
+import useClock from "../../hooks/useClock.js";
 import { FaTint } from "react-icons/fa";
 import { GiSunrise, GiSunset } from "react-icons/gi";
 import { LuWindArrowDown } from "react-icons/lu";
@@ -6,7 +6,7 @@ import { MdVisibility } from "react-icons/md";
 import { TbUvIndex } from "react-icons/tb";
 import { WiBarometer, WiHumidity } from "react-icons/wi";
 import { useEffect, useState } from "react";
-import { useFetchForAll } from "../../hooks/UseFetchForAll";
+import { useFetch } from "../../hooks/UseFetchForAll";
 import {
   FaFan,
   FaWind,
@@ -33,6 +33,7 @@ import {
 import OverviewChart from "./PieChart";
 import WeatherCard from "./WeatherCard";
 import { formatDate } from "./WeatherPageUtility";
+import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder.js";
 
 export default function WeatherPageContent({ windowSize, ipData, tempUnit, setTempUnit, forecastData }) {
 
@@ -77,7 +78,7 @@ export function WeatherSideBar({ windowSize, ipData, tempUnit, forecastData }) {
 }
 
 export function WeatherCurrentConditions({ ipData, tempUnit, forecastData }) {
-  const { city, region } = ipData || {};
+  const { city, region } = ipData.data || {};
   const { currentConditions, days, resolvedAddress } = forecastData || {};
   const { description } = days[0] || []
   const { dateToday, timer } = useClock();
@@ -238,8 +239,22 @@ export function WeatherOverview({ tempUnit, forecastData }) {
 
 export function WeatherNewsLocal({ ipdata, windowSize }) {
 
-  const NEWSDATAIO_URL = ipdata?.country ? `https://newsdata.io/api/1/latest?q=weather&country=${ipdata?.country}&language=en&apikey=${import.meta.env.VITE_NEWSDATAIO_API_KEY}` : null
-  const { data: localWeatherNews, error } = useFetchForAll(NEWSDATAIO_URL)
+  const options = {
+    'max': 10,
+    'category': 'environment',
+    'searchTerm': 'weather',
+    'language': 'en',
+    'country': '',
+    'endpoint': '',
+    'source': 'newsdataio'
+  }
+  const NEWSDATAIO_URL = useNewsdataUrlBuilder(ipdata, options)
+
+  const {
+    data: localWeatherNews,
+    error: localWeatherError,
+    loading: localWeatherLoading
+  } = useFetch(NEWSDATAIO_URL)
 
   return (
     <div id="local-weather-news"
@@ -250,11 +265,11 @@ export function WeatherNewsLocal({ ipdata, windowSize }) {
       </div>
       <div className="mt-4 h-auto text-black overflow-auto">
         <ul>
-          {error ? (<div>No available data.</div>) :
+          {localWeatherError ? (<div>No available data.</div>) :
 
-            !localWeatherNews ? (<div>Loading data...</div>) :
+            localWeatherLoading ? (<div>Loading data...</div>) :
 
-              localWeatherNews && localWeatherNews?.results?.map((article, index) => (
+              localWeatherNews && localWeatherNews?.data?.map((article, index) => (
                 <li
                   key={article.article_id}
                   className="flex items-center gap-2.5 [&:nth-child(even)]:bg-transparent
