@@ -11,13 +11,6 @@ import WeatherPageSearchLocation from "./WeatherPageSearchLocation";
 import WeatherPageContent from "./WeatherPageContent";
 import { useMemo } from "react";
 
-const WAPP = {
-  endpoint: 'timeline',
-  visualCrossingApikey: import.meta.env.VITE_VISUALCROSSING_API_KEY,
-  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY,
-  openWeatherApikey: import.meta.env.VITE_OPENWEATHER_API_KEY,
-}
-
 const navLinks = [
   { id: 1, name: 'The Daily Weather', to: '/weather' },
   { id: 2, name: 'Home', to: '/' },

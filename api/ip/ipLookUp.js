@@ -4,7 +4,7 @@ import { fetchWithRetry } from "../utils/fetchWithRetry.js"
 export default allowCors(async function ipLookUp(req, res) {
 
   try {
-    const ipinfoURL = `https://ipinfo.io/json?token=${process.env.VITE_IPINFO_API_KEY}`
+    const ipinfoURL = `https://ipinfo.io/json?token=${process.env.IPINFO_API_KEY}`
     const response = await fetchWithRetry(ipinfoURL, 2, 300)
 
     const { city, region, loc, country } = response
@@ -29,7 +29,7 @@ export default allowCors(async function ipLookUp(req, res) {
 
     // fallback if first attempt fails
     try {
-      const ipgeoURL = `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.VITE_IPGEO_API_KEY}`;
+      const ipgeoURL = `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.IPGEO_API_KEY}`;
       const response = await fetchWithRetry(ipgeoURL, 2, 300)
 
       const {

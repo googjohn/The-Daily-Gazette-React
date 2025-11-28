@@ -9,13 +9,6 @@ import {
   handleConditionsIcon,
 } from "../../pages/weatherForecast/WeatherPageUtility.js";
 
-const WAPP = {
-  endpoint: 'timeline',
-  visualCrossingApikey: import.meta.env.VITE_VISUALCROSSING_API_KEY,
-  ipinfoApikey: import.meta.env.VITE_IPINFO_API_KEY,
-  openWeatherApikey: import.meta.env.VITE_OPENWEATHER_API_KEY,
-}
-
 const tempUnits = {
   Celcius: 'c',
   Fahrenheit: 'f',

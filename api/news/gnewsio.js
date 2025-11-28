@@ -14,8 +14,8 @@ export default allowCors(async function fetchNewsData(req, res) {
     searchTerm,
   } = req.query
 
-  const baseUrl = process.env.VITE_GNEWS_BASE_URL
-  const baseUrl2 = process.env.VITE_GNEWS_BASE_URL_2
+  const baseUrl = process.env.GNEWS_BASE_URL
+  const baseUrl2 = process.env.GNEWS_BASE_URL_2
   const apikey = getGnewsApikey(category, searchTerm, country.toLowerCase())
   const source = 'gnews'
 

@@ -12,14 +12,14 @@ export default allowCors(async function fetchNewsdata(req, res) {
     searchTerm
   } = req.query
 
-  const baseUrl = process.env.VITE_NEWSDATAIO_BASE_URL
+  const baseUrl = process.env.NEWSDATAIO_BASE_URL
   const apikey = category === 'science'
-    ? process.env.VITE_NEWSDATAIO_API_KEY_1
+    ? process.env.NEWSDATAIO_API_KEY_1
     : category === 'techonology'
-      ? process.env.VITE_NEWSDATAIO_API_KEY_2
+      ? process.env.NEWSDATAIO_API_KEY_2
       : category === 'entertainment'
-        ? process.env.VITE_NEWSDATAIO_API_KEY_3
-        : process.env.VITE_NEWSDATAIO_API_KEY_4
+        ? process.env.NEWSDATAIO_API_KEY_3
+        : process.env.NEWSDATAIO_API_KEY_4
   const source = 'newsdataio'
 
   const url = buildUrl(baseUrl, {
