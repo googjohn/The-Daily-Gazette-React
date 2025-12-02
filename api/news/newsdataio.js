@@ -1,6 +1,6 @@
-import { buildUrl } from "../utils/buildUrl.js";
-import { allowCors } from "../utils/cors.js";
-import { fetchWithRetry } from "../utils/fetchWithRetry.js";
+import { buildUrl } from "../../lib/utils/buildUrl.js";
+import { allowCors } from "../../lib/utils/cors.js";
+import { fetchWithRetry } from "../../lib/utils/fetchWithRetry.js";
 
 export default allowCors(async function fetchNewsdata(req, res) {
 
@@ -12,20 +12,21 @@ export default allowCors(async function fetchNewsdata(req, res) {
     searchTerm
   } = req.query
 
-  const baseUrl = process.env.NEWSDATAIO_BASE_URL
+  const baseUrl = process.env.VITE_NEWSDATAIO_BASE_URL
   const apikey = category === 'science'
-    ? process.env.NEWSDATAIO_API_KEY_1
+    ? process.env.VITE_NEWSDATAIO_API_KEY_1
     : category === 'techonology'
-      ? process.env.NEWSDATAIO_API_KEY_2
+      ? process.env.VITE_NEWSDATAIO_API_KEY_2
       : category === 'entertainment'
-        ? process.env.NEWSDATAIO_API_KEY_3
-        : process.env.NEWSDATAIO_API_KEY_4
+        ? process.env.VITE_NEWSDATAIO_API_KEY_3
+        : process.env.VITE_NEWSDATAIO_API_KEY_4
   const source = 'newsdataio'
 
+  const cntry = country.toLowerCase()
   const url = buildUrl(baseUrl, {
     category,
     searchTerm,
-    country,
+    country: cntry,
     language,
     max,
     apikey,

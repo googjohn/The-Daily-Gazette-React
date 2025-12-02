@@ -4,17 +4,16 @@ import Section from "../../components/mainbody/Section";
 import ErrorPage from "../../components/error/ErrorPage";
 import { ScienceForHome } from "./science/Science";
 import { TechnologyForHome } from "./technology/Technology";
-import { useFetch } from "../../hooks/UseFetchForAll";
+import { useFetch, useIplookup } from "../../hooks/UseFetchForAll";
 import { healthOptions, scienceOptions, technologyOptions } from "../../data/gnewsOptions";
 import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder";
 
 export default function ScienceAndTechnology() {
-  const ipLookUpURL = '/api/ip/ipLookUp'
   const {
     data: ipdata,
     error: ipdataError,
     loading: ipdataLoading
-  } = useFetch(ipLookUpURL);
+  } = useIplookup()
 
   const scienceUrl = useNewsdataUrlBuilder(ipdata, scienceOptions)
   const {
@@ -111,7 +110,7 @@ export default function ScienceAndTechnology() {
       )
     }
   ]
-  const isLoading = !ipdata || !scienceData || !technologyData || !healthData
+  const isLoading = ipdataLoading || sciencecLoading || technologyLoading || healthLoading || ainewsLoading
   const hasError = ipdataError && scienceError && technologyError && healthError
   return (
     <>

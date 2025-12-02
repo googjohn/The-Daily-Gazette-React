@@ -3,17 +3,16 @@ import ErrorPage from "../../components/error/ErrorPage";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
 import Spinner from "../../components/spinner/Spinner";
-import { useFetch } from "../../hooks/UseFetchForAll";
+import { useFetch, useIplookup } from "../../hooks/UseFetchForAll";
 import { entertainmentOptions } from "../../data/gnewsOptions";
 import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder";
 
 export default function Entertainment() {
-  const ipLookUpURL = '/api/ip/ipLookUp'
   const {
     data: ipdata,
     error: ipdataError,
     loading: ipdataLoading
-  } = useFetch(ipLookUpURL);
+  } = useIplookup()
 
   const entertainmentUrl = useNewsdataUrlBuilder(ipdata, entertainmentOptions)
   const {
@@ -27,7 +26,7 @@ export default function Entertainment() {
       {(ipdataError || entertainmentNewsError)
         && <ErrorPage error={ipdataError || entertainmentNewsError} />
       }
-      {(entertainmentNewsLoading || !entertainmentNewsData) && <Spinner />}
+      {(ipdataLoading || entertainmentNewsLoading) && <Spinner />}
       {entertainmentNewsData
         && <EntertainmentForHome
           ipdata={ipdata}

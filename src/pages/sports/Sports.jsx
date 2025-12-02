@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef, useCallback, useMemo, useReducer } from "react";
+import { useState } from "react";
 import Card from "../../components/card/Card";
 import Aside from "../../components/mainbody/Aside";
 import Section from "../../components/mainbody/Section";
-import { useFetch } from "../../hooks/UseFetchForAll";
+import { useFetch, useIplookup } from "../../hooks/UseFetchForAll";
 import { mlbOptions, nbaOptions } from "../../data/gnewsOptions";
 import ErrorPage from "../../components/error/ErrorPage";
 import Spinner from "../../components/spinner/Spinner";
@@ -14,12 +14,11 @@ export default function Sports() {
   const [sportsSelected, setSportsSelected] = useState('NBA') // NBA | MLB | SOCCER
   const [categorySelected, setCategorySelected] = useState('GAMES') // GAMES | STANDINGS | PLAYERS
 
-  const IP_URL = useMemo(() => '/api/ip/ipLookUp', [])
   const {
     data: ipdata,
     error: ipdataError,
     loading: ipdataLoading
-  } = useFetch(IP_URL);
+  } = useIplookup()
 
   const nbaUrl = useNewsdataUrlBuilder(ipdata, nbaOptions)
   const {
@@ -85,6 +84,7 @@ export default function Sports() {
         mlbnewsData={mlbnewsData}
         sportsnewsData={sportsdata}
       />
+      {ipdataLoading && <Spinner />}
       <Section
         id={'sports-page'}
         sectionData={sections}

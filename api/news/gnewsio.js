@@ -1,7 +1,7 @@
-import { buildUrl } from "../utils/buildUrl.js";
-import { allowCors } from "../utils/cors.js";
-import { fetchWithRetry } from "../utils/fetchWithRetry.js";
-import { getGnewsApikey } from "../utils/getApikey.js";
+import { buildUrl } from "../../lib/utils/buildUrl.js";
+import { allowCors } from "../../lib/utils/cors.js";
+import { fetchWithRetry } from "../../lib/utils/fetchWithRetry.js";
+import { getGnewsApikey } from "../../lib/utils/getApikey.js";
 
 export default allowCors(async function fetchNewsData(req, res) {
 
@@ -14,8 +14,8 @@ export default allowCors(async function fetchNewsData(req, res) {
     searchTerm,
   } = req.query
 
-  const baseUrl = process.env.GNEWS_BASE_URL
-  const baseUrl2 = process.env.GNEWS_BASE_URL_2
+  const baseUrl = process.env.VITE_GNEWS_BASE_URL
+  const baseUrl2 = process.env.VITE_GNEWS_BASE_URL_2
   const apikey = getGnewsApikey(category, searchTerm, country.toLowerCase())
   const source = 'gnews'
 

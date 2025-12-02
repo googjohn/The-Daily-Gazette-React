@@ -3,7 +3,7 @@ import Card from "../../components/card/Card";
 import Section from "../../components/mainbody/Section";
 import Spinner from "../../components/spinner/Spinner";
 import ErrorPage from '../../components/error/ErrorPage';
-import { useFetch } from "../../hooks/UseFetchForAll";
+import { useFetch, useIplookup } from "../../hooks/UseFetchForAll";
 import { businessOptions, moreBusinessOptions } from "../../data/gnewsOptions.js";
 import MarketOverviewWidget from './MarketOverview'
 import MarketNewsWidget from "./MarketNews";
@@ -14,19 +14,18 @@ import CryptoWidget from "./CryptoMarket";
 import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder.js";
 
 export default function Finance() {
-  const ipLookUpURL = '/api/ip/ipLookUp'
   const {
     data: ipdata,
     error: ipdataError,
     loading: ipdataLoading
-  } = useFetch(ipLookUpURL);
+  } = useIplookup()
 
-  const financeUrl = useNewsdataUrlBuilder(ipdata, businessOptions)
-  const {
-    data: financeNews,
-    error: financeNewsError,
-    loading: financeNewsLoading
-  } = useFetch(financeUrl)
+  // const financeUrl = useNewsdataUrlBuilder(ipdata, businessOptions)
+  // const {
+  //   data: financeNews,
+  //   error: financeNewsError,
+  //   loading: financeNewsLoading
+  // } = useFetch(financeUrl)
 
   const morefinanceUrl = useNewsdataUrlBuilder(ipdata, moreBusinessOptions)
   const {
@@ -55,15 +54,10 @@ export default function Finance() {
   const businessArticles = businessData?.data
   const moreFinanceNewsArticles = moreFinanceNews?.data
 
-  const TOPICS_DATA = [
-    businessArticles,
-    moreFinanceNewsArticles,
-  ]
-
-  const isLoading = TOPICS_DATA.some(topic => !topic)
-
-  if (ipdataError || businessDataError) return <ErrorPage />
-  if (ipdataLoading || isLoading) return <Spinner />
+  if (ipdataError || businessDataError || moreFinanceNewsError) return <ErrorPage error={
+    ipdataError || businessDataError || moreFinanceNewsError
+  } />
+  if (ipdataLoading || moreFinanceNewsLoading || businessDataLoading) return <Spinner />
 
   const localBusinessNews = businessDataError
     ? (<div className="text-black">Error loading data.</div>)

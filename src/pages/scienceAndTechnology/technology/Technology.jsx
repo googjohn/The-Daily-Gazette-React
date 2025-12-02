@@ -1,38 +1,8 @@
 import Card from "../../../components/card/Card"
-import ErrorPage from "../../../components/error/ErrorPage";
 import Aside from "../../../components/mainbody/Aside"
-import Spinner from "../../../components/spinner/Spinner";
-import { technologyOptions } from "../../../data/gnewsOptions";
 import { useFetch } from "../../../hooks/UseFetchForAll"
 import { useNewsdataUrlBuilder } from "../../../hooks/useUrlBuilder";
 
-export default function Technology() {
-  const ipLookUpURL = '/api/ip/ipLookUp'
-  const {
-    data: ipdata,
-    error: ipdataError,
-    loading: ipdataLoading
-  } = useFetch(ipLookUpURL);
-
-  const technologyUrl = useNewsdataUrlBuilder(ipdata, technologyOptions)
-  const {
-    data: technologyData,
-    error: technologyError,
-    loading: technologyLoading,
-  } = useFetch(technologyUrl)
-
-  return (
-    <>
-      {ipdataError && <ErrorPage error={ipdataError} />}
-      {(ipdataLoading || !technologyData) && <Spinner />}
-      {<TechnologyForHome
-        ipdata={ipdata}
-        technologyNewsData={technologyData}
-      />
-      }
-    </>
-  )
-}
 export function TechnologyForHome({ technologyNewsData, ipdata }) {
   const { country } = ipdata?.data || {}
   const options = {

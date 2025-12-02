@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { NavLink, useNavigation } from "react-router-dom";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
 import useWindowSize from "../../hooks/UseWindowSize";
 import ErrorPage from "../../components/error/ErrorPage";
 import Spinner from "../../components/spinner/Spinner";
-import { useFetch } from "../../hooks/UseFetchForAll";
+import { useFetch, useIplookup } from "../../hooks/UseFetchForAll";
 import { FaHome } from "react-icons/fa";
 import WeatherNews from "./WeatherNews";
 import WeatherPageSearchLocation from "./WeatherPageSearchLocation";
 import WeatherPageContent from "./WeatherPageContent";
-import { useMemo } from "react";
 
 const navLinks = [
   { id: 1, name: 'The Daily Weather', to: '/weather' },
@@ -23,19 +22,20 @@ export default function WeatherPage() {
   const { windowSize } = useWindowSize();
   const navigation = useNavigation();
 
-  const ipLookUpURL = '/api/ip/ipLookUp'
   const {
     data: ipdata,
     error: ipdataError,
     loading: ipdataLoading
-  } = useFetch(ipLookUpURL)
-  const { latitude, longitude } = ipdata?.data || {}
+  } = useIplookup()
 
   const VISUALCROSSING_URL = useMemo(() => {
-    return latitude && longitude
-      ? `/api/weather/visualCrossing?latitude=${latitude}&longitude=${longitude}`
-      : null;
-  }, [latitude, longitude])
+    let url = null
+    if (ipdata) {
+      const { latitude, longitude } = ipdata.data
+      url = `/api/weather/visualCrossing?latitude=${latitude}&longitude=${longitude}`
+    }
+    return url
+  }, [ipdata])
 
   const {
     data: weatherData,
@@ -43,8 +43,6 @@ export default function WeatherPage() {
     loading: weatherDataLoading
   } = useFetch(VISUALCROSSING_URL)
 
-  // backup if cors restricted during deployment
-  // const { data: weatherData, error: weatherDataError } = useVisualCrossing(latitude, longitude);
   const { weatherBackground } = useUpdateWeatherBackground(forecastDataToUse?.currentConditions?.icon);
 
   useEffect(() => {
@@ -53,20 +51,18 @@ export default function WeatherPage() {
     }
   }, [weatherData])
 
-  const isIpdataLoading = !ipdata;
-  const isWeatherDataLoading = ipdata && !weatherData;
-  const isLoading = isWeatherDataLoading || isIpdataLoading;
+  const isLoading = ipdataLoading || weatherDataLoading
   const isSubmitting = navigation.state === 'submitting';
 
   return (
     <div id="weather-forecast-page"
       style={{ background: weatherBackground }}>
 
-      {isSubmitting && <Spinner />}
-      {isLoading && (ipdataError || weatherDataError ?
+      {isSubmitting || isLoading && <Spinner />}
+      {/* {isLoading && (ipdataError || weatherDataError ?
         <ErrorPage error={ipdataError || weatherDataError} /> :
         <Spinner />)
-      }
+      } */}
 
       {forecastDataToUse && (
         <div id="weather-container"

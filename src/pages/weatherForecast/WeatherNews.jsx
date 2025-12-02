@@ -11,7 +11,7 @@ export default function WeatherNews({ ipdata }) {
     'country': 'us',
     'language': 'en',
     'category': '',
-    'searchTerm': 'weather',
+    'searchTerm': 'weather+forecast',
     'source': 'worldnews'
   })
 

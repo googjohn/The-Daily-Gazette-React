@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom";
-import { useFetch } from "../../hooks/UseFetchForAll";
+import { useFetch, useIplookup } from "../../hooks/UseFetchForAll";
 import { FaTemperatureHalf } from "react-icons/fa6";
 import Spinner from "../spinner/Spinner";
 import useUpdateWeatherBackground from "../../hooks/UseWeatherBackgroundUpdate";
@@ -20,12 +20,11 @@ export default function WeatherApp() {
   const [isHovered, setIsHovered] = useState(false);
   const [hour, setHour] = useState(new Date().getHours());
 
-  const ipLookUpURL = '/api/ip/ipLookUp'
   const {
     data: ipdata,
     error: ipdataError,
     loading: ipdataLoading
-  } = useFetch(ipLookUpURL);
+  } = useIplookup();
   const { city, region, latitude, longitude } = ipdata?.data || {}
 
   const VISUALCROSSING_URL = useMemo(() => {

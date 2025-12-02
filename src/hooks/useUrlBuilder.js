@@ -51,7 +51,7 @@ export function useSportsUrlBuilder(category, sports, framesCache) {
     let url = null
     if (!hasKey) {
       const selected = categoryMap[category]
-      url = `${import.meta.env.VITE_BACKEND_API_URL}/api/${sports}/${selected}`
+      url = `${import.meta.env.VITE_SPORTS_BACKEND_URL}/api/${sports}/${selected}`
     }
 
     return url

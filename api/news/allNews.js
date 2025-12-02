@@ -1,4 +1,3 @@
-import { TbCategoryPlus } from "react-icons/tb";
 import {
   mlbOptions,
   nbaOptions,
@@ -12,9 +11,9 @@ import {
   moreBusinessOptions,
   entertainmentOptions,
 } from "../../src/data/gnewsOptions.js";
-import { buildUrl } from "../utils/buildUrl.js";
-import { allowCors } from "../utils/cors.js";
-import { getGnewsApikey } from "../utils/getApikey.js";
+import { buildUrl } from "../../lib/utils/buildUrl.js";
+import { allowCors } from "../../lib/utils/cors.js";
+import { getGnewsApikey } from "../../lib/utils/getApikey.js";
 
 export default allowCors(async function handler(req, res) {
 
@@ -34,8 +33,8 @@ export default allowCors(async function handler(req, res) {
     mlbOptions,
   ]
 
-  const baseUrl = process.env.GNEWS_BASE_URL
-  const baseUrl2 = process.env.GNEWS_BASE_URL_2
+  const baseUrl = process.env.VITE_GNEWS_BASE_URL
+  const baseUrl2 = process.env.VITE_GNEWS_BASE_URL_2
 
   const gnewsUrls = gnewsCategoryOptions.map(categoryOption => {
     let apikey = getGnewsApikey(categoryOption.category, categoryOption.searchTerm, categoryOption.country.trim() || country.toLowerCase(), true)

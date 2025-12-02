@@ -1,12 +1,12 @@
-import { allowCors } from "../utils/cors.js";
-import { fetchWithRetry } from "../utils/fetchWithRetry.js";
+import { allowCors } from "../../lib/utils/cors.js";
+import { fetchWithRetry } from "../../lib/utils/fetchWithRetry.js";
 
 export default allowCors(async function fetchHandle(req, res) {
 
   const { latitude, longitude, locationQuery } = req.query;
 
-  const baseUrl = process.env.VISUALCROSSING_BASE_URL
-  const apikey = process.env.VISUALCROSSING_API_KEY
+  const baseUrl = process.env.VITE_VISUALCROSSING_BASE_URL
+  const apikey = process.env.VITE_VISUALCROSSING_API_KEY
 
   const VISUALCROSSING_URL = locationQuery
     ? `${baseUrl}/${locationQuery}?&key=${apikey}&iconSet=icons2&elements=%2Baqius`

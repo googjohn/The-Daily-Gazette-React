@@ -1,6 +1,6 @@
-import { buildUrl } from "../utils/buildUrl.js";
-import { allowCors } from "../utils/cors.js";
-import { fetchWithRetry } from "../utils/fetchWithRetry.js";
+import { buildUrl } from "../../lib/utils/buildUrl.js";
+import { allowCors } from "../../lib/utils/cors.js";
+import { fetchWithRetry } from "../../lib/utils/fetchWithRetry.js";
 
 export default allowCors(async function fetchNewsData(req, res) {
 
@@ -12,8 +12,8 @@ export default allowCors(async function fetchNewsData(req, res) {
     searchTerm
   } = req.query
 
-  const baseUrl = process.env.WORLDNEWS_BASE_URL
-  const apikey = process.env.WORLDNEWS_API_KEY
+  const baseUrl = process.env.VITE_WORLDNEWS_BASE_URL
+  const apikey = process.env.VITE_WORLDNEWS_API_KEY
   const source = 'worldnews'
 
   const url = buildUrl(baseUrl, {

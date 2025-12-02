@@ -10,13 +10,15 @@ import nba_api.library.http as http
 import requests
 from requests.exceptions import Timeout, ConnectionError, HTTPError, ConnectTimeout
 import mlbstatsapi
+import ipinfo
 import os
 
 load_dotenv()
 
 FOOTBALL_DATA_URL = os.getenv("FOOTBALL_DATA_BASE_URL")
 API_KEY = os.getenv("FOOTBALL_DATA_APIKEY")
-
+IPINFO_TOKEN = os.getenv("IPINFO_API_KEY")
+IPINFO_URL = os.getenv("IPINFO_BASE_URL")
 # Cache setup
 session = requests_cache.CachedSession(
     'cache', 
@@ -32,14 +34,36 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # React dev server
-    allow_credentials=True,
+    # allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get('/api')
-def home():
-    return {"message": 'Backend running'}
+handler = ipinfo.getHandlerAsync(IPINFO_TOKEN)
+@app.get("/api/ipinfo")
+async def get_ip():
+    # url = f"{IPINFO_URL}?token={IPINFO_TOKEN}"
+    details =  await handler.getDetails()
+    # response = session.get(url)
+    # print(response.json())
+    ipinfo = {
+        "city": details.city,
+        "region": details.region,
+        "country": details.country,
+        "latitude": details.latitude,
+        "longitude": details.longitude,
+    }
+    # print(details.get("latitude"))
+    
+    return VercelResponse(
+        {
+            'ok': True,
+            'error': None,
+            'data': ipinfo
+        },
+        status=200,
+        headers={"Cache-Control": "s-maxage=300"}
+    )
 
 # get nba
 @app.get("/api/NBA/schedules")

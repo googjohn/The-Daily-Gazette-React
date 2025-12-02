@@ -230,7 +230,7 @@ export default function SportsFrame({ categorySelected, setCategorySelected, spo
           >
             <SubFrameHeader subFrameData={frame} />
 
-            {(mlbFrameDataLoading || soccerFrameDataLoading) && <Spinner />}
+            {(mlbFrameDataLoading || soccerFrameDataLoading) && <div>Loading data...</div>}
 
             {
               (mlbFrameDataError || soccerFrameDataError)

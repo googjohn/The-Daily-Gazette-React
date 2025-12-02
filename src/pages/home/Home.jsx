@@ -6,16 +6,16 @@ import { ScienceTechnologyForHome } from "../scienceAndTechnology/ScienceAndTech
 import { FinanceForHome } from "../finance/Finance";
 import { EntertainmentForHome } from "../entertainment/Entertainment";
 import { SportsForHome } from "../sports/Sports";
-import { useFetch, useFetchMulti } from "../../hooks/UseFetchForAll";
+import { useFetch, useFetchMulti, useIplookup } from "../../hooks/UseFetchForAll";
 import { useRef } from "react";
 
 export default function Home() {
-  const ipLookUpURL = '/api/ip/ipLookUp'
   const {
     data: ipdata,
     error: ipdataError,
     loading: ipdataLoading
-  } = useFetch(ipLookUpURL);
+  } = useIplookup()
+
   const { country } = ipdata?.data || {}
 
   const newsDataArray = useFetchMulti(country)
@@ -62,14 +62,14 @@ export default function Home() {
     mlbNewsData,
   ]
 
-  const isLoading = TOPICS_DATA?.some(topic => !topic)
+  // const isLoading = TOPICS_DATA?.some(topic => !topic)
   const hasError = articlesArrayError?.some(err => !err)
 
   return (
     <main className="w-full min-h-screen mx-auto">
       {ipdataError && <ErrorPage error={ipdataError} />}
       {hasError && <div>Error loading content.</div>}
-      {(ipdataLoading || isLoading) ? <Spinner />
+      {(ipdataLoading || articlesArrayLoading) ? <Spinner />
         : (
           <>
             <World

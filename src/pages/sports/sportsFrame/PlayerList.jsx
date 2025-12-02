@@ -10,13 +10,15 @@ export default function PlayerList({ framedata, sportsSelected }) {
   const nbaPositions = [
     { "G": "Guard" },
     { "F": "Forward" },
+    { "SF": "Small Forward" },
+    { "PF": "Power Forward" },
     { "C": "Center" },
-    { "P-G": "Point Guard" },
-    { "S-G": "Shooting Guard" },
-    { "F-G": "Forward-Guard" },
-    { "G-F": "Guard-Forward" },
-    { "C-F": "Center-Forward" },
-    { "F-C": "Forward-Center" },
+    { "PG": "Point Guard" },
+    { "SG": "Shooting Guard" },
+    { "FG": "Forward-Guard" },
+    { "GF": "Guard-Forward" },
+    { "CF": "Center-Forward" },
+    { "FC": "Forward-Center" },
   ]
 
   const sportsPlayers = useMemo(() => {
