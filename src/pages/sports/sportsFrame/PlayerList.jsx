@@ -4,6 +4,7 @@ import { nbaPlayers } from "../../../data/nbaPlayers"
 import { soccerPlayers } from "../../../data/soccerPlayers"
 import noImage from "/images/no-image/no-image-available.png"
 import useWindowSize from "../../../hooks/UseWindowSize"
+import { PlayersSkeleton } from "../../../components/skeleton/Skeleton"
 
 const playersMap = {
   'NBA': nbaPlayers,
@@ -30,8 +31,9 @@ export default function PlayerList({ framedata, sportsSelected }) {
 
   return (
     <div className="w-full h-auto flex justify-evenly flex-wrap gap-2.5 p-2.5">
-      {framedata?.frameData?.PLAYERS &&
-        framedata?.frameData?.PLAYERS?.map(player => {
+      {!framedata?.frameData?.PLAYERS
+        ? <PlayersSkeleton />
+        : framedata?.frameData?.PLAYERS?.map(player => {
 
           const playerImage = playersMap[sportsSelected].find(p => {
             if (p.Name === player?.player_name) return p

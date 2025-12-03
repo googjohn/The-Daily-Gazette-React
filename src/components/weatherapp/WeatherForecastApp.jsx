@@ -8,6 +8,8 @@ import {
   tempConverter,
   handleConditionsIcon,
 } from "../../pages/weatherForecast/WeatherPageUtility.js";
+import { WeatherAppSkeleton } from "../skeleton/Skeleton.jsx";
+import clsx from "clsx";
 
 const tempUnits = {
   Celcius: 'c',
@@ -51,11 +53,12 @@ export default function WeatherApp() {
   return (
     <div id="weather-app" className="flex justify-end sticky top-20 w-full z-30">
 
-      <WeatherBanner weatherBg={weatherBackground}>
+      <WeatherBanner weatherBg={weatherBackground} weatherdata={weatherData}>
 
         {ipdataError || weatherDataError ?
 
-          (<div>Error loading data. {ipdataError?.message || weatherDataError?.message}</div>) :
+          // (<div>Error loading data. {ipdataError?.message || weatherDataError?.message}</div>) :
+          <WeatherAppSkeleton /> :
 
           isLoading ? <Spinner /> :
 
@@ -344,17 +347,20 @@ export function WeatherAppCard({ tempUnit, forecastData, selectedMode }) {
 }
 
 
-function WeatherBanner({ weatherBg, children }) {
+function WeatherBanner({ weatherBg, weatherdata, children }) {
 
   return (
     <div id="weather-banner"
       style={{
-        background: weatherBg,
+        background: weatherdata ? weatherBg : 'var(--gray-20)',
       }}
-      className="w-full sm:max-w-max h-10 relative flex gap-2.5 justify-between 
-        items-center text-[var(--white)] px-[10px] py-[5px] rounded-lg 
+      className={clsx(
+        `w-full sm:max-w-max h-10 relative flex gap-2.5 justify-between 
+        items-center text-[var(--white)] rounded-lg 
         transition-[var(--transition)] shadow-[var(--bs-banner-1)] 
-        hover:shadow-[var(--bs-banner-1-inset)] z-50"
+        hover:shadow-[var(--bs-banner-1-inset)] z-50`,
+        weatherdata ? 'px-[10px] py-[5px]' : 'p-1'
+      )}
     >
       {children}
     </div>

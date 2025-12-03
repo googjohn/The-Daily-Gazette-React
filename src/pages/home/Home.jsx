@@ -8,6 +8,7 @@ import { EntertainmentForHome } from "../entertainment/Entertainment";
 import { SportsForHome } from "../sports/Sports";
 import { useFetch, useFetchMulti, useIplookup } from "../../hooks/UseFetchForAll";
 import { useRef } from "react";
+import { NewsSkeleton } from "../../components/skeleton/Skeleton";
 
 export default function Home() {
   const {
@@ -63,14 +64,18 @@ export default function Home() {
   ]
 
   // const isLoading = TOPICS_DATA?.some(topic => !topic)
-  const hasError = articlesArrayError?.some(err => !err)
+  // const hasError = articlesArrayError?.every(err => !err)
 
   return (
     <main className="w-full min-h-screen mx-auto">
-      {ipdataError && <ErrorPage error={ipdataError} />}
-      {hasError && <div>Error loading content.</div>}
-      {(ipdataLoading || articlesArrayLoading) ? <Spinner />
-        : (
+      {/* {ipdataError && <ErrorPage error={ipdataError} />} */}
+      {/* {hasError && <div>Error loading content.</div>} */}
+      {(ipdataLoading || articlesArrayLoading) && <Spinner />}
+      {
+        // !newsArray
+        //   ? <NewsSkeleton len={10} />
+        //   : 
+        (
           <>
             <World
               headNewsData={headNewsData}

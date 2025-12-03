@@ -6,7 +6,8 @@ import { MainFrameHeader, SubFrameHeader } from "./FrameHeader.jsx";
 import { MainFrameContent, SubFrameContent } from "./FrameContent.jsx";
 import { useSportsUrlBuilder } from "../../../hooks/useUrlBuilder.js";
 import { useFetch } from "../../../hooks/UseFetchForAll.js";
-import Spinner, { ScopedSpinner } from "../../../components/spinner/Spinner.jsx";
+import { ScopedSpinner } from "../../../components/spinner/Spinner.jsx";
+import { SportsSubframeSkeleton } from "../../../components/skeleton/Skeleton.jsx";
 
 const framesData = [
   {
@@ -194,13 +195,14 @@ export default function SportsFrame({ categorySelected, setCategorySelected, spo
 
         {(sportsDataToFrameLoading) && <ScopedSpinner />}
         {
-          sportsDataToFrameError
-            ? <div className="h-[590px]">Error loading content. Select stats tab you want to check to confirm availability.</div>
-            : <MainFrameContent
-              mainFrameData={frames[0]}
-              categorySelected={categorySelected}
-              sportsSelected={sportsSelected}
-            />
+          // sportsDataToFrameLoading || sportsDataToFrameError
+          // ? <div className="h-[590px]">Error loading content. Select stats tab you want to check to confirm availability.</div>
+          // ? <SportsMainframeSkeleton />
+          <MainFrameContent
+            mainFrameData={frames[0]}
+            categorySelected={categorySelected}
+            sportsSelected={sportsSelected}
+          />
         }
 
       </div>
@@ -232,14 +234,17 @@ export default function SportsFrame({ categorySelected, setCategorySelected, spo
 
             {(mlbFrameDataLoading || soccerFrameDataLoading) && <div>Loading data...</div>}
 
-            {
-              (mlbFrameDataError || soccerFrameDataError)
-                ? <div className="h-76">Error loading content. Click here or select stats tab you want to check to reload.</div>
-                : <SubFrameContent
-                  subFrameData={frame}
-                  sportsSelected={sportsSelected}
-                />
-            }
+            <div className="h-full overflow-auto">
+
+              {
+                (mlbFrameDataLoading || soccerFrameDataLoading) || (mlbFrameDataError || soccerFrameDataError)
+                  ? <SportsSubframeSkeleton />
+                  : <SubFrameContent
+                    subFrameData={frame}
+                    sportsSelected={sportsSelected}
+                  />
+              }
+            </div>
 
           </div>
         ))}

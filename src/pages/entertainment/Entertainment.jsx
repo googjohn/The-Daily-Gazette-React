@@ -6,6 +6,7 @@ import Spinner from "../../components/spinner/Spinner";
 import { useFetch, useIplookup } from "../../hooks/UseFetchForAll";
 import { entertainmentOptions } from "../../data/gnewsOptions";
 import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder";
+import { NewsSkeleton } from "../../components/skeleton/Skeleton";
 
 export default function Entertainment() {
   const {
@@ -23,16 +24,14 @@ export default function Entertainment() {
 
   return (
     <>
-      {(ipdataError || entertainmentNewsError)
+      {(ipdataError && entertainmentNewsError)
         && <ErrorPage error={ipdataError || entertainmentNewsError} />
       }
       {(ipdataLoading || entertainmentNewsLoading) && <Spinner />}
-      {entertainmentNewsData
-        && <EntertainmentForHome
-          ipdata={ipdata}
-          entertainmentNewsData={entertainmentNewsData}
-        />
-      }
+      <EntertainmentForHome
+        ipdata={ipdata}
+        entertainmentNewsData={entertainmentNewsData}
+      />
     </>
   )
 }
@@ -64,7 +63,8 @@ export function EntertainmentForHome({ entertainmentNewsData, ipdata }) {
         <>
           <div className="grid grid-template grid-area-entmnt-scitech">
             {entertainmentDataError
-              ? (<div className="text-black">Error loading data.</div>)
+              // ? (<div className="text-black">Error loading data.</div>)
+              ? <NewsSkeleton len={7} />
               : entertainmentData && entertainmentData.data.slice(0, 7).map((article, index) => {
                 const source = {
                   url: article.source_url,

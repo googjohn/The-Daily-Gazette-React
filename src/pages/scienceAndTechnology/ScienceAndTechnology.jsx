@@ -7,6 +7,7 @@ import { TechnologyForHome } from "./technology/Technology";
 import { useFetch, useIplookup } from "../../hooks/UseFetchForAll";
 import { healthOptions, scienceOptions, technologyOptions } from "../../data/gnewsOptions";
 import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder";
+import { NewsSkeleton } from "../../components/skeleton/Skeleton";
 
 export default function ScienceAndTechnology() {
   const {
@@ -64,7 +65,8 @@ export default function ScienceAndTechnology() {
       // customClass: 'flex md:flex-wrap [&>*]:basis-1/3 h-full',
       content: (
         ainewsError
-          ? (<div className="text-black">Error loading data.</div>)
+          // ? (<div className="text-black">Error loading data.</div>)
+          ? <NewsSkeleton len={5} />
           : ainews && ainews.data.slice(0, 5).map((article, index) => {
             const source = {
               url: article.source_url,
@@ -94,8 +96,9 @@ export default function ScienceAndTechnology() {
       title: 'Health and Lifestyle',
       customGrid: 'grid-area-finance',
       content: (
-        healthData?.error
-          ? (<div className="text-black">Error loading data. {healthData.error.message}</div>)
+        healthError
+          // ? (<div className="text-black">Error loading data. {healthData.error.message}</div>)
+          ? <NewsSkeleton len={5} />
           : healthData && healthData.data.slice(0, 5).map((article) => {
             return (
               <Card

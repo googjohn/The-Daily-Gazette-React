@@ -1,5 +1,6 @@
 import Card from "../../../components/card/Card"
 import Aside from "../../../components/mainbody/Aside"
+import { NewsSkeleton } from "../../../components/skeleton/Skeleton.jsx";
 import { useFetch } from "../../../hooks/UseFetchForAll"
 import { useNewsdataUrlBuilder } from "../../../hooks/useUrlBuilder.js";
 
@@ -26,7 +27,8 @@ export function ScienceForHome({ scienceNewsData, ipdata }) {
     <>
       <div className="grid grid-template grid-area-entmnt-scitech">
         {scienceDataError
-          ? (<div className="text-black">Error loading data.</div>)
+          // ? (<div className="text-black">Error loading data.</div>)
+          ? <NewsSkeleton len={7} />
           : scienceData && scienceData?.data.slice(0, 7).map((article, index) => {
             const source = {
               url: article.source_url,

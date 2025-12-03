@@ -3,6 +3,7 @@ import { mlbLogos } from "../../../data/mlbLogos"
 import useWindowSize from "../../../hooks/UseWindowSize"
 import noImage from "/images/no-image/no-image-available.png"
 import clsx from "clsx"
+import { StandingsSkeleton } from "../../../components/skeleton/Skeleton"
 
 export default function TeamStandings({ framedata, sportsSelected }) {
   const data = framedata?.frameData?.STANDINGS || {}
@@ -90,44 +91,53 @@ export default function TeamStandings({ framedata, sportsSelected }) {
           </thead>
           <tbody>
             {
-              conferenceToShow && conferenceToShow?.map(team => {
-
-                const teamLogo = sportsSelected === 'MLB'
-                  ? mlbLogos.find(t => t.teamId === team?.team_id)?.logo
-                  : team?.team_logo
-
-                const teamName = (() => {
-                  return (sportsSelected === 'NBA') ?
-                    team?.team_name :
-                    team?.team_clubname
-                })()
-
-                return (
-                  <tr key={team.team_id}>
-                    <td>
-                      <div className="flex items-center gap-2.5">
-                        <img
-                          onError={(e) => e.target.src = noImage}
-                          src={teamLogo || noImage}
-                          alt={teamName}
-                          className="w-6 aspect-square"
-                        />
-                        <span className="">{teamName}</span>
-                      </div>
+              !conferenceToShow
+                ? (
+                  <tr>
+                    <td colSpan={9}>
+                      <StandingsSkeleton />
                     </td>
-                    {sportsSelected === "SOCCER" && <td>{team.played_games}</td>}
-                    <td>{team.wins}</td>
-                    {sportsSelected === "SOCCER" && <td>{team.ties}</td>}
-                    <td>{team.losses}</td>
-                    {(windowSize.width < 1136 ? true : sportsSelected !== "SOCCER" && (windowSize.width >= 640 && <td>{team.winpct}</td>))}
-                    {(windowSize.width < 920 && sportsSelected === "SOCCER" ? true : sportsSelected === "SOCCER" ? <td>{team.goals_total}</td> : <td>{team.conferenceGamesBack}</td>)}
-                    {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>{team.goals_against}</td> : <td>{team.home}</td>)}
-                    {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>{team.goal_difference}</td> : <td>{team.road}</td>)}
-                    {(windowSize.width < 768 && sportsSelected === 'SOCCER' ? true : sportsSelected === "SOCCER" ? <td className="whitespace-nowrap">{team?.last_five?.split(',').join(' ')}</td> : <td>{team.lastTen}</td>)}
-                    {sportsSelected !== "SOCCER" && <td>{team.currentStreak}</td>}
                   </tr>
                 )
-              })
+                : conferenceToShow?.map(team => {
+
+                  const teamLogo = sportsSelected === 'MLB'
+                    ? mlbLogos.find(t => t.teamId === team?.team_id)?.logo
+                    : team?.team_logo
+
+                  const teamName = (() => {
+
+                    return (sportsSelected === 'NBA') ?
+                      team?.team_name :
+                      team?.team_clubname
+                  })()
+
+                  return (
+                    <tr key={team.team_id}>
+                      <td>
+                        <div className="flex items-center gap-2.5">
+                          <img
+                            onError={(e) => e.target.src = noImage}
+                            src={teamLogo || noImage}
+                            alt={teamName}
+                            className="w-6 aspect-square"
+                          />
+                          <span className="">{teamName}</span>
+                        </div>
+                      </td>
+                      {sportsSelected === "SOCCER" && <td>{team.played_games}</td>}
+                      <td>{team.wins}</td>
+                      {sportsSelected === "SOCCER" && <td>{team.ties}</td>}
+                      <td>{team.losses}</td>
+                      {(windowSize.width < 1136 ? true : sportsSelected !== "SOCCER" && (windowSize.width >= 640 && <td>{team.winpct}</td>))}
+                      {(windowSize.width < 920 && sportsSelected === "SOCCER" ? true : sportsSelected === "SOCCER" ? <td>{team.goals_total}</td> : <td>{team.conferenceGamesBack}</td>)}
+                      {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>{team.goals_against}</td> : <td>{team.home}</td>)}
+                      {(windowSize.width < 1024 ? true : sportsSelected === "SOCCER" ? <td>{team.goal_difference}</td> : <td>{team.road}</td>)}
+                      {(windowSize.width < 768 && sportsSelected === 'SOCCER' ? true : sportsSelected === "SOCCER" ? <td className="whitespace-nowrap">{team?.last_five?.split(',').join(' ')}</td> : <td>{team.lastTen}</td>)}
+                      {sportsSelected !== "SOCCER" && <td>{team.currentStreak}</td>}
+                    </tr>
+                  )
+                })
             }
           </tbody>
         </table>

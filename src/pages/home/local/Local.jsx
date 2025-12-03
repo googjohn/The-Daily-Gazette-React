@@ -1,5 +1,6 @@
 import Card from "../../../components/card/Card";
 import Section from "../../../components/mainbody/Section";
+import { NewsSkeleton } from "../../../components/skeleton/Skeleton";
 
 export default function LocalNews({ localNewsData }) {
 
@@ -8,16 +9,18 @@ export default function LocalNews({ localNewsData }) {
       title: 'Latest Local News',
       customGrid: 'grid-area-local',
       content: (
-        localNewsData && localNewsData.data.slice(0, 8).map(article => (
-          <Card
-            key={article.id}
-            cardTitle={article.title}
-            cardDescription={article.description}
-            cardImageSrc={article.image}
-            source={article.source}
-            link={article.url}
-          />
-        ))
+        !localNewsData
+          ? <NewsSkeleton len={8} />
+          : localNewsData.data.slice(0, 8).map(article => (
+            <Card
+              key={article.id}
+              cardTitle={article.title}
+              cardDescription={article.description}
+              cardImageSrc={article.image}
+              source={article.source}
+              link={article.url}
+            />
+          ))
       )
     }
   ]

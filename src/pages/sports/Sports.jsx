@@ -7,8 +7,8 @@ import { mlbOptions, nbaOptions } from "../../data/gnewsOptions";
 import ErrorPage from "../../components/error/ErrorPage";
 import Spinner from "../../components/spinner/Spinner";
 import SportsFrame from "./sportsFrame/SportsFrame";
-import { Skeleton } from "@heroui/skeleton";
 import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder";
+import { NewsSkeleton } from "../../components/skeleton/Skeleton";
 
 export default function Sports() {
   const [sportsSelected, setSportsSelected] = useState('NBA') // NBA | MLB | SOCCER
@@ -100,111 +100,8 @@ export function SportsForHome({ nbanewsData, mlbnewsData, sportsnewsData }) {
       content: (
         <>
           <div className="grid grid-template grid-area-sports relative">
-            {!sportsnewsData ? (
-              <>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-6/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex flex-col items-center gap-2.5 p-2.5 shadow-(--bs-cards) relative">
-                  <div className="block w-full h-full">
-                    <Skeleton className="rounded-lg min-w-full w-full h-full bg-[var(--gray-30)]" />
-                  </div>
-                  <div className="block w-full absolute bottom-5 px-5">
-                    <div className="w-full flex flex-col gap-2" >
-                      <Skeleton className="h-3 w-11/12 rounded-lg bg-[var(--gray-20)]" />
-                      <Skeleton className="h-3 w-10/12 rounded-lg bg-[var(--gray-20)]" />
-                    </div>
-                  </div>
-                </div>
-
-
-              </>
-            )
+            {!sportsnewsData
+              ? <NewsSkeleton len={9} />
               : sportsnewsData && sportsnewsData.data.slice(0, 9).map((article, index) => {
                 const source = {
                   url: article.source_url || article.source.url,

@@ -12,6 +12,7 @@ import StockMarketWidget from "./StockMarketOverview";
 import MarketChartWidget from "./MarketChart";
 import CryptoWidget from "./CryptoMarket";
 import { useNewsdataUrlBuilder } from "../../hooks/useUrlBuilder.js";
+import { NewsSkeleton } from "../../components/skeleton/Skeleton.jsx";
 
 export default function Finance() {
   const {
@@ -54,13 +55,14 @@ export default function Finance() {
   const businessArticles = businessData?.data
   const moreFinanceNewsArticles = moreFinanceNews?.data
 
-  if (ipdataError || businessDataError || moreFinanceNewsError) return <ErrorPage error={
-    ipdataError || businessDataError || moreFinanceNewsError
-  } />
+  // if (ipdataError && businessDataError && moreFinanceNewsError) return <ErrorPage error={
+  //   ipdataError || businessDataError || moreFinanceNewsError
+  // } />
   if (ipdataLoading || moreFinanceNewsLoading || businessDataLoading) return <Spinner />
 
-  const localBusinessNews = businessDataError
-    ? (<div className="text-black">Error loading data.</div>)
+  const localBusinessNews = !businessArticles || businessDataError
+    // ? (<div className="text-black">Error loading data.</div>)
+    ? <NewsSkeleton len={10} />
     : businessArticles && businessArticles.map((article, index) => {
       const source = {
         url: article.source_url,
@@ -78,6 +80,18 @@ export default function Finance() {
         />
       )
     })
+  const moreBusinessNews = !moreFinanceNews || moreFinanceNewsError
+    ? <NewsSkeleton len={10} />
+    : moreFinanceNewsArticles.slice().map((article, index) => (
+      <Card
+        key={article.id}
+        cardTitle={article.title}
+        cardDescription={index === 0 ? article.description : null}
+        cardImageSrc={article.image}
+        source={article.source}
+        link={article.url}
+      />
+    ))
 
   const tradingview = (
     <div className="flex [&>*]:basis-1/3 [&>*]:shrink [&>*]:grow [&>*]:h-[550px] flex-col sm:flex-row flex-wrap lg:flex-nowrap gap-2.5 w-full">
@@ -108,18 +122,7 @@ export default function Finance() {
     {
       title: 'Popular in Business and Finance',
       customGrid: 'grid-area-more-finance',
-      content: (
-        moreFinanceNewsArticles && moreFinanceNewsArticles.slice().map((article, index) => (
-          <Card
-            key={article.id}
-            cardTitle={article.title}
-            cardDescription={index === 0 ? article.description : null}
-            cardImageSrc={article.image}
-            source={article.source}
-            link={article.url}
-          />
-        ))
-      )
+      content: moreBusinessNews
     },
     {
       title: 'Market Chart',
@@ -153,32 +156,36 @@ export function FinanceForHome({ financeNewsData, moreFinanceNewsData }) {
       title: 'Business and Finance',
       customGrid: 'grid-area-finance',
       content: (
-        financeNewsData && financeNewsData.data.slice(0, 5).map((article, index) => (
-          <Card
-            key={article.id}
-            cardTitle={article.title}
-            cardDescription={index === 0 ? article.description : null}
-            cardImageSrc={article.image}
-            source={article.source}
-            link={article.url}
-          />
-        ))
+        !financeNewsData
+          ? <NewsSkeleton len={5} />
+          : financeNewsData.data.slice(0, 5).map((article, index) => (
+            <Card
+              key={article.id}
+              cardTitle={article.title}
+              cardDescription={index === 0 ? article.description : null}
+              cardImageSrc={article.image}
+              source={article.source}
+              link={article.url}
+            />
+          ))
       )
     },
     {
       title: 'Popular in Business and Finance',
       customGrid: 'grid-area-more-finance',
       content: (
-        moreFinanceNewsData && moreFinanceNewsData.data.slice().map((article, index) => (
-          <Card
-            key={article.id}
-            cardTitle={article.title}
-            cardDescription={index === 0 ? article.description : null}
-            cardImageSrc={article.image}
-            source={article.source}
-            link={article.url}
-          />
-        ))
+        !moreFinanceNewsData
+          ? <NewsSkeleton len={10} />
+          : moreFinanceNewsData.data.map((article, index) => (
+            <Card
+              key={article.id}
+              cardTitle={article.title}
+              cardDescription={index === 0 ? article.description : null}
+              cardImageSrc={article.image}
+              source={article.source}
+              link={article.url}
+            />
+          ))
       )
     }
   ]
