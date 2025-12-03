@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
-import { nbaLogos } from "../../../data/nbaLogos"
 import { mlbLogos } from "../../../data/mlbLogos"
 import useWindowSize from "../../../hooks/UseWindowSize"
+import noImage from "/images/no-image/no-image-available.png"
 import clsx from "clsx"
 
 export default function TeamStandings({ framedata, sportsSelected }) {
@@ -45,10 +45,6 @@ export default function TeamStandings({ framedata, sportsSelected }) {
       data?.east,
       framedata
     ])
-
-  const sportLogo = sportsSelected === 'NBA'
-    ? nbaLogos
-    : mlbLogos
 
   const handleClick = (conference) => setSelectedConference(conference)
 
@@ -95,16 +91,31 @@ export default function TeamStandings({ framedata, sportsSelected }) {
           <tbody>
             {
               conferenceToShow && conferenceToShow?.map(team => {
-                const teamLogo = sportLogo.find(tm => tm.teamId === team.team_id)?.logo
+
+                const teamLogo = sportsSelected === 'MLB'
+                  ? mlbLogos.find(t => t.teamId === team?.team_id)?.logo
+                  : team?.team_logo
+
+                const teamName = (() => {
+                  return (sportsSelected === 'NBA') ?
+                    team?.team_name :
+                    team?.team_clubname
+                })()
+
                 return (
                   <tr key={team.team_id}>
                     <td>
                       <div className="flex items-center gap-2.5">
-                        <img src={sportsSelected === 'SOCCER' ? team.team_crest : teamLogo} alt={team.team_name} className="w-6 aspect-square" />
-                        <span className="">{sportsSelected === 'MLB' && windowSize.width < 440 ? team.club_name : team.team_name}</span>
+                        <img
+                          onError={(e) => e.target.src = noImage}
+                          src={teamLogo || noImage}
+                          alt={teamName}
+                          className="w-6 aspect-square"
+                        />
+                        <span className="">{teamName}</span>
                       </div>
                     </td>
-                    {sportsSelected === "SOCCER" && <td>{team.wins + team.losses + team.ties}</td>}
+                    {sportsSelected === "SOCCER" && <td>{team.played_games}</td>}
                     <td>{team.wins}</td>
                     {sportsSelected === "SOCCER" && <td>{team.ties}</td>}
                     <td>{team.losses}</td>
@@ -135,11 +146,11 @@ export default function TeamStandings({ framedata, sportsSelected }) {
             }
             .custom-table th:first-child,
             .custom-table td:first-child {
-              width: ${sportsSelected === "SOCCER" ? '40%' : '46%'};
+              width: ${sportsSelected === "SOCCER" ? '37%' : '40%'};
             }
             .custom-table td:not(:first-child),
             .custom-table td:not(:first-child) {
-              width: ${windowSize < 640 ? '8%' : '6.77%'};
+              width: ${windowSize < 640 ? '10%' : '6.77%'};
               min-width: 32px;
               text-align: center;
             }

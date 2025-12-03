@@ -79,6 +79,7 @@ export default allowCors(async function handler(req, res) {
 
         const result = await response.json();
         const { articles } = result
+
         return {
           forCategory,
           data: {
@@ -100,6 +101,10 @@ export default allowCors(async function handler(req, res) {
         return { category: 'unknown', error: result.reason.message || 'Unknown error' }
       }
     })
+    res.setHeader(
+      "Cache-Control",
+      'public, s-maxage=3600, stale-while-revalidate=3600'
+    )
 
     res.status(200).json(data);
   } catch (err) {

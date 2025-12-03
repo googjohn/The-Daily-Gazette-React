@@ -42,6 +42,11 @@ export default allowCors(async function fetchNewsData(req, res) {
 
     const { articles } = response
 
+    res.setHeader(
+      "Cache-Control",
+      'public, s-maxage=3600, stale-while-revalidate=3600'
+    )
+
     res.status(200).json({
       'ok': true,
       'error': null,

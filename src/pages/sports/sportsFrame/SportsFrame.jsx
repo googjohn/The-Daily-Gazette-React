@@ -6,7 +6,7 @@ import { MainFrameHeader, SubFrameHeader } from "./FrameHeader.jsx";
 import { MainFrameContent, SubFrameContent } from "./FrameContent.jsx";
 import { useSportsUrlBuilder } from "../../../hooks/useUrlBuilder.js";
 import { useFetch } from "../../../hooks/UseFetchForAll.js";
-import Spinner from "../../../components/spinner/Spinner.jsx";
+import Spinner, { ScopedSpinner } from "../../../components/spinner/Spinner.jsx";
 
 const framesData = [
   {
@@ -184,7 +184,7 @@ export default function SportsFrame({ categorySelected, setCategorySelected, spo
         </div>
       )}
 
-      <div className="main-frame w-full h-full shadow-[var(--bs-cards)] md:basis-2/3 rounded-lg overflow-hidden">
+      <div className="main-frame w-full h-full shadow-[var(--bs-cards)] md:basis-2/3 rounded-lg overflow-hidden relative">
         <MainFrameHeader
           mainFrameData={frames[0]}
           categorySelected={categorySelected}
@@ -192,7 +192,7 @@ export default function SportsFrame({ categorySelected, setCategorySelected, spo
           handleClick={selectTabHandleClick}
         />
 
-        {(sportsDataToFrameLoading) && <Spinner />}
+        {(sportsDataToFrameLoading) && <ScopedSpinner />}
         {
           sportsDataToFrameError
             ? <div className="h-[590px]">Error loading content. Select stats tab you want to check to confirm availability.</div>
@@ -226,7 +226,7 @@ export default function SportsFrame({ categorySelected, setCategorySelected, spo
               })
               setIsSubframeMenuOpen(false)
             }}
-            className="shadow-[var(--bs-cards)] h-full rounded-lg cursor-pointer"
+            className="shadow-[var(--bs-cards)] h-full rounded-lg cursor-pointer realtive"
           >
             <SubFrameHeader subFrameData={frame} />
 

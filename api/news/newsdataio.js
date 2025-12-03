@@ -41,6 +41,11 @@ export default allowCors(async function fetchNewsdata(req, res) {
     const response = await fetchWithRetry(newsdataUrl, 2, 300)
     const { results } = response
 
+    res.setHeader(
+      "Cache-Control",
+      'public, s-maxage=3600, stale-while-revalidate=3600'
+    )
+
     res.status(200).json({
       'ok': true,
       'error': null,

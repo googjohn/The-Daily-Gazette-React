@@ -1,7 +1,7 @@
 import { useRef, useEffect, useCallback, useMemo } from "react";
 import { formatDate } from "../../../hooks/UseFormatter";
-import { nbaLogos } from "../../../data/nbaLogos";
 import { mlbLogos } from "../../../data/mlbLogos";
+import noImage from "/images/no-image/no-image-available.png"
 import clsx from "clsx";
 
 export default function GameSchedules({ framedata, sportsSelected }) {
@@ -49,20 +49,16 @@ export default function GameSchedules({ framedata, sportsSelected }) {
         elementToScroll.current[scrollToIndex].scrollIntoView({
           behavior: 'instant',
           block: 'start',
-          // inline: 'nearest'
+          inline: 'nearest'
         })
       }
     }
   }, [framedata?.frameData, today, compareDate]);
 
-  const sportLogos = framedata?.frameName === 'NBA'
-    ? nbaLogos
-    : mlbLogos
-
   const isMatch = framedata?.frameName === sportsSelected
 
   return (
-    framedata.frameData.GAMES && framedata?.frameData?.GAMES?.map(({ date, gamesList }, index) => {
+    framedata?.frameData.GAMES && framedata?.frameData?.GAMES?.map(({ date, gamesList }, index) => {
       const derivedDate = sportsSelected === "NBA"
         ? date?.split(' ')[0]
         : date
@@ -95,21 +91,28 @@ export default function GameSchedules({ framedata, sportsSelected }) {
           )}>
             {/* need to fix for visible games only to improve performance */}
             {(
-              gamesList?.map(game => {
+              gamesList && gamesList?.map(game => {
 
-                const homeTeamLogo = sportLogos.find(sportTeam => sportTeam.teamId == game.homeTeam_id)?.logo
-                const awayTeamLogo = sportLogos.find(sportTeam => sportTeam.teamId == game.awayTeam_id)?.logo
+                const getLogo = (gamedataId) => {
+
+                  if (framedata?.frameName === 'MLB') {
+                    return mlbLogos.find(({ teamId }) => teamId === gamedataId)?.logo
+                  }
+
+                  return gamedataId === game?.homeTeam_id ?
+                    game?.homeTeam_logo :
+                    game?.awayTeam_logo
+
+                }
+
+                const homeTeamLogo = getLogo(game?.homeTeam_id)
+                const awayTeamLogo = getLogo(game?.awayTeam_id)
+
                 const homeTeamWin = game.homeTeam_score > game.awayTeam_score;
                 const isTie = game.homeTeam_score === game.awayTeam_score
 
-                let isFinished;
-                if (sportsSelected === 'NBA') {
-                  isFinished = game?.gameStatus?.toLowerCase() === 'final'
-                } else if (sportsSelected === "MLB") {
-                  isFinished = game?.gameStatus?.toLowerCase() === 'final'
-                } else {
-                  isFinished = game?.gameStatus?.toLowerCase() === 'final' || game?.gameStatus?.toLowerCase() === 'finished'
-                }
+                let gamestatus = game?.gamesStatus?.toLowerCase()
+                let isFinished = gamestatus === 'final' || gamestatus?.includes('f')
 
                 return (
                   <div
@@ -127,19 +130,15 @@ export default function GameSchedules({ framedata, sportsSelected }) {
                         <div className={`team-1 flex justify-between items-center ${isFinished && homeTeamWin && !isTie ? 'font-bold' : 'font-normal'}`}>
                           <div className="team-data flex items-center gap-2.5">
                             <img
-                              src={
-                                sportsSelected === 'SOCCER' && framedata?.frameName === sportsSelected
-                                  ? game.homeTeam_crest
-                                  : sportsSelected === 'SOCCER' && framedata?.frameName !== sportsSelected
-                                    ? homeTeamLogo
-                                    : sportsSelected !== 'SOCCER' && framedata?.frameName !== 'SOCCER'
-                                      ? homeTeamLogo
-                                      : game.homeTeam_crest
-                              }
+                              src={homeTeamLogo || noImage}
                               alt={game.homeTeam_name}
                               className="rounded-full w-6 aspect-square"
                             />
-                            <span>{game.homeTeam_name}</span>
+                            <span>{
+                              framedata?.frameName !== sportsSelected
+                                ? game.homeTeam_key
+                                : game.homeTeam_clubname || game.homeTeam_name
+                            }</span>
                           </div>
                           <div className="team-score">
                             <span>{game.homeTeam_score}</span>
@@ -148,19 +147,15 @@ export default function GameSchedules({ framedata, sportsSelected }) {
                         <div className={`team-2 flex justify-between items-center ${isFinished && !homeTeamWin && !isTie ? 'font-bold' : 'font-normal'}`}>
                           <div className="team-data flex items-center gap-2.5">
                             <img
-                              src={
-                                sportsSelected === 'SOCCER' && framedata?.frameName === sportsSelected
-                                  ? game.awayTeam_crest
-                                  : sportsSelected === 'SOCCER' && framedata?.frameName !== sportsSelected
-                                    ? awayTeamLogo
-                                    : sportsSelected !== 'SOCCER' && framedata?.frameName !== 'SOCCER'
-                                      ? awayTeamLogo
-                                      : game.awayTeam_crest
-                              }
+                              src={awayTeamLogo || noImage}
                               alt={game.awayTeam_name}
                               className="rounded-full w-6 aspect-square"
                             />
-                            <span>{game.awayTeam_name}</span>
+                            <span>{
+                              framedata?.frameName !== sportsSelected
+                                ? game.awayTeam_key
+                                : game.awayTeam_clubname || game.awayTeam_name
+                            }</span>
                           </div>
                           <div className="team-score">
                             <span>{game.awayTeam_score}</span>
@@ -169,6 +164,7 @@ export default function GameSchedules({ framedata, sportsSelected }) {
                       </div>
                       <div className="schedule pl-2.5 basis-1/3 text-xs text-center">
                         {isFinished
+
                           ? <span>{"Final"} <br />
                             {formatDate(game.gameDate, {
                               weekday: 'short',
@@ -176,13 +172,17 @@ export default function GameSchedules({ framedata, sportsSelected }) {
                               day: 'numeric'
                             })}
                           </span>
+
                           : <span>
                             {formatDate(game.gameDate, {
                               weekday: 'short',
                               month: 'short',
                               day: 'numeric',
                             })} <br />
-                            {sportsSelected === 'SOCCER' ? game.gameTimeUTC : game.gameStatus}
+                            {formatDate(sportsSelected === 'MLB' ? game.gameDate : game.gameTimeUTC, {
+                              hour: 'numeric',
+                              minute: 'numeric'
+                            })}
                           </span>
                         }
                       </div>

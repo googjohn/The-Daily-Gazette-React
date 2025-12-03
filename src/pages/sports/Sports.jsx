@@ -51,7 +51,6 @@ export default function Sports() {
   } = useFetch(NEWSDATAIO_URL)
 
   const isLoading = sportsdataLoading || nbanewsLoading || mlbnewsLoading
-  const isDataAvail = !sportsdata || !nbanewsData || !mlbnewsData
 
   const sportsMap = {
     NBA: 'NBA Stats and Schedules',
@@ -75,19 +74,18 @@ export default function Sports() {
 
   return (
     <>
-      {(ipdataError || nbanewsError || mlbnewsError || sportsdataError) && <ErrorPage error={
+      {(ipdataError && nbanewsError && mlbnewsError && sportsdataError) && <ErrorPage error={
         (ipdataError || nbanewsError || mlbnewsError || sportsdataError)
       } />}
-      {(isLoading || isDataAvail) && <Spinner />}
+      {isLoading && <Spinner />}
+      <Section
+        id={'sports-page'}
+        sectionData={sections}
+      />
       <SportsForHome
         nbanewsData={nbanewsData}
         mlbnewsData={mlbnewsData}
         sportsnewsData={sportsdata}
-      />
-      {ipdataLoading && <Spinner />}
-      <Section
-        id={'sports-page'}
-        sectionData={sections}
       />
     </>
   )

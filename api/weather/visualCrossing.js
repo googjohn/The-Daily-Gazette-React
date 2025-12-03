@@ -16,6 +16,11 @@ export default allowCors(async function fetchHandle(req, res) {
 
     const response = await fetchWithRetry(VISUALCROSSING_URL, 2, 300)
 
+    res.setHeader(
+      "Cache-Control",
+      'public, s-maxage=3600, stale-while-revalidate=3600'
+    )
+
     res.status(200).json({
       'ok': true,
       'error': null,
