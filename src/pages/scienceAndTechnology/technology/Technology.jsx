@@ -27,7 +27,7 @@ export function TechnologyForHome({ technologyNewsData, ipdata }) {
   return (
     <>
       <div className="grid grid-template grid-area-entmnt-scitech">
-        {technologyDataError
+        {!technologyData?.data
           // ? (<div className="text-black">Error loading data.</div>)
           ? <NewsSkeleton len={7} />
           : technologyData && technologyData.data.slice(0, 7).map((article, index) => {

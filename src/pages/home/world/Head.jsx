@@ -7,7 +7,7 @@ export default function HeadNews({ headNewsData }) {
     <>
       <div className="grid-item grid">
         {
-          !headNewsData
+          !headNewsData?.data || !headNewsData?.ok || headNewsData?.error
             ?
             <NewsSkeleton len={1} />
             : headNewsData.data.slice(0, 1).map((article) => (

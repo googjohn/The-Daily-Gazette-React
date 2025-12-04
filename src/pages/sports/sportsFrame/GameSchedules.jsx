@@ -3,7 +3,7 @@ import { formatDate } from "../../../hooks/UseFormatter";
 import { mlbLogos } from "../../../data/mlbLogos";
 import noImage from "/images/no-image/no-image-available.png"
 import clsx from "clsx";
-import { GameSchedulesSkeleton } from "../../../components/skeleton/Skeleton";
+import { GameSchedulesSkeleton, SportsSubframeSkeleton } from "../../../components/skeleton/Skeleton";
 
 export default function GameSchedules({ framedata, sportsSelected }) {
   const elementToScroll = useRef([]);
@@ -59,8 +59,10 @@ export default function GameSchedules({ framedata, sportsSelected }) {
   const isMatch = framedata?.frameName === sportsSelected
 
   return (
-    !framedata?.frameData.GAMES
-      ? <GameSchedulesSkeleton />
+    !framedata?.frameData?.GAMES
+      ? framedata?.frameName === sportsSelected
+        ? <GameSchedulesSkeleton />
+        : <SportsSubframeSkeleton />
       : framedata?.frameData?.GAMES?.map(({ date, gamesList }, index) => {
         const derivedDate = sportsSelected === "NBA"
           ? date?.split(' ')[0]

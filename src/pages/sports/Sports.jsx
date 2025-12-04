@@ -50,7 +50,7 @@ export default function Sports() {
     loading: sportsdataLoading
   } = useFetch(NEWSDATAIO_URL)
 
-  const isLoading = sportsdataLoading || nbanewsLoading || mlbnewsLoading
+  const isLoading = ipdataLoading || sportsdataLoading || nbanewsLoading || mlbnewsLoading
 
   const sportsMap = {
     NBA: 'NBA Stats and Schedules',
@@ -74,9 +74,9 @@ export default function Sports() {
 
   return (
     <>
-      {(ipdataError && nbanewsError && mlbnewsError && sportsdataError) && <ErrorPage error={
+      {/* {(ipdataError && nbanewsError && mlbnewsError && sportsdataError) && <ErrorPage error={
         (ipdataError || nbanewsError || mlbnewsError || sportsdataError)
-      } />}
+      } />} */}
       {isLoading && <Spinner />}
       <Section
         id={'sports-page'}
@@ -100,7 +100,7 @@ export function SportsForHome({ nbanewsData, mlbnewsData, sportsnewsData }) {
       content: (
         <>
           <div className="grid grid-template grid-area-sports relative">
-            {!sportsnewsData
+            {!sportsnewsData?.data || sportsnewsData?.error || !sportsnewsData?.ok
               ? <NewsSkeleton len={9} />
               : sportsnewsData && sportsnewsData.data.slice(0, 9).map((article, index) => {
                 const source = {

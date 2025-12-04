@@ -60,7 +60,7 @@ export default function Finance() {
   // } />
   if (ipdataLoading || moreFinanceNewsLoading || businessDataLoading) return <Spinner />
 
-  const localBusinessNews = !businessArticles || businessDataError
+  const localBusinessNews = !businessArticles
     // ? (<div className="text-black">Error loading data.</div>)
     ? <NewsSkeleton len={10} />
     : businessArticles && businessArticles.map((article, index) => {
@@ -80,7 +80,7 @@ export default function Finance() {
         />
       )
     })
-  const moreBusinessNews = !moreFinanceNews || moreFinanceNewsError
+  const moreBusinessNews = !moreFinanceNews
     ? <NewsSkeleton len={10} />
     : moreFinanceNewsArticles.slice().map((article, index) => (
       <Card
@@ -156,7 +156,7 @@ export function FinanceForHome({ financeNewsData, moreFinanceNewsData }) {
       title: 'Business and Finance',
       customGrid: 'grid-area-finance',
       content: (
-        !financeNewsData
+        !financeNewsData?.data
           ? <NewsSkeleton len={5} />
           : financeNewsData.data.slice(0, 5).map((article, index) => (
             <Card
@@ -174,7 +174,7 @@ export function FinanceForHome({ financeNewsData, moreFinanceNewsData }) {
       title: 'Popular in Business and Finance',
       customGrid: 'grid-area-more-finance',
       content: (
-        !moreFinanceNewsData
+        !moreFinanceNewsData?.data
           ? <NewsSkeleton len={10} />
           : moreFinanceNewsData.data.map((article, index) => (
             <Card

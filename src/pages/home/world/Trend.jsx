@@ -10,7 +10,7 @@ export default function TrendingNews({ trendNewsData }) {
   return (
     <>
       <div id="trend-news" className="grid grid-template grid-area-trend">
-        {!trendNewsData
+        {!trendNewsData?.data || !trendNewsData?.ok || trendNewsData?.error
           ? <NewsSkeleton len={3} />
           : trendNewsData?.data?.slice(0, 3).map(article => (
             <Card

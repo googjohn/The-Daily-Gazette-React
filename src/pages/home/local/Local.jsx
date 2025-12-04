@@ -9,7 +9,7 @@ export default function LocalNews({ localNewsData }) {
       title: 'Latest Local News',
       customGrid: 'grid-area-local',
       content: (
-        !localNewsData
+        !localNewsData?.data || !localNewsData?.ok || localNewsData?.error
           ? <NewsSkeleton len={8} />
           : localNewsData.data.slice(0, 8).map(article => (
             <Card

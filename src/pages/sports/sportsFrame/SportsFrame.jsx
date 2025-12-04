@@ -194,16 +194,12 @@ export default function SportsFrame({ categorySelected, setCategorySelected, spo
         />
 
         {(sportsDataToFrameLoading) && <ScopedSpinner />}
-        {
-          // sportsDataToFrameLoading || sportsDataToFrameError
-          // ? <div className="h-[590px]">Error loading content. Select stats tab you want to check to confirm availability.</div>
-          // ? <SportsMainframeSkeleton />
-          <MainFrameContent
-            mainFrameData={frames[0]}
-            categorySelected={categorySelected}
-            sportsSelected={sportsSelected}
-          />
-        }
+
+        <MainFrameContent
+          mainFrameData={frames[0]}
+          categorySelected={categorySelected}
+          sportsSelected={sportsSelected}
+        />
 
       </div>
 
@@ -232,19 +228,10 @@ export default function SportsFrame({ categorySelected, setCategorySelected, spo
           >
             <SubFrameHeader subFrameData={frame} />
 
-            {(mlbFrameDataLoading || soccerFrameDataLoading) && <div>Loading data...</div>}
-
-            <div className="h-full overflow-auto">
-
-              {
-                (mlbFrameDataLoading || soccerFrameDataLoading) || (mlbFrameDataError || soccerFrameDataError)
-                  ? <SportsSubframeSkeleton />
-                  : <SubFrameContent
-                    subFrameData={frame}
-                    sportsSelected={sportsSelected}
-                  />
-              }
-            </div>
+            <SubFrameContent
+              subFrameData={frame}
+              sportsSelected={sportsSelected}
+            />
 
           </div>
         ))}

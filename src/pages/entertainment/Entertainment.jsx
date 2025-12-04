@@ -62,7 +62,7 @@ export function EntertainmentForHome({ entertainmentNewsData, ipdata }) {
       content: (
         <>
           <div className="grid grid-template grid-area-entmnt-scitech">
-            {entertainmentDataError
+            {!entertainmentData?.data
               // ? (<div className="text-black">Error loading data.</div>)
               ? <NewsSkeleton len={7} />
               : entertainmentData && entertainmentData.data.slice(0, 7).map((article, index) => {

@@ -26,7 +26,7 @@ export function ScienceForHome({ scienceNewsData, ipdata }) {
   return (
     <>
       <div className="grid grid-template grid-area-entmnt-scitech">
-        {scienceDataError
+        {!scienceData?.data
           // ? (<div className="text-black">Error loading data.</div>)
           ? <NewsSkeleton len={7} />
           : scienceData && scienceData?.data.slice(0, 7).map((article, index) => {
