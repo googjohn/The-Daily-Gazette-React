@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react"
+import { useState, useEffect, useRef } from "react"
 import clsx from "clsx"
 import useWindowSize from "../../../hooks/UseWindowSize.js"
 import { IoGrid, IoGridOutline } from "react-icons/io5";
@@ -7,7 +7,6 @@ import { MainFrameContent, SubFrameContent } from "./FrameContent.jsx";
 import { useSportsUrlBuilder } from "../../../hooks/useUrlBuilder.js";
 import { useFetch } from "../../../hooks/UseFetchForAll.js";
 import { ScopedSpinner } from "../../../components/spinner/Spinner.jsx";
-import { SportsSubframeSkeleton } from "../../../components/skeleton/Skeleton.jsx";
 
 const framesData = [
   {

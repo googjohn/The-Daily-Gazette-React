@@ -10,6 +10,7 @@ import nba_api.library.http as http
 import requests
 from requests.exceptions import Timeout, ConnectionError, HTTPError, ConnectTimeout
 import mlbstatsapi
+from mlbstatsapi.exceptions import TheMlbStatsApiException
 import ipinfo
 import os
 
@@ -316,6 +317,7 @@ def get_players():
 # get mlb
 @app.get('/api/MLB/standings')
 def get_mlb_standings():
+    
     try:
         current_year = datetime.now().year
         mlb = mlbstatsapi.Mlb()

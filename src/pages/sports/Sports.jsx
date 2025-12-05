@@ -100,7 +100,7 @@ export function SportsForHome({ nbanewsData, mlbnewsData, sportsnewsData }) {
       content: (
         <>
           <div className="grid grid-template grid-area-sports relative">
-            {!sportsnewsData?.data || sportsnewsData?.error || !sportsnewsData?.ok
+            {!sportsnewsData?.data
               ? <NewsSkeleton len={9} />
               : sportsnewsData && sportsnewsData.data.slice(0, 9).map((article, index) => {
                 const source = {

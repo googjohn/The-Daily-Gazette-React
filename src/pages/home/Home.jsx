@@ -6,9 +6,8 @@ import { ScienceTechnologyForHome } from "../scienceAndTechnology/ScienceAndTech
 import { FinanceForHome } from "../finance/Finance";
 import { EntertainmentForHome } from "../entertainment/Entertainment";
 import { SportsForHome } from "../sports/Sports";
-import { useFetch, useFetchMulti, useIplookup } from "../../hooks/UseFetchForAll";
+import { useFetchMulti, useIplookup } from "../../hooks/UseFetchForAll";
 import { useRef } from "react";
-import { NewsSkeleton } from "../../components/skeleton/Skeleton";
 
 export default function Home() {
   const {
